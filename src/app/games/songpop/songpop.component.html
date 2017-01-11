@@ -1,0 +1,10 @@
+<p>
+  songpop works!
+</p>
+<md-list>
+	<md-list-item *ngFor="let item of listSong; let i = 'index'">
+	{{i+1}}
+ 	{{item['track']['title']}}
+ 	{{item['artist']}}
+	</md-list-item>
+</md-list>

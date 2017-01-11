@@ -1,0 +1,19 @@
+<div class="game-box">
+  <div class="game-unit"> &nbsp;
+  </div>
+  <div class="game-unit" (click)="playWord()">
+    <img src="assets/images/game/check-icon.png">
+    <p>Play Word</p>
+  </div>
+  <div class="game-unit">
+    <img src="assets/images/game/songpop.png">
+    <p>Song Pop</p>
+  </div>
+  <div class="game-unit"> &nbsp;
+  </div>
+</div>
+ <nav>
+    <a routerLink="/playword" routerLinkActive="active">PlayWord</a>
+    <a routerLink="/menugame" routerLinkActive="active">Menu Game</a>
+  </nav>
+  <router-outlet></router-outlet>

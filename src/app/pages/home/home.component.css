@@ -1,0 +1,39 @@
+.example-fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.left-menu {
+  font-size: 15px;
+  padding-right: 10px;
+}
+
+.toolbar-icon {
+  padding-right: 6px;
+}
+
+.game-box{
+  margin-top: 150px;
+}
+
+.game-box img {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  cursor: pointer;
+}
+
+.game-unit {
+  display: inline-block;
+  width: 25%;
+  float: left;
+  position: relative;
+}
+
+.game-unit p {
+  text-align: center;
+}

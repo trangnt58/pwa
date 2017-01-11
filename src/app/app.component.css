@@ -1,0 +1,13 @@
+.example-fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.right-menu {
+  font-size: 15px;
+  padding-right: 10px;
+  cursor: pointer;
+}
+
+.toolbar-icon {
+  padding-right: 6px;
+}

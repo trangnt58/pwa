@@ -1,3 +1,15 @@
-<h1>
-  {{title}}
-</h1>
+<md-toolbar color="primary">
+  <md-icon class="toolbar-icon">menu</md-icon>
+  <span>Fun English App</span>
+    <!-- This fills the remaining space of the current row -->
+  <span class="example-fill-remaining-space"></span>
+   <span class="right-menu">Đăng ký</span>
+  <span routerLink="/login" class="right-menu">Đăng nhập</span>
+  <!-- <span class="left-menu">Đăng ký</span> -->
+ 
+</md-toolbar>
+    <nav>
+ <!--  <a routerLink="/playword" routerLinkActive="active">Play</a> -->
+  <!-- <a routerLink="/menugame" routerLinkActive="active">Menu Game</a> -->
+</nav>
+<router-outlet></router-outlet>
