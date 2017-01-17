@@ -5,6 +5,10 @@ module.exports = {
   staticFileGlobs: [
     'dist/index.html',
     'dist/**.js',
-    'dist/**.css'
+    'dist/**.css',
+    'dist/assets/images/game/check-icon.png',
+    'dist/assets/images/game/songpop.png',
+    'dist/assets/lib/*.js',
+    'dist/assets/data/*.json'
   ]
 };

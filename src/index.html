@@ -15,14 +15,14 @@
 </head>
 <body>
   <app-root>Loading...</app-root>
-</body>
-
-
-<script>
-if('serviceWorker' in navigator) {
-  navigator.serviceWorker
-           .register('/sw.js')
-           .then(function() { console.log("Service Worker Registered"); });
-}
+  <script>
+   if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+      console.log('Service Worker registered');
+    }).catch(function(err) {
+      console.log('Service Worker registration failed: ', err);
+    });
+  }
 </script>
+</body>
 </html>
