@@ -1,0 +1,9 @@
+<span *ngIf="!isLogin">
+	<span routerLink="/login" class="right-menu">Đăng nhập</span>
+ 	<span class="right-menu">Đăng ký</span>
+</span>
+
+<div *ngIf="isLogin" class="right-menu">
+	<img class="avatar" src="{{profile.imageUrl}}"> 
+	<span style="vertical-align: middle; line-height: 64px;">{{profile.displayName}}</span>
+</div>

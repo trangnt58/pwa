@@ -1,4 +1,6 @@
 import { Component, NgZone, OnInit } from '@angular/core';
+import { GlobalVarsService } from '../../services/global-vars.service';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 declare var gapi: any;
 
@@ -9,16 +11,17 @@ declare var gapi: any;
 })
 
 export class LoginGoogleComponent implements OnInit {
-   isLogin: boolean = false;
+  isLogin: boolean = false;
   profile: Object = {};
   auth2: any;
   isLogout: boolean = false;
   
-  constructor(private zone: NgZone) { }
+  constructor(private zone: NgZone, private globalVars: GlobalVarsService, private router: Router) { 
+    this.globalVars.isUserLoggedIn.subscribe(value => console.log(value));
+  }
 
   ngOnInit() {
     this.start();
-    //this.renderButton();
   }
 
   start() {
@@ -30,41 +33,54 @@ export class LoginGoogleComponent implements OnInit {
       });
 
       this.auth2.then(() => {
-        console.log(this.auth2);
         var isSignedIn = this.auth2.isSignedIn.get();
         var googleUser = this.auth2.currentUser.get();
         
-          if (isSignedIn) {
-            console.log('da login');
-         this.isLogin = true;
-         var res =  googleUser.getBasicProfile();
-            this.profile['displayName'] = res.getName();
-            this.profile['imageUrl'] = res.getImageUrl();
-          } else {
-            console.log('not login');
-            this.attachSignin(document.getElementById('customBtn'));
-             
-          }
+        if (isSignedIn) {
+          this.isLogin = true;
+          
+          var res =  googleUser.getBasicProfile();
+          this.profile['displayName'] = res.getName();
+          this.profile['imageUrl'] = res.getImageUrl();
+          console.log(this.profile);
+
+          this.globalVars.setLoginStatus(true);
+          this.globalVars.setProfile(this.profile);
+          this.router.navigate(['/']);
+
+        } else {
+          console.log('not login');
+          this.globalVars.setLoginStatus(false);
+          this.attachSignin(document.getElementById('customBtn'));
+        }
       });
 
      });
   }
 
   attachSignin(element) {
-    console.log('aaa')
     this.auth2.attachClickHandler(element, {},
       (googleUser) => {
         this.zone.run(() => {
           this.isLogin = true;
+          
           this.isLogout = false;
           var res =  googleUser.getBasicProfile();
           this.profile['displayName'] = res.getName();
           this.profile['imageUrl'] = res.getImageUrl();
           console.log(this.profile);
+
+          this.globalVars.setLoginStatus(true);
+          this.globalVars.setProfile(this.profile);
+          this.router.navigate(['/']);
         });
       },(error) => {
         alert(JSON.stringify(error, undefined, 2));
     });
+  }
+
+  sendData() {
+    return this.profile;
   }
 
 // if render button
