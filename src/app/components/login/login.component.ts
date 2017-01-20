@@ -14,9 +14,4 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
   
-  loginFB() {
-    FB.login((result: any) => {
-    console.log(result);
-  }, { scope: 'user_friends' });
-  }
 }

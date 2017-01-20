@@ -18,6 +18,7 @@ import { LoginComponent } from './components/login/login.component';
 import { LoginGoogleComponent } from './components/login-google/login-google.component';
 import { SongpopComponent } from './games/songpop/songpop.component';
 import { NavLoginComponent } from './components/nav-login/nav-login.component';
+import { LoginFacebookComponent } from './components/login-facebook/login-facebook.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -43,7 +44,8 @@ const appRoutes: Routes = [
     LoginComponent,
     LoginGoogleComponent,
     SongpopComponent,
-    NavLoginComponent
+    NavLoginComponent,
+    LoginFacebookComponent
   ],
   imports: [
     BrowserModule,

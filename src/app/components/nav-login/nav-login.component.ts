@@ -38,7 +38,6 @@ export class NavLoginComponent implements OnInit {
       // Retrieve the singleton for the GoogleAuth library and set up the client.
       this.auth2 = gapi.auth2.init({
         client_id: '736288713251-26srbi81jha5n1aithe4av668oh5pn12.apps.googleusercontent.com'
-        //scope: 'https://www.googleapis.com/auth/drive'
       });
 
       this.auth2.then(() => {
@@ -64,7 +63,16 @@ export class NavLoginComponent implements OnInit {
      });
   }
 
-  ngAfterViewInit() {
-  	console.log('after content init');
+  logOut() {
+    this.auth2 = gapi.auth2.getAuthInstance();
+    
+    this.auth2.signOut().then(() => {
+      console.log('User signed out.');
+      this.zone.run(() => {
+        this.globalVars.setLoginStatus(false);
+        this.isLogin = false;
+        this.profile = {};
+      })
+    });
   }
 }

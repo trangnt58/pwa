@@ -6,4 +6,17 @@
 <div *ngIf="isLogin" class="right-menu">
 	<img class="avatar" src="{{profile.imageUrl}}"> 
 	<span style="vertical-align: middle; line-height: 64px;">{{profile.displayName}}</span>
+	<button md-icon-button [mdMenuTriggerFor]="menu">
+  	<md-icon>more_vert</md-icon>
+	</button>
+	<md-menu #menu="mdMenu">
+		<button md-menu-item>
+	    <md-icon>assignment</md-icon>
+	    <span>Góc học tập</span>
+	  </button>
+	  <button md-menu-item (click)="logOut()">
+	    <md-icon>exit_to_app</md-icon>
+	    <span>Đăng xuất</span>
+	  </button>
+	</md-menu>
 </div>

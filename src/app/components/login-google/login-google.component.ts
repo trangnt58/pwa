@@ -17,7 +17,7 @@ export class LoginGoogleComponent implements OnInit {
   isLogout: boolean = false;
   
   constructor(private zone: NgZone, private globalVars: GlobalVarsService, private router: Router) { 
-    this.globalVars.isUserLoggedIn.subscribe(value => console.log(value));
+    // this.globalVars.isUserLoggedIn.subscribe(value => console.log(value));
   }
 
   ngOnInit() {
@@ -49,7 +49,6 @@ export class LoginGoogleComponent implements OnInit {
           this.router.navigate(['/']);
 
         } else {
-          console.log('not login');
           this.globalVars.setLoginStatus(false);
           this.attachSignin(document.getElementById('customBtn'));
         }
