@@ -19,12 +19,14 @@ import { LoginGoogleComponent } from './components/login-google/login-google.com
 import { SongpopComponent } from './games/songpop/songpop.component';
 import { NavLoginComponent } from './components/nav-login/nav-login.component';
 import { LoginFacebookComponent } from './components/login-facebook/login-facebook.component';
+import { RegisterComponent } from './components/register/register.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'menugame', component: MenuGameComponent },
   { path: 'playword', component: PlayWordComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'login-google', component: LoginGoogleComponent },
   { path: 'songpop', component: SongpopComponent },
   {
@@ -45,7 +47,8 @@ const appRoutes: Routes = [
     LoginGoogleComponent,
     SongpopComponent,
     NavLoginComponent,
-    LoginFacebookComponent
+    LoginFacebookComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
