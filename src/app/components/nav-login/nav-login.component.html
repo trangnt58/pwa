@@ -5,11 +5,15 @@
 
 <div *ngIf="isLogin" class="right-menu">
 	<img class="avatar" src="{{profile.imageUrl}}"> 
-	<span style="vertical-align: middle; line-height: 64px;">{{profile.displayName}}</span>
+	<span style="vertical-align: middle; line-height: 64px;">{{profile.name}}</span>
 	<button md-icon-button [mdMenuTriggerFor]="menu">
   	<md-icon>more_vert</md-icon>
 	</button>
 	<md-menu #menu="mdMenu">
+		<button md-menu-item (click)="goProfile()">
+	    <md-icon>account_circle</md-icon>
+	    <span>Thông tin cá nhân</span>
+	  </button>
 		<button md-menu-item>
 	    <md-icon>assignment</md-icon>
 	    <span>Góc học tập</span>

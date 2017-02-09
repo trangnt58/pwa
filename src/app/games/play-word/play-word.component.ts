@@ -1,11 +1,33 @@
 import { Component, OnInit } from '@angular/core';
-import { WordService } from './../../services/word.service'
+import { WordService } from './../../services/word.service';
+import {
+  Input,
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/core';
 
 @Component({
   selector: 'app-play-word',
   templateUrl: './play-word.component.html',
   styleUrls: ['./play-word.component.css'],
-  providers: [ WordService ]
+  providers: [ WordService ],
+  animations: [
+    trigger('state', [
+      state('wrong', style({
+        backgroundColor: '#eee',
+        transform: 'scale(1)'
+      })),
+      state('right',   style({
+        backgroundColor: '#cfd8dc',
+        transform: 'scale(1.1)'
+      })),
+      transition('wrong => right', animate('100ms ease-in')),
+      transition('right => wrong', animate('100ms ease-out'))
+    ])
+  ]
 })
 export class PlayWordComponent implements OnInit {
   count: number = 0;
@@ -78,6 +100,7 @@ export class PlayWordComponent implements OnInit {
     var audio = new Audio('http://api.voicerss.org/?key=9162f83042cf475f8231eee77f6ac5e8&hl=en-us&r=-2&src='+ wordAudio);
     audio.play();
   }
+
   next() {
     this.reload();
   }
@@ -85,8 +108,12 @@ export class PlayWordComponent implements OnInit {
   checkAnswer(item: Object) {
     // Xử lý
     if (item['id'] == this.curWord['id']) {
-      this.reload();
       item['state'] = 'right';
+
+      setTimeout(() => { 
+        this.reload();
+      }, 1000);
+      
     } else {
       item['state'] = 'wrong';
     }

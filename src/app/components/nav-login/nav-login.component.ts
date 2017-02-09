@@ -48,10 +48,12 @@ export class NavLoginComponent implements OnInit {
         	this.zone.run(() => {
         		this.isLogin = true;
 	          var res =  googleUser.getBasicProfile();
-	          this.profile['displayName'] = res.getName();
+	          this.profile['name'] = res.getName();
 	          this.profile['imageUrl'] = res.getImageUrl();
+            this.profile['email'] = res.getEmail();
 	          this.globalVars.setLoginStatus(true);
           	this.globalVars.setProfile(this.profile);
+            console.log('res'+ JSON.stringify(res));
 	          //this.router.navigate(['/']);
         	});
         } else {
@@ -74,5 +76,9 @@ export class NavLoginComponent implements OnInit {
         this.profile = {};
       })
     });
+  }
+
+  goProfile() {
+    this.router.navigate(['/profile']);
   }
 }

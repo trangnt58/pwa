@@ -14,7 +14,7 @@
   <div class="answers" style="margin-top: 30px;"> 
     <i class="material-icons">face</i>
     <div class="answers-content">
-      <div *ngFor="let item of answers" class="answer-unit" (click)="checkAnswer(item)" 
+      <div *ngFor="let item of answers" class="answer-unit" (click)="checkAnswer(item)" [@state]="item.state"
             style="cursor: pointer;">
           {{item.meaning}}
       </div>
