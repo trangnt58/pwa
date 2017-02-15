@@ -21,6 +21,7 @@ import { NavLoginComponent } from './components/nav-login/nav-login.component';
 import { LoginFacebookComponent } from './components/login-facebook/login-facebook.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { SearchFriendComponent } from './components/search-friend/search-friend.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -51,7 +52,8 @@ const appRoutes: Routes = [
     NavLoginComponent,
     LoginFacebookComponent,
     RegisterComponent,
-    ProfileComponent
+    ProfileComponent,
+    SearchFriendComponent
   ],
   imports: [
     BrowserModule,

@@ -3,7 +3,34 @@
   	<p>Name: {{profile.name}}</p>
   	<p>Email: {{profile.email}}</p>
   </md-tab>
-  <md-tab label="Bạn bè">Content 2</md-tab>
+  <md-tab label="Bạn bè">
+	  <p> Bạn bè của tôi </p>
+	  <div *ngIf="friends">
+	  	<md-card class="example-card" *ngFor="let item of friends">
+			  <md-card-header>
+			    <div md-card-avatar></div>
+			    <md-card-title>{{item.name}}</md-card-title>
+			    <md-card-subtitle>{{item.email}}</md-card-subtitle>
+			    <button md-raised-button (click)="cancel(item['_id'])"> Hủy kết bạn </button>
+			  </md-card-header>
+			</md-card>
+		</div>
+		<p>Tìm kiếm thêm bạn:</p>
+		<md-icon>search</md-icon><app-search-friend></app-search-friend>
+  </md-tab>
+
+  <md-tab label="Yêu cầu kết bạn">
+  	<div *ngIf="requests">
+	  	<md-card class="example-card" *ngFor="let item of requests">
+			  <md-card-header>
+			    <div md-card-avatar></div>
+			    <md-card-title>{{item.name}}</md-card-title>
+			    <md-card-subtitle>{{item.email}}</md-card-subtitle>
+			    <button md-raised-button (click)="agree(item)"> Chấp nhận </button>
+			  </md-card-header>
+			</md-card>
+		</div>
+  </md-tab>
 </md-tab-group>
 
 

@@ -1,6 +1,7 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { GlobalVarsService } from '../../services/global-vars.service';
 import { LoginService } from '../../services/login.service';
+import { UserService } from '../../services/user.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 declare var gapi: any;
@@ -9,7 +10,7 @@ declare var gapi: any;
   selector: 'app-login-google',
   templateUrl: './login-google.component.html',
   styleUrls: ['./login-google.component.css'],
-  providers: [ LoginService ]
+  providers: [ LoginService, UserService ]
 })
 
 export class LoginGoogleComponent implements OnInit {
@@ -18,7 +19,9 @@ export class LoginGoogleComponent implements OnInit {
   auth2: any;
   isLogout: boolean = false;
   
-  constructor(private zone: NgZone, private globalVars: GlobalVarsService, private loginService: LoginService, private router: Router) { 
+  constructor(private zone: NgZone, private globalVars: GlobalVarsService, 
+    private userService: UserService, private loginService: LoginService, 
+    private router: Router) { 
     // this.globalVars.isUserLoggedIn.subscribe(value => console.log(value));
   }
 
@@ -44,7 +47,6 @@ export class LoginGoogleComponent implements OnInit {
           var res =  googleUser.getBasicProfile();
           this.profile['displayName'] = res.getName();
           this.profile['imageUrl'] = res.getImageUrl();
-          console.log(this.profile);
 
           this.globalVars.setLoginStatus(true);
           this.globalVars.setProfile(this.profile);
@@ -74,14 +76,26 @@ export class LoginGoogleComponent implements OnInit {
 
           //save mlab
           this.loginService.checkExist(this.profile['email']).then(res => {
+            //lần đầu đăng nhập
             if (res == null) {
-              this.loginService.login(this.profile);
+              this.loginService.login(this.profile).then(res => {
+                console.log(res['_id']);
+                this.profile['id'] = res['_id'];
+                this.globalVars.setProfile(this.profile);
+              });
+            } else {
+              //đã đăng nhập
+              this.userService.getUser(this.profile['email']).then(res => {
+                console.log(res['_id']);
+                this.profile['id'] = res['_id'];
+                this.globalVars.setProfile(this.profile);
+              });
             }
           });
 
 
           this.globalVars.setLoginStatus(true);
-          this.globalVars.setProfile(this.profile);
+         
           this.router.navigate(['/']);
         });
       },(error) => {

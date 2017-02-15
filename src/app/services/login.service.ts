@@ -10,11 +10,16 @@ export class LoginService {
 
   	let headers = new Headers();
     headers.append('Content-Type', 'application/json');
- 
-    this.http.post('http://localhost:3000/users/api/create', JSON.stringify(user), {headers: headers})
+     return new Promise(resolve => {
+      this.http.post('http://localhost:3000/users/api/create', JSON.stringify(user), {headers: headers})
       .subscribe(res => {
-        console.log(res.json());
+        resolve(res.json());
       });
+    });
+    // this.http.post('http://localhost:3000/users/api/create', JSON.stringify(user), {headers: headers})
+    //   .subscribe(res => {
+    //     console.log(res.json());
+    //   });
   }
 
   checkExist(email): Promise<Object> {

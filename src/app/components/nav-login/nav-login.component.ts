@@ -1,13 +1,16 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { GlobalVarsService } from '../../services/global-vars.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { LoginService } from '../../services/login.service';
+import { UserService } from '../../services/user.service';
 
 declare var gapi: any;
 
 @Component({
   selector: 'app-nav-login',
   templateUrl: './nav-login.component.html',
-  styleUrls: ['./nav-login.component.css']
+  styleUrls: ['./nav-login.component.css'],
+  providers: [ LoginService, UserService ]
 })
 export class NavLoginComponent implements OnInit {
 
@@ -15,7 +18,9 @@ export class NavLoginComponent implements OnInit {
 	profile: Object = {};
 	auth2: any;
 
-  constructor (private globalVars: GlobalVarsService, private zone: NgZone, private router: Router ) {
+  constructor (private globalVars: GlobalVarsService, 
+    private userService: UserService, private loginService: LoginService, 
+    private zone: NgZone, private router: Router ) {
 	}
 
   ngOnInit() {
@@ -52,9 +57,25 @@ export class NavLoginComponent implements OnInit {
 	          this.profile['imageUrl'] = res.getImageUrl();
             this.profile['email'] = res.getEmail();
 	          this.globalVars.setLoginStatus(true);
-          	this.globalVars.setProfile(this.profile);
-            console.log('res'+ JSON.stringify(res));
-	          //this.router.navigate(['/']);
+            //save mlab
+            this.loginService.checkExist(this.profile['email']).then(res => {
+              //lần đầu đăng nhập
+              if (res == null) {
+                this.loginService.login(this.profile).then(res => {
+                  console.log(res['_id']);
+                  this.profile['id'] = res['_id'];
+                  this.globalVars.setProfile(this.profile);
+                });
+              } else {
+                //đã đăng nhập
+                this.userService.getUser(this.profile['email']).then(res => {
+                  console.log(res['_id']);
+                  this.profile['id'] = res['_id'];
+                  this.globalVars.setProfile(this.profile);
+                });
+              }
+            });
+
         	});
         } else {
           console.log('not login');
@@ -74,6 +95,7 @@ export class NavLoginComponent implements OnInit {
         this.globalVars.setLoginStatus(false);
         this.isLogin = false;
         this.profile = {};
+        this.router.navigate(['/login']);
       })
     });
   }
