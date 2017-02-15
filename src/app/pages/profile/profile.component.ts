@@ -23,13 +23,14 @@ export class ProfileComponent implements OnInit {
 
       if (value['id'] != undefined) {
         this.userService.getFriend(value['id']).then(res => {
-          this.friends = res;
+          this.zone.run(() => {
+            this.friends = res;
+          });
         });
 
         this.userService.getRequestFriend(value['id']).then(res => {
           this.requests = res;
-        });
-        
+        });        
        }
   	});
   }
