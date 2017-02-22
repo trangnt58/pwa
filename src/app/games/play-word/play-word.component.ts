@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { WritingComponent } from './../../games/writing/writing.component';
+import { ReadingComponent } from './../../games/reading/reading.component';
 import { WordService } from './../../services/word.service';
+import { HelperService} from './../../services/helper.service'
 import {
   Input,
   trigger,
@@ -13,7 +16,7 @@ import {
   selector: 'app-play-word',
   templateUrl: './play-word.component.html',
   styleUrls: ['./play-word.component.css'],
-  providers: [ WordService ],
+  providers: [ WordService, HelperService ],
   animations: [
     trigger('state', [
       state('wrong', style({
@@ -30,110 +33,121 @@ import {
   ]
 })
 export class PlayWordComponent implements OnInit {
+  @ViewChild(WritingComponent) writingComponent;
+  @ViewChild(ReadingComponent) readingComponent;
+
+  score: number = 0;
   count: number = 0;
   words: any;
   allWords: any;
   answers: Object[] = [];
   curWord: Object = {};
-  max = 10; 
+  max = 5; 
   isEnd: boolean = false;
-  constructor( private wordService: WordService) { }
+  typeGame = [ 'reading','writing'];
+  counter: number = 100;
+  selectedGame: string;
+  interval: any;
+  colorProgressbar = 'primary';
+  //Lưu câu trả lời
+  turnGame = [];
+  constructor( private wordService: WordService, private helperService: HelperService ) { }
 
   ngOnInit() {
     this.wordService.getAllWord().then(res => {
-      this.words = res;
-      this.allWords = this.words.slice();
+      this.allWords = res;
+      this.words = this.helperService.getRandomArrayElements(this.allWords, this.max);
       this.reload();
-
     });
   }
 
-  reloadAns() {
-    let NO_OF_ANS = 4;
-    if (this.allWords.length < NO_OF_ANS) {
-      NO_OF_ANS = this.allWords.length;
-    }
-
-    // Tạo mảng các từ sai
-    let wrongWord = [];
-    for (let i = 0; i < this.allWords.length; i++) {
-      if (this.curWord['id'] != this.allWords[i]['id']) {
-        wrongWord.push(this.allWords[i]);
-      }
-    }
-
-    // Random vị trí từ đúng
-    let position = Math.floor(Math.random() * NO_OF_ANS);
-
-    // Tạo mảng các câu trả lời
-    this.answers = [];
-
-    for (let i = 0; i < NO_OF_ANS; i++) {
-      let temp;
-
-      if (i == position) {
-        temp = JSON.parse(JSON.stringify(this.curWord));
-      } else {
-        let r = Math.floor(Math.random() * wrongWord.length);
-        temp = JSON.parse(JSON.stringify(wrongWord[r]));
-        wrongWord.splice(r, 1);
-      }
-
-      this.answers.push(temp);
-    }
-  }
-
   reload() {
+    this.colorProgressbar = 'primary';
     if (this.count == this.max)  {
       this.isEnd = true;
       return;
     }
     this.count++;
-    let random = Math.floor(Math.random() * this.allWords.length);
-    this.curWord = this.allWords[random];
-    this.reloadAns();
-    this.speak();
-  }
+    
+    // Chọn từ ngẫu nhiên
+    let i = this.helperService.random(this.words.length);
+    this.curWord = this.words[i];
 
-  speak() {
-    var wordAudio = encodeURI(this.curWord['content']);
-    var audio = new Audio('http://api.voicerss.org/?key=9162f83042cf475f8231eee77f6ac5e8&hl=en-us&r=-2&src='+ wordAudio);
-    audio.play();
+    // Chọn game ngẫu nhiên
+    let j = this.helperService.random(this.typeGame.length);
+    this.selectedGame = this.typeGame[j];
+    this.countDownTimer();
   }
 
   next() {
+    if (this.count == this.max) {
+      this.isEnd = true;
+      return;
+    }
+    for (let i = 0; i < this.words.length; i++) {
+      if (this.words[i]['id'] == this.curWord['id']) {
+        this.words.splice(i, 1);
+        break;
+      }
+    }
+    clearInterval(this.interval);
     this.reload();
   }
 
-  checkAnswer(item: Object) {
-    // Xử lý
-    if (item['id'] == this.curWord['id']) {
-      item['state'] = 'right';
-
-      setTimeout(() => { 
-        this.reload();
+  onCorrect(correct: boolean): void {
+    if (correct) {
+      this.score ++;
+      clearInterval(this.interval);
+      this.next();
+      setTimeout(() => {
+        
       }, 1000);
-      
     } else {
-      item['state'] = 'wrong';
+      if (this.selectedGame == 'reading') {
+        clearInterval(this.interval);
+        this.next();
+      }
+
     }
   }
 
+  countDownTimer() {
+    this.counter = 100;
+    this.interval = setInterval(() => {
+      this.counter -=1;
+      if ( this.counter >= 30 && this.counter < 50)
+        this.colorProgressbar = 'accent';
+      if (this.counter < 30) this.colorProgressbar ='warn';
 
-  getRandomArrayElements(arr, count) {
-    var shuffled = arr.slice(0), i = arr.length, min = i - count, temp, index;
-    while (i-- > min) {
-      index = Math.floor((i + 1) * Math.random());
-      temp = shuffled[index];
-      shuffled[index] = shuffled[i];
-      shuffled[i] = temp;
-    }
-    return shuffled.slice(min);
+      // Khi hết giờ
+      if (this.counter <= 0) {
+        if(this.selectedGame == 'writing') {
+          this.writingComponent.getAnswer();
+          clearInterval(this.interval);
+          this.next();
+          return;
+        }
+        if (this.selectedGame == 'reading') {
+          console.log(this.counter);
+           // hết thời gian mà chưa trả lời thì set câu trả lời = null
+          this.readingComponent.getAnswer(null);
+          clearInterval(this.interval);
+          this.next();
+          return;
+        }
+      }
+    }, 80);
   }
 
-  random() {   
-    let numbers = ['1','2','4','5','6','7','8','9','10'];
-    alert( this.getRandomArrayElements(numbers, 4) );
+  saveGame(item) {
+    this.turnGame.push(item);
   }
 
+  userAnswer(userAnswer: Object) {
+    this.turnGame.push(userAnswer);
+  }
+
+  getTurnGame() {
+    console.log(this.turnGame);
+  }
 }

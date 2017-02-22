@@ -1,0 +1,8 @@
+.answer-unit {
+  display: inline-block;
+  width: 45%;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  padding: 10px;
+  margin: 20px;
+}

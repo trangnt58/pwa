@@ -1,26 +1,18 @@
 <div class="play-word">
-<md-progress-bar mode="determinate" value="{{(this.count)*100/this.max}}" color="accent"></md-progress-bar>
-<p style="text-align: right; padding-right: 40px;">{{this.count}} / {{this.max}}</p>
-
-<div class="play-content" *ngIf="!isEnd">
-  <div class="question">
-    <i class="material-icons">help_outline</i>
-    <span style="font-size: 25px !important;"> {{curWord.content}}
-      <i class="material-icons" (click)="speak()" style="cursor: pointer; margin-top: 10px;">volume_up</i>
-    </span>
-    <p style="color: #ccc; font-size: 13px; padding-left: 30px;"> là gì nhỉ? </p>
+   <div *ngIf="!isEnd">
+    <md-progress-bar mode="determinate" value="{{counter}}" color="{{colorProgressbar}}"></md-progress-bar>
+    <button md-button (click)="next()">Next</button>
+    <p style="text-align: right;">Score: {{score}}/{{max}}</p>
+    <p style="text-align: right;">Question: {{this.count}}/{{max}}</p>
+    <app-reading [curWord]="curWord" [allWords]="allWords" *ngIf="selectedGame == 'reading' "
+    (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)" >
+    </app-reading>
+    <app-writing [curWord]="curWord" [allWords]="allWords" *ngIf="selectedGame == 'writing' "
+    (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)">
+    </app-writing>
   </div>
-
-  <div class="answers" style="margin-top: 30px;"> 
-    <i class="material-icons">face</i>
-    <div class="answers-content">
-      <div *ngFor="let item of answers" class="answer-unit" (click)="checkAnswer(item)" [@state]="item.state"
-            style="cursor: pointer;">
-          {{item.meaning}}
-      </div>
-    </div>
+  <div *ngIf="isEnd">End Game  
+    <button md-raised-button (click)="getTurnGame()">Get Answer</button>
+    <app-my-answer [turnGame]="turnGame"></app-my-answer>
   </div>
-</div>
-
-<div *ngIf="isEnd"> Đã hoàn thành </div>
 </div>

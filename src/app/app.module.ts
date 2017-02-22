@@ -22,6 +22,9 @@ import { LoginFacebookComponent } from './components/login-facebook/login-facebo
 import { RegisterComponent } from './components/register/register.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { SearchFriendComponent } from './components/search-friend/search-friend.component';
+import { WritingComponent } from './games/writing/writing.component';
+import { ReadingComponent } from './games/reading/reading.component';
+import { MyAnswerComponent } from './components/my-answer/my-answer.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -53,7 +56,10 @@ const appRoutes: Routes = [
     LoginFacebookComponent,
     RegisterComponent,
     ProfileComponent,
-    SearchFriendComponent
+    SearchFriendComponent,
+    WritingComponent,
+    ReadingComponent,
+    MyAnswerComponent
   ],
   imports: [
     BrowserModule,

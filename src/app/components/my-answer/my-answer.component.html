@@ -1,0 +1,35 @@
+<div *ngFor="let item of turnGame; let i='index'">
+	Câu {{i + 1}} 
+	<div *ngIf="item['type']=='reading'">
+		<div class="question">
+		  <i class="material-icons" *ngIf="item.content!=item.answer" color="warn">highlight_off</i>
+		  <i class="material-icons" *ngIf="item.content==item.answer" color="primary">done</i>
+		  <span style="font-size: 18px !important;"> {{item.content}}
+		  </span>
+		</div>
+
+		<div class="answers" style="margin-top: 30px;"> 
+		  <i class="material-icons">face</i>
+		  <div class="answers-content">
+		    <button md-button disabled *ngFor="let item2 of item.choice" class="answer-unit">
+		        {{item2.meaning}}
+		    </button>
+		  </div>
+		</div>
+		My answer: {{item.answer}}
+	</div>
+
+	<div *ngIf="item['type']=='writing'">
+		<div class="question">
+		  <i class="material-icons" *ngIf="item.content!=item.answer" color="warn">highlight_off</i>
+		  <i class="material-icons" *ngIf="item.content==item.answer" color="primary">done</i>
+		  <span style="font-size: 18px !important;"> {{item.meaning}}
+		  </span>
+		</div>
+
+		 <md-input-container>
+		    <input md-input disabled [(ngModel)]="item.answer" > 
+		 </md-input-container>
+	</div>
+	
+</div>
