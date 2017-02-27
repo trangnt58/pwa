@@ -5,3 +5,7 @@ body {
   margin: 0 !important;
   font-family: Tahoma, Verdana, sans-serif;
 }
+
+.primary {
+	color: #2196f3;
+}

@@ -25,6 +25,8 @@ import { SearchFriendComponent } from './components/search-friend/search-friend.
 import { WritingComponent } from './games/writing/writing.component';
 import { ReadingComponent } from './games/reading/reading.component';
 import { MyAnswerComponent } from './components/my-answer/my-answer.component';
+import { MyFriendsComponent } from './components/my-friends/my-friends.component';
+import { GameRequestComponent } from './components/game-request/game-request.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -59,7 +61,9 @@ const appRoutes: Routes = [
     SearchFriendComponent,
     WritingComponent,
     ReadingComponent,
-    MyAnswerComponent
+    MyAnswerComponent,
+    MyFriendsComponent,
+    GameRequestComponent
   ],
   imports: [
     BrowserModule,

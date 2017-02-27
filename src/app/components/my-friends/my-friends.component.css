@@ -1,0 +1,27 @@
+.item-friend {
+	max-width: 80px;
+	float: left;
+	margin: 0px 15px;
+}
+
+.item-friend img{
+	width: 80px;
+	height: 80px;
+	border: 1px solid #03a9f4;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.name-friend {
+	white-space: nowrap;
+	font-size: 14px;
+	text-align: center;
+}
+
+.friends-list {
+	margin-left: 40px;
+}
+
+.primary {
+	color: #2196f3;
+}

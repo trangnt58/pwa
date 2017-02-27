@@ -1,0 +1,12 @@
+<h3 class="primary"><md-icon>people_outline</md-icon> Danh sách bạn bè</h3>
+<div *ngIf="friends" class="friends-list">
+	<div class="item-friend" *ngFor="let item of friends" (click)="chooseFriend(item)">
+	    <div class="avatar">
+		    <img md-card-avatar [@friendState]="item.state" *ngIf="!item.imageUrl" src="/assets/images/default-avatar.png">
+		    <img md-card-avatar [@friendState]="item.state" *ngIf="item.imageUrl" src="{{item.imageUrl}}">
+	    </div>
+	    <p class="name-friend">{{item.name}}</p>
+	  </div>
+</div>
+<div style="clear: both;"></div>
+<div *ngIf="selectedFriend" > Bạn đã chọn {{playerFriend.name}}</div>

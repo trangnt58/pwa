@@ -1,18 +1,31 @@
-<div class="play-word">
+<div *ngIf="!isReady">
+<app-my-friends (selectFriend)="selectFriend($event)">
+</app-my-friends>
+<div>
+  <button md-raised-button (click)="ready()" [disabled]="!selectedFriend" color="primary">Bắt đầu
+  </button>
+</div>
+<app-game-request (request)="request($event)"></app-game-request>
+</div>
+
+<div class="play-word" *ngIf="isReady">
    <div *ngIf="!isEnd">
     <md-progress-bar mode="determinate" value="{{counter}}" color="{{colorProgressbar}}"></md-progress-bar>
     <button md-button (click)="next()">Next</button>
     <p style="text-align: right;">Score: {{score}}/{{max}}</p>
     <p style="text-align: right;">Question: {{this.count}}/{{max}}</p>
-    <app-reading [curWord]="curWord" [allWords]="allWords" *ngIf="selectedGame == 'reading' "
+    <app-reading [curWord]="curWord" [allWords]="allWords" [choices]="choices" *ngIf="selectedGame == 'reading' "
     (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)" >
     </app-reading>
-    <app-writing [curWord]="curWord" [allWords]="allWords" *ngIf="selectedGame == 'writing' "
+    <app-writing [curWord]="curWord" *ngIf="selectedGame == 'writing' "
     (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)">
     </app-writing>
   </div>
   <div *ngIf="isEnd">End Game  
+    <md-icon routerLink="/">home</md-icon>
     <button md-raised-button (click)="getTurnGame()">Get Answer</button>
+    <button md-raised-button (click)="sendRequestGame()">Send Request Game</button>
     <app-my-answer [turnGame]="turnGame"></app-my-answer>
   </div>
+
 </div>

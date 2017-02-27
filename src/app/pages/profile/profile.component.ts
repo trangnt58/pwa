@@ -11,25 +11,29 @@ import { UserService } from './../../services/user.service';
 export class ProfileComponent implements OnInit {
 	profile: Object = {};
   friends: any;
-  requests: Object[];
-  constructor(private globalVars: GlobalVarsService, private userService: UserService, private zone: NgZone) { }
+  requests: Object[] = [];
+  noRequest: boolean = false;
+  constructor(private globalVars: GlobalVarsService, 
+    private userService: UserService, private zone: NgZone) { }
 
   ngOnInit() {
   	this.globalVars.profile.subscribe(value => {
   		this.zone.run(() => {
-  			console.log(value);
   			this.profile = value;
   		});
 
-      if (value['id'] != undefined) {
-        this.userService.getFriend(value['id']).then(res => {
+      if (value['_id'] != undefined) {
+        this.userService.getFriend(value['_id']).then(res => {
           this.zone.run(() => {
             this.friends = res;
           });
         });
 
-        this.userService.getRequestFriend(value['id']).then(res => {
+        this.userService.getRequestFriend(value['_id']).then(res => {
           this.requests = res;
+          if(this.requests.length == 0) {
+            this.noRequest = true;            
+          }
         });        
        }
   	});
@@ -42,16 +46,17 @@ export class ProfileComponent implements OnInit {
   }
 
   agree(item) {
-    this.userService.agreeRequest(item['_id'], this.profile['id']).then(res => {
+    this.userService.agreeRequest(item['_id'], this.profile['_id']).then(res => {
       // if (this.requests.indexOf(item) >= 0 ) {
       //   this.requests.splice(this.requests.indexOf(item), 1);
       // }
+      console.log(res);
       console.log('đã đồng ý');
     });
   }
 
   cancel(idFriend) {
-    this.userService.cancel(this.profile['id'], idFriend).then(res => {
+    this.userService.cancel(this.profile['_id'], idFriend).then(res => {
       console.log('hủy');
     })
   }

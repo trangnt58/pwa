@@ -9,7 +9,6 @@ export class WritingComponent implements OnInit {
   @Output() onCorrect = new EventEmitter<boolean>();
   @Output() userAnswer = new EventEmitter<Object>();
 	@Input() curWord: Object;
-	@Input() allWords: Object = [];
 	answer: String = '';
   constructor() { }
 

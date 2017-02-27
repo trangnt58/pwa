@@ -35,9 +35,9 @@ export class SearchFriendComponent implements OnInit {
   }
 
   createFriend(item){
-    if(this.profile['id'] != undefined) {
+    if(this.profile['_id'] != undefined) {
       let friend: Object = {};
-      friend['from'] = this.profile['id'];
+      friend['from'] = this.profile['_id'];
       friend['to'] = item['_id'];
       this.userService.createFriend(friend).then(res => {
         console.log('gửi yêu cầu thành công');

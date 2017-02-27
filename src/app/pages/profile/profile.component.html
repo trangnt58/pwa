@@ -8,7 +8,10 @@
 	  <div *ngIf="friends">
 	  	<md-card class="example-card" *ngFor="let item of friends">
 			  <md-card-header>
-			    <div md-card-avatar></div>
+			    <div md-card-avatar>
+				    <img md-card-avatar *ngIf="!item.imageUrl" src="/assets/images/default-avatar.png">
+				    <img md-card-avatar *ngIf="item.imageUrl" src="{{item.imageUrl}}">
+			    </div>
 			    <md-card-title>{{item.name}}</md-card-title>
 			    <md-card-subtitle>{{item.email}}</md-card-subtitle>
 			    <button md-raised-button (click)="cancel(item['_id'])"> Hủy kết bạn </button>
@@ -20,10 +23,14 @@
   </md-tab>
 
   <md-tab label="Yêu cầu kết bạn">
+  	<div *ngIf="noRequest"> 0 yêu cầu</div>
   	<div *ngIf="requests">
 	  	<md-card class="example-card" *ngFor="let item of requests">
 			  <md-card-header>
-			    <div md-card-avatar></div>
+			    <div md-card-avatar>
+				    <img md-card-avatar *ngIf="!item.imageUrl" src="/assets/images/default-avatar.png">
+				    <img md-card-avatar *ngIf="item.imageUrl" src="{{item.imageUrl}}">
+			    </div>
 			    <md-card-title>{{item.name}}</md-card-title>
 			    <md-card-subtitle>{{item.email}}</md-card-subtitle>
 			    <button md-raised-button (click)="agree(item)"> Chấp nhận </button>

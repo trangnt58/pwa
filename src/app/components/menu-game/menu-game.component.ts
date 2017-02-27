@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 declare const FB: any;
@@ -6,14 +6,15 @@ declare const FB: any;
 @Component({
   selector: 'app-menu-game',
   templateUrl: './menu-game.component.html',
-  styleUrls: ['./menu-game.component.css']
+  styleUrls: ['./menu-game.component.css'],
+  providers: [ ]
 })
 
 export class MenuGameComponent implements OnInit {
-
   constructor( private router: Router ) { }
 
   ngOnInit() {
+    
   }
 
   playWord() {

@@ -12,6 +12,7 @@ export class ReadingComponent implements OnInit {
   @Output() userAnswer = new EventEmitter<Object>();
 	@Input() curWord: Object;
 	@Input() allWords: Object[] = [];
+  @Input() choices: Object[];
 	answers: Object[] = [];
 
   clicked: boolean = false;
@@ -25,6 +26,12 @@ export class ReadingComponent implements OnInit {
   }
 
   ngOnChanges(changes:{[propKey: string]: SimpleChange}) {
+    if (this.choices != null) {
+      this.clicked = false;
+      this.answers = this.choices;
+      return;
+    }
+    //Random
     let NO_OF_ANS = 4;
     this.clicked = false;
     if (this.allWords.length < NO_OF_ANS) {
@@ -58,6 +65,7 @@ export class ReadingComponent implements OnInit {
 
       this.answers.push(temp);
     }
+
 
     this.speak();
   }

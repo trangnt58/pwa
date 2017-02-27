@@ -15,6 +15,17 @@ export class UserService {
     });
   }
 
+  updateUser(id,user): Promise<Object> {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+     return new Promise(resolve => {
+      this.http.post('http://localhost:3000/users/edit/'+id, JSON.stringify(user), {headers: headers})
+      .subscribe(res => {
+        resolve(res.json());
+      });
+    });
+  }
+
   getListFriend(id): Promise<Object> {
   	return new Promise(resolve => {
       this.http.get('http://localhost:3000/users/api/friend/'+id).subscribe(result => {
@@ -23,7 +34,7 @@ export class UserService {
     });
   }
 
-  getFriend(id): Promise<Object> {
+  getFriend(id): Promise<Object[]> {
   	return new Promise(resolve => {
       this.http.get('http://localhost:3000/users/api/friend/'+ id).subscribe(result => {
         resolve(result.json());
@@ -61,11 +72,19 @@ export class UserService {
   }
 
   agreeRequest(from, to) {
-    return new Promise(resolve => {
-      this.http.get('http://localhost:3000/friends/agree/'+from+'/'+to).subscribe(result => {
-        console.log(result.json());
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+     return new Promise(resolve => {
+      this.http.post('http://localhost:3000/friends/agree/'+from+'/'+to, {headers: headers})
+      .subscribe(res => {
+        resolve(res.json());
       });
     });
+    // return new Promise(resolve => {
+    //   this.http.get('http://localhost:3000/friends/agree/'+from+'/'+to).subscribe(result => {
+    //     resolve(result.json());
+    //   });
+    // });
   }
 
   cancel(user, friend): Promise<Object> {

@@ -14,4 +14,9 @@ export class MyAnswerComponent implements OnInit {
   	console.log(this.turnGame);
   }
 
+  compare(str1, str2) {
+  	if (str1 == null || str2 == null) return false;
+    return str1.trim().toLowerCase() == str2.trim().toLowerCase();
+  }
+
 }

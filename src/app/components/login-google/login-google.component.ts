@@ -85,9 +85,13 @@ export class LoginGoogleComponent implements OnInit {
               });
             } else {
               //đã đăng nhập
-              this.userService.getUser(this.profile['email']).then(res => {
-                console.log(res['_id']);
-                this.profile['id'] = res['_id'];
+              // this.userService.getUser(this.profile['email']).then(res => {
+              //   console.log(res['_id']);
+              //   this.profile['id'] = res['_id'];
+              //   this.globalVars.setProfile(this.profile);
+              // });
+             this.userService.updateUser(this.profile['email'], this.profile).then(res => {
+                this.profile = res;
                 this.globalVars.setProfile(this.profile);
               });
             }
