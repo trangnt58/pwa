@@ -7,11 +7,19 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class MyAnswerComponent implements OnInit {
 
-	@Input() turnGame: Object[];
+	@Input() turnGame: Object;
+  @Input() from: Object;
+  @Input() to: Object;
+  content: Object[];
+  fromAns = [];
+  toAns = [];
   constructor() { }
 
   ngOnInit() {
-  	console.log(this.turnGame);
+    this.content = this.turnGame['content'];
+    this.fromAns = this.turnGame['fromAns'];
+    this.toAns = this.turnGame['toAns'];
+    //console.log(this.)
   }
 
   compare(str1, str2) {

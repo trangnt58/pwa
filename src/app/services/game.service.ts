@@ -18,6 +18,18 @@ export class GameService {
     });
   }
 
+  updateGame() {
+    // let headers = new Headers();
+    // headers.append('Content-Type', 'application/json');
+    //  return new Promise(resolve => {
+    //   this.http.post('http://localhost:3000/api/games/create', JSON.stringify(game), { headers: headers })
+    //   .subscribe(res => {
+    //     resolve(res.json());
+    //   });
+    // });
+
+  }
+
   getRequestGame(id):Promise<Object[]> {
      return new Promise(resolve => {
       this.http.get('http://localhost:3000/api/games/request/'+ id).subscribe(result => {

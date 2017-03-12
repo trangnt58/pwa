@@ -28,16 +28,19 @@
     <p style="text-align: right;">Question: {{this.count}}/{{max}}</p>
     <app-reading [curWord]="curWord" [allWords]="allWords" [choices]="choices" 
     *ngIf="selectedGame == 'reading'"
-    (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)" >
+    (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)" 
+    (saveQuestion)="saveQuestion($event)">
     </app-reading>
     <app-writing [curWord]="curWord" *ngIf="selectedGame == 'writing' "
-    (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)">
+    (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)"
+    (saveQuestion)="saveQuestion($event)">
     </app-writing>
   </div>
-  <div *ngIf="isEnd">End Game  
-    <md-icon routerLink="/">home</md-icon>
-    <button md-raised-button (click)="getTurnGame()">Get Answer</button>
-    <button md-raised-button (click)="sendRequestGame()">Send Request Game</button>
-    <app-my-answer [turnGame]="turnGame"></app-my-answer>
+  <div *ngIf="isEnd">
+    <app-my-answer [from]="from" [to]="to" [turnGame]="turn"></app-my-answer>
+    <div style="float: right;">
+      <button md-raised-button color="primary"><md-icon routerLink="/">home</md-icon></button>
+      <button md-raised-button color="primary" (click)="sendRequestGame()">Send Request Game</button>
+    </div>
   </div>
 </div>

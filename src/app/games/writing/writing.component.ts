@@ -8,6 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class WritingComponent implements OnInit {
   @Output() onCorrect = new EventEmitter<boolean>();
   @Output() userAnswer = new EventEmitter<Object>();
+  @Output() saveQuestion = new EventEmitter<Object>();
 	@Input() curWord: Object;
 	answer: String = '';
   showAnswer: boolean = false;
@@ -48,11 +49,14 @@ export class WritingComponent implements OnInit {
 
   getAnswer() {
     this.gotAnswer = true;
-    let result = {};
-    result = this.curWord;
-    result['answer'] = this.answer;
-    result['type'] = 'writing';    
-    this.userAnswer.emit(result);
+
+    let question = {};
+    question = this.curWord;
+    question['type'] = 'writing';
+    this.saveQuestion.emit(question);
+
+    let answer = this.answer;
+    this.userAnswer.emit(answer);
   }
 
 }

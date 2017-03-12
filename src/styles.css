@@ -13,3 +13,7 @@ body {
 .bg-primary {
 	background-color: #2196f3;
 }
+
+.text-center {
+	text-align: center;
+}

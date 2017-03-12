@@ -1,50 +1,31 @@
-<div *ngFor="let item of turnGame; let i='index'">
-
-	<md-icon *ngIf="!compare(item.content,item.answer)" color="warn">highlight_off</md-icon>
-	<md-icon *ngIf="compare(item.content,item.answer)" color="primary">check_circle</md-icon>
-	{{i + 1}}.
-	<div *ngIf="item['type']=='reading'">
-		<div class="question">
-		  <span style="font-size: 18px !important;"> {{item.content}}
-		  </span>
-		</div>
-
-		<div class="answers"> 
-			<md-radio-group style="display: inline-flex; flex-direction: column;" 
-			[(ngModel)]="item.answer" disabled >
-			  <md-radio-button *ngFor="let item2 of item.choice" [value]="item2.content">
-			    {{item2.meaning}}
-			  </md-radio-button>
-			</md-radio-group>
-		</div>
-		<p *ngIf="compare(item.content,item.answer)">
-			You answered true <span style="color: #2196f3">{{item.meaning}}</span>
-		</p>
-		
-	 	<div *ngIf="!compare(item.content,item.answer)" >
-	 		<p> You answered wrong 
-	 			<span style="text-decoration: line-through; color: red;"> {{item.answer}}</span> 
-	 		</p>
-	 		<p>True answer: <span style="color: #2196f3">{{item.meaning}}</span></p>
-	 	</div>
-	</div>
-
-	<div *ngIf="item['type']=='writing'">
-		<div class="question">
-		  <span style="font-size: 18px !important;"> {{item.meaning}}
-		  </span>
-		</div>
-		<p *ngIf="compare(item.content,item.answer)">
-			You answered true <span style="color: #2196f3">{{item.content}}</span>
-		</p>
-		
-	 	<div *ngIf="!compare(item.content,item.answer)" >
-	 		<p> You answered wrong 
-	 			<span style="text-decoration: line-through; color: red;"> {{item.answer}}</span> 
-	 		</p>
-	 		<p>True answer: <span style="color: #2196f3">{{item.content}}</span></p>
-	 	</div>
-	</div>
-	<hr>
-
-</div>
+<table width="100%">
+	<tr>
+		<th></th>
+		<th class="text-center"> 
+			<img md-card-avatar *ngIf="!from.imageUrl" src="/assets/images/default-avatar.png">
+		  <img md-card-avatar *ngIf="from.imageUrl" src="{{from.imageUrl}}">
+		</th>
+		<th class="text-center">
+			<img md-card-avatar *ngIf="!to.imageUrl" src="/assets/images/default-avatar.png">
+		  <img md-card-avatar *ngIf="to.imageUrl" src="{{to.imageUrl}}">
+		</th>
+	</tr>
+	<tr *ngFor="let item of content; let i = 'index'">
+		<td>
+			<h4 md-line>{{item.content}}</h4>
+	    <p md-line> {{item.meaning}} </p>
+		</td>
+		<td class="text-center">
+		<span *ngIf="fromAns">
+			<md-icon *ngIf="!compare(item.content, fromAns[i])" color="warn">highlight_off</md-icon>
+			<md-icon *ngIf="compare(item.content, fromAns[i])" color="primary">check_circle</md-icon>
+		</span>
+		</td>
+		<td class="text-center">
+			<span *ngIf="toAns">
+			<md-icon *ngIf="!compare(item.content, toAns[i])" color="warn">highlight_off</md-icon>
+			<md-icon *ngIf="compare(item.content, toAns[i])" color="primary">check_circle</md-icon>
+		</span>
+		</td>
+	</tr>
+</table>

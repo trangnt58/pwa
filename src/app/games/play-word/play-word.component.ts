@@ -38,9 +38,9 @@ export class PlayWordComponent implements OnInit {
   allWords: any;
   answers: Object[] = [];
   curWord: Object = {};
-  max = 2; 
+  max = 5; 
   isEnd: boolean = false;
-  typeGame = ['reading'];
+  typeGame = ['reading', 'writing'];
   counter: number = 100;
   selectedGame: string;
   interval: any;
@@ -52,6 +52,7 @@ export class PlayWordComponent implements OnInit {
   profile: Object = {};
   //Lưu câu trả lời
   turnGame = [];
+  allQuestions = [];
 
   //Nếu là một yêu cầu từ bạn thì không cần random
   isRequest: boolean = false;
@@ -61,6 +62,17 @@ export class PlayWordComponent implements OnInit {
   //players
   from: Object = {};
   to: Object;
+
+  turn: Object = {
+      "from": {
+        "id": {
+        }
+      },
+      "to": {
+        "id": {
+        }
+      }
+  };
 
   constructor( private wordService: WordService, private gameService: GameService,
     private helperService: HelperService, 
@@ -129,7 +141,6 @@ export class PlayWordComponent implements OnInit {
       if (allTurns[i]['from']['_id'] == this.playerFriend['_id']) {
         this.contentGame = allTurns[i]['content'];
         this.max = allTurns[i]['content'].length;
-        //this.turnRequest = allTurns[i];
         return true;
       }
     }
@@ -139,7 +150,8 @@ export class PlayWordComponent implements OnInit {
   reload() {
     this.colorProgressbar = 'primary';
     if (this.count == this.max)  {
-      this.isEnd = true;
+      this.doneGame();
+      this.isEnd = true;      
       return;
     }
     this.count++;
@@ -175,6 +187,7 @@ export class PlayWordComponent implements OnInit {
 
   next() {
     if (this.count == this.max) {
+      this.doneGame();
       this.isEnd = true;
       return;
     }
@@ -249,10 +262,30 @@ export class PlayWordComponent implements OnInit {
     this.turnGame.push(item);
   }
 
-  userAnswer(userAnswer: Object) {
-    this.turnGame.push(userAnswer);
+  saveQuestion(question: Object) {
+    this.allQuestions.push(question);
   }
 
+  userAnswer(userAnswer: String) {
+    this.answers.push(userAnswer);
+  }
+
+  doneGame() {
+    //user khởi đầu game
+    if (!this.isRequest) {   
+      this.turn['from']['id']= this.profile['_id'];
+      this.turn['from']['score'] = this.score;
+      this.turn['to']['id'] = this.playerFriend['_id'];
+      this.turn['game'] = 'word';
+      this.turn['content'] = this.allQuestions;
+      this.turn['fromAns'] = this.answers;
+    //game là từ người khác yêu cầu
+    } else {
+      this.turn['toAns'] = this.answers;
+      this.turn['to']['score'] = this.score;
+    }
+    
+  }
 
   selectFriend(friend: Object) {
     this.selectedFriend = true;
@@ -262,31 +295,18 @@ export class PlayWordComponent implements OnInit {
   }
 
   sendRequestGame() {
-    let turn: Object = {
-      "from": {
-        "id": {
-
-        }
-      },
-      "to": {
-        "id": {
-
-        }
-      }
-    };
-
-    turn['from']['id']= this.profile['_id'];
-    turn['from']['score'] = this.score;
-    turn['to']['id'] = this.playerFriend['_id'];
-    turn['game'] = 'word';
-    turn['content'] = this.turnGame;
-    this.gameService.createGame(turn).then(res => {
-      console.log(res);
-    });
+    if (!this.isRequest) {
+      this.gameService.createGame(this.turn).then(res => {
+        console.log(res);
+      });
+    } else {
+      //update Game
+    }
   }
 
   request(request: Object) {
     this.isRequest = true;
+    this.turn = request;
     this.contentGame = request['content'];
     this.from = request['from']['id'];
     this.from['score'] = request['from']['score'];

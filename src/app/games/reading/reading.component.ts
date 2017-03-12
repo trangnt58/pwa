@@ -32,6 +32,7 @@ import {
 export class ReadingComponent implements OnInit {
   @Output() onCorrect = new EventEmitter<boolean>();
   @Output() userAnswer = new EventEmitter<Object>();
+  @Output() saveQuestion = new EventEmitter<Object>();
 	@Input() curWord: Object;
 	@Input() allWords: Object[] = [];
   @Input() choices: Object[];
@@ -51,8 +52,13 @@ export class ReadingComponent implements OnInit {
     if (this.choices != null) {
       this.clicked = false;
       this.answers = this.choices;
+      for (let i = 0; i < this.answers.length; i++) {
+        this.answers[i]['state'] = null;
+      }
       return;
     }
+
+    
     //Random
     let NO_OF_ANS = 4;
     this.clicked = false;
@@ -124,17 +130,20 @@ export class ReadingComponent implements OnInit {
   }
 
   getAnswer(item) {
-    let result = {};
-    result = this.curWord;
-    result['choice'] = this.answers;
+    let question = {};
+    question = this.curWord;
+    question['choice'] = this.answers;
+    question['type'] = 'reading';
+    question['state'] == null;
+    this.saveQuestion.emit(question);
+
+    let answer = '';
     if ( item == null) {
-      result['answer'] = null;
+      answer = null;
     } else {
-      result['answer'] = item['content'];
+      answer = item['content'];
     }
-    
-    result['type'] = 'reading';
-    this.userAnswer.emit(result);
+    this.userAnswer.emit(answer);
   }
 
 }
