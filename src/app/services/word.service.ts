@@ -6,7 +6,7 @@ export class WordService {
 
   constructor(private http: Http) { }
 
-  getAllWord(): Promise<Object> {
+  getAllWord(): Promise<Object[]> {
     return new Promise(resolve => {
       this.http.get('assets/data/words.json').subscribe(result => {
         resolve(result.json());

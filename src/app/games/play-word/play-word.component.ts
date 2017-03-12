@@ -1,4 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import {MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
+
+import { WaitingGameComponent } from './../../components/waiting-game/waiting-game.component';
 import { WritingComponent } from './../../games/writing/writing.component';
 import { ReadingComponent } from './../../games/reading/reading.component';
 import { GameRequestComponent } from './../../components/game-request/game-request.component';
@@ -6,6 +9,7 @@ import { WordService } from './../../services/word.service';
 import { HelperService} from './../../services/helper.service';
 import { GlobalVarsService } from './../../services/global-vars.service';
 import { GameService } from './../../services/game.service';
+
 
 import {
   Input,
@@ -20,21 +24,7 @@ import {
   selector: 'app-play-word',
   templateUrl: './play-word.component.html',
   styleUrls: ['./play-word.component.css'],
-  providers: [ WordService, HelperService, GameService ],
-  animations: [
-    trigger('state', [
-      state('wrong', style({
-        backgroundColor: '#eee',
-        transform: 'scale(1)'
-      })),
-      state('right',   style({
-        backgroundColor: '#cfd8dc',
-        transform: 'scale(1.1)'
-      })),
-      transition('wrong => right', animate('100ms ease-in')),
-      transition('right => wrong', animate('100ms ease-out'))
-    ])
-  ]
+  providers: [ WordService, HelperService, GameService ]
 })
 export class PlayWordComponent implements OnInit {
   @ViewChild(WritingComponent) writingComponent;
@@ -42,14 +32,15 @@ export class PlayWordComponent implements OnInit {
   @ViewChild(GameRequestComponent) gameRequestComponent;
 
   score: number = 0;
+  percent: number = 0;
   count: number = 0;
   words: any;
   allWords: any;
   answers: Object[] = [];
   curWord: Object = {};
-  max = 3; 
+  max = 2; 
   isEnd: boolean = false;
-  typeGame = [ 'reading','writing'];
+  typeGame = ['reading'];
   counter: number = 100;
   selectedGame: string;
   interval: any;
@@ -67,29 +58,59 @@ export class PlayWordComponent implements OnInit {
   contentGame = [];
   choices = [];
 
+  //players
+  from: Object = {};
+  to: Object;
+
   constructor( private wordService: WordService, private gameService: GameService,
     private helperService: HelperService, 
-    private globalVars: GlobalVarsService ) { }
+    private globalVars: GlobalVarsService,
+    public dialog: MdDialog ) { }
 
   ngOnInit() {
-
     this.wordService.getAllWord().then(res => {
       this.allWords = res;
       this.words = this.helperService.getRandomArrayElements(this.allWords, this.max);
-      //this.reload();
     });
+
     this.globalVars.profile.subscribe(value => {
       if (value['_id'] != undefined) {
         this.profile = value;
+        this.from = this.profile;
+        this.from['score'] = 0;
       }
     });
   }
 
+  openDialog() {
+      let config: MdDialogConfig = {
+        disableClose: true,
+        width: '50%',
+        height: '',
+        position: {
+          top: '',
+          bottom: '',
+          left: '',
+          right: ''
+        }
+      };
+
+      let dialogRef = this.dialog.open(WaitingGameComponent, config );
+      let instance = dialogRef.componentInstance;
+      instance.from = this.from;
+      instance.to = this.to;
+      
+      dialogRef.afterClosed().subscribe(result => {
+        //this.selectedOption = result;
+        if(result == true) {
+          this.ready();
+        }
+      });
+    }
+  
+
   ready() {
-    //check nếu người được chọn trùng với người ý yêu cầu;
-    // lấy content từ bên server
-    // kiểm tra trùng lặp ở bên my request
-    //.....
+    //check nếu người được chọn trùng với người ý yêu cầu
     if(!this.check()) {
       this.isReady = true;
       this.reload();
@@ -107,6 +128,8 @@ export class PlayWordComponent implements OnInit {
     for (let i = 0; i < allTurns.length; i++) {
       if (allTurns[i]['from']['_id'] == this.playerFriend['_id']) {
         this.contentGame = allTurns[i]['content'];
+        this.max = allTurns[i]['content'].length;
+        //this.turnRequest = allTurns[i];
         return true;
       }
     }
@@ -131,7 +154,7 @@ export class PlayWordComponent implements OnInit {
     if (this.isRequest) {
       let i = this.count - 1;
       this.curWord = this.contentGame[i];
-      if (this.contentGame[i]['choice'] != undefined) {
+      if (this.contentGame[i]['type'] == 'reading' && this.contentGame[i]['choice'] != undefined) {
         this.choices = this.contentGame[i]['choice'];
       }
       this.selectedGame = this.contentGame[i]['type'];
@@ -141,7 +164,7 @@ export class PlayWordComponent implements OnInit {
   }
 
   random() {
-     // Chọn từ ngẫu nhiên
+    // Chọn từ ngẫu nhiên
     let i = this.helperService.random(this.words.length);
     this.curWord = this.words[i];
 
@@ -165,27 +188,40 @@ export class PlayWordComponent implements OnInit {
     this.reload();
   }
 
+  refresh() {
+    clearInterval(this.interval);
+    setTimeout(() => {
+      this.next();
+    }, 1000);
+  }
+
   onCorrect(correct: boolean): void {
     if (correct) {
-      this.score ++;
-      clearInterval(this.interval);
-      this.next();
-      setTimeout(() => {
-        
-      }, 1000);
+      this.createScore();
+      this.refresh();
     } else {
       if (this.selectedGame == 'reading') {
         clearInterval(this.interval);
-        this.next();
+        this.refresh();
       }
-
     }
   }
+
+  createScore() {
+    this.score++;
+    this.percent = this.score*100/this.max;
+    if(!this.isRequest) {
+      this.from['score']++;
+    } else {
+      this.to['score']++;
+    }
+  }
+
 
   countDownTimer() {
     this.counter = 100;
     this.interval = setInterval(() => {
-      this.counter -=1;
+      this.counter -= 1;
       if ( this.counter >= 30 && this.counter < 50)
         this.colorProgressbar = 'accent';
       if (this.counter < 30) this.colorProgressbar ='warn';
@@ -193,17 +229,16 @@ export class PlayWordComponent implements OnInit {
       // Khi hết giờ
       if (this.counter <= 0) {
         if(this.selectedGame == 'writing') {
+          this.writingComponent.showAnswer = true;
           this.writingComponent.getAnswer();
-          clearInterval(this.interval);
-          this.next();
+          this.refresh();
           return;
         }
         if (this.selectedGame == 'reading') {
-          console.log(this.counter);
            // hết thời gian mà chưa trả lời thì set câu trả lời = null
           this.readingComponent.getAnswer(null);
-          clearInterval(this.interval);
-          this.next();
+          this.readingComponent.checkAnswer(null);
+          this.refresh();
           return;
         }
       }
@@ -222,14 +257,27 @@ export class PlayWordComponent implements OnInit {
   selectFriend(friend: Object) {
     this.selectedFriend = true;
     this.playerFriend = friend;
-   // console.log(friend);
+    this.to = friend;
+    this.to['score'] = 0;
   }
 
-
   sendRequestGame() {
-    let turn: Object = {};
-    turn['from'] = this.profile['_id'];
-    turn['to'] = this.playerFriend['_id'];
+    let turn: Object = {
+      "from": {
+        "id": {
+
+        }
+      },
+      "to": {
+        "id": {
+
+        }
+      }
+    };
+
+    turn['from']['id']= this.profile['_id'];
+    turn['from']['score'] = this.score;
+    turn['to']['id'] = this.playerFriend['_id'];
     turn['game'] = 'word';
     turn['content'] = this.turnGame;
     this.gameService.createGame(turn).then(res => {
@@ -240,6 +288,10 @@ export class PlayWordComponent implements OnInit {
   request(request: Object) {
     this.isRequest = true;
     this.contentGame = request['content'];
-    this.ready();
+    this.from = request['from']['id'];
+    this.from['score'] = request['from']['score'];
+    this.to = request['to']['id'];
+    this.to['score'] = 0;
+    this.openDialog();
   }
 }

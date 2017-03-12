@@ -1,11 +1,33 @@
-import { Component, OnInit, Input, Output, OnChanges, SimpleChange, EventEmitter } from '@angular/core';
-import { HelperService} from './../../services/helper.service'
+import { Component, OnInit, Output, OnChanges, SimpleChange, EventEmitter } from '@angular/core';
+import { HelperService} from './../../services/helper.service';
+import {
+  Input,
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/core';
 
 @Component({
   selector: 'app-reading',
   templateUrl: './reading.component.html',
   styleUrls: ['./reading.component.css'],
-  providers: [ HelperService ]
+  providers: [ HelperService ],
+  animations: [
+    trigger('state', [
+      state('wrong', style({
+        backgroundColor: '#eee',
+        transform: 'scale(1)'
+      })),
+      state('right',   style({
+        backgroundColor: '#cfd8dc',
+        transform: 'scale(1.1)'
+      })),
+      transition('wrong => right', animate('100ms ease-in')),
+      transition('right => wrong', animate('100ms ease-out'))
+    ])
+  ]
 })
 export class ReadingComponent implements OnInit {
   @Output() onCorrect = new EventEmitter<boolean>();
@@ -71,13 +93,30 @@ export class ReadingComponent implements OnInit {
   }
 
   checkAnswer(item) {
+    if (item == null) {
+      for (let i = 0; i < this.answers.length; i++) {
+        if (this.curWord['id'] == this.answers[i]['id']) {
+          this.answers[i]['state'] = 'right';
+          break;
+        }
+      }
+      return;
+    }
     this.clicked = true;
     if (item.id == this.curWord['id']) {
-      console.log('đúng');
+      item['state'] = 'right';
       this.onCorrect.emit(true);
       this.getAnswer(item);
+     
     } else {
-      console.log('sai');
+      item['state'] = 'wrong';
+      //Tìm cái đúng để hiện lên @@
+      for (let i = 0; i < this.answers.length; i++) {
+        if (this.curWord['id'] == this.answers[i]['id']) {
+          this.answers[i]['state'] = 'right';
+          break;
+        }
+      }
       this.onCorrect.emit(false);
       this.getAnswer(item);
     }

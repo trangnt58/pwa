@@ -1,20 +1,33 @@
-<div *ngIf="!isReady">
-<app-my-friends (selectFriend)="selectFriend($event)">
-</app-my-friends>
-<div>
-  <button md-raised-button (click)="ready()" [disabled]="!selectedFriend" color="primary">Bắt đầu
-  </button>
+<div *ngIf="!isReady" class="play-word">
+  <app-my-friends (selectFriend)="selectFriend($event)">
+  </app-my-friends>
+  <div>
+    <button md-raised-button (click)="openDialog()" [disabled]="!selectedFriend" color="primary">Bắt đầu
+    </button>
+  </div>
+  <app-game-request (request)="request($event)"></app-game-request>
 </div>
-<app-game-request (request)="request($event)"></app-game-request>
-</div>
-
 <div class="play-word" *ngIf="isReady">
-   <div *ngIf="!isEnd">
-    <md-progress-bar mode="determinate" value="{{counter}}" color="{{colorProgressbar}}"></md-progress-bar>
-    <button md-button (click)="next()">Next</button>
-    <p style="text-align: right;">Score: {{score}}/{{max}}</p>
+  <div *ngIf="!isEnd">
+  <md-progress-bar mode="determinate" value="{{counter}}" color="{{colorProgressbar}}"></md-progress-bar>
+  <app-game-player [from]="from" [to]="to"></app-game-player>
+    <app-circle-progress style="float: right;"
+       [percent]="percent"
+       [boxSize]="160"
+       [radius]="40"
+       [lowColor]="'#FFD54F'"
+       [middleColor]="'orange'"
+       [interColor]="'#f1c40f'"
+       [highColor]="'#2196f3'"
+       [border]="10"
+       [time]="0"
+      >
+    </app-circle-progress>
+    <!-- <button md-button (click)="next()">Next</button> -->
+    <!-- <p style="text-align: right;">Score: {{score}}/{{max}}</p> -->
     <p style="text-align: right;">Question: {{this.count}}/{{max}}</p>
-    <app-reading [curWord]="curWord" [allWords]="allWords" [choices]="choices" *ngIf="selectedGame == 'reading' "
+    <app-reading [curWord]="curWord" [allWords]="allWords" [choices]="choices" 
+    *ngIf="selectedGame == 'reading'"
     (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)" >
     </app-reading>
     <app-writing [curWord]="curWord" *ngIf="selectedGame == 'writing' "
@@ -27,5 +40,4 @@
     <button md-raised-button (click)="sendRequestGame()">Send Request Game</button>
     <app-my-answer [turnGame]="turnGame"></app-my-answer>
   </div>
-
 </div>

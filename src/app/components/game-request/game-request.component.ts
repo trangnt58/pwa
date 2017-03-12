@@ -41,7 +41,6 @@ export class GameRequestComponent implements OnInit {
       var index = this.turns.indexOf(item);
       if (index >= 0) this.turns.splice(index, 1);
     });
-    //hủy yêu cầu, ko chơi;
   }
 
 }

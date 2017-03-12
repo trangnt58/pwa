@@ -1,0 +1,35 @@
+.waiting-game img {
+	width: 100px;
+	height: 100px;
+	border: 1px solid #03a9f4;
+	border-radius: 50%;
+}
+
+.name-friend {
+	font-size: 12px;
+}
+.flex-item {
+	text-align: center;
+}
+
+.center {
+	text-align: center;
+}
+
+.btn-challenge {
+	display: table; 
+	margin: 0 auto; 
+	border-radius: 50%; 
+	width: 60px; 
+	height: 60px; 
+	color: white;
+}
+
+.btn-challenge span {
+	display: table-cell; 
+	vertical-align: middle;
+}
+
+.action button {
+	float: right;
+}

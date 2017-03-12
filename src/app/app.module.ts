@@ -27,6 +27,11 @@ import { ReadingComponent } from './games/reading/reading.component';
 import { MyAnswerComponent } from './components/my-answer/my-answer.component';
 import { MyFriendsComponent } from './components/my-friends/my-friends.component';
 import { GameRequestComponent } from './components/game-request/game-request.component';
+import { WaitingGameComponent } from './components/waiting-game/waiting-game.component';
+import { CircleProgressComponent } from './components/circle-progress/circle-progress.component';
+import { GamePlayerComponent } from './components/game-player/game-player.component';
+import { LearningComponent } from './components/learning/learning.component';
+import { WordDialogComponent } from './components/word-dialog/word-dialog.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -37,6 +42,7 @@ const appRoutes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login-google', component: LoginGoogleComponent },
   { path: 'songpop', component: SongpopComponent },
+  { path: 'learn', component: LearningComponent },
   {
     path: '',
     redirectTo: '/menugame',
@@ -63,7 +69,12 @@ const appRoutes: Routes = [
     ReadingComponent,
     MyAnswerComponent,
     MyFriendsComponent,
-    GameRequestComponent
+    GameRequestComponent,
+    WaitingGameComponent,
+    CircleProgressComponent,
+    GamePlayerComponent,
+    LearningComponent,
+    WordDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -74,6 +85,11 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes)
   ],
   providers: [ GlobalVarsService ],
+  entryComponents: [
+    WaitingGameComponent,
+    WordDialogComponent
+  ],
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }

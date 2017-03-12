@@ -1,0 +1,35 @@
+<div *ngIf="from&&to">
+  <div  class="waiting-game flex-container" fxLayout="row" 
+       fxLayoutAlign="space-around center" >
+    <div class="item-friend flex-item" fxFlex="33%">
+    	<md-card>
+	    	<md-card-header>
+		      <div md-card-avatar>
+		      	<img md-card-avatar *ngIf="!from.imageUrl" src="/assets/images/default-avatar.png">
+		        <img md-card-avatar *ngIf="from.imageUrl" src="{{from.imageUrl}}">
+		      </div>
+			    <md-card-title>{{from.name}}</md-card-title>
+			    <md-card-subtitle *ngIf="from.score != 'undefined' ">{{from.score}}</md-card-subtitle>
+		    </md-card-header>
+	    </md-card>
+    </div>
+    <div class="flex-item" fxFlex="30%" class="primary">
+      <div class="center bg-primary btn-challenge">
+        <span> VS.</span>
+      </div>
+    </div>
+
+    <div class="item-friend flex-item" fxFlex>
+    	<md-card>
+	    	<md-card-header>
+		    	<div md-card-avatar>
+		      	<img md-card-avatar *ngIf="!to.imageUrl" src="/assets/images/default-avatar.png">
+		        <img md-card-avatar *ngIf="to.imageUrl" src="{{to.imageUrl}}">
+		      </div>
+		      <md-card-title>{{to.name}}</md-card-title>
+			    <md-card-subtitle *ngIf="to.score">{{to.score}}</md-card-subtitle>
+		    </md-card-header>
+	    </md-card>
+    </div>
+  </div>
+</div>

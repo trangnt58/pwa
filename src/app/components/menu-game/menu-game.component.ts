@@ -18,12 +18,15 @@ export class MenuGameComponent implements OnInit {
   }
 
   playWord() {
-    console.log('playWord');
     this.router.navigate(['/playword']);
   }
 
   playSong() {
     this.router.navigate(['/songpop'])
+  }
+
+  toLearn() {
+    this.router.navigate(['/learn']);
   }
 
 }

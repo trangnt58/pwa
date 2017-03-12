@@ -9,3 +9,7 @@ body {
 .primary {
 	color: #2196f3;
 }
+
+.bg-primary {
+	background-color: #2196f3;
+}
