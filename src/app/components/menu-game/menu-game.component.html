@@ -1,7 +1,7 @@
 <div class="flex-container game-box" 
      fxLayout="row" 
      fxLayoutAlign="space-around start" 
-  >
+    >
   <div class="flex-item" fxFlex>
     <img src="assets/images/learn.png" (click)="toLearn()">
     <div class="game-name"> Learning </div>
@@ -10,8 +10,9 @@
     <img src="assets/images/game/game.png" (click)="playWord()">
     <div class="game-name"> Play Word</div>
   </div>
-<!--   <div class="flex-item" fxFlex>
-    <img src="assets/images/game/songpop.png" (click)="playSong()">
-    <div class="game-name"> Song Pop</div>
-  </div> -->
+
 </div> 
+<button md-button (click)="sendRealtime()">Send Realtime</button>
+<div *ngFor="let item of messages">
+  {{item.text}}
+</div>

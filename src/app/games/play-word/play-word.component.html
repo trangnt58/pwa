@@ -37,10 +37,6 @@
     </app-writing>
   </div>
   <div *ngIf="isEnd">
-    <app-my-answer [from]="from" [to]="to" [turnGame]="turn"></app-my-answer>
-    <div style="float: right;">
-      <button md-raised-button color="primary"><md-icon routerLink="/">home</md-icon></button>
-      <button md-raised-button color="primary" (click)="sendRequestGame()">Send Request Game</button>
-    </div>
+    <app-my-answer [from]="from" [to]="to" [turnGame]="turn" [isRequest]="isRequest"></app-my-answer>
   </div>
 </div>

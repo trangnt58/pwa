@@ -29,3 +29,8 @@
 		</td>
 	</tr>
 </table>
+<div style="float: right;">
+  <button md-raised-button color="primary" routerLink="/"><md-icon>home</md-icon></button>
+  <button [disabled]="isSend" md-raised-button color="primary" 
+  		(click)="sendRequestGame()">Send Request Game</button>
+</div>

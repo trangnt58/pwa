@@ -13,9 +13,7 @@ export class HomeComponent implements OnInit {
   }
 
   playWord() {
-    console.log('playWord');
     this.router.navigate(['/playword']);
-
   }
 
 }

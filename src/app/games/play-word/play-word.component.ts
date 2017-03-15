@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
+import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
 
 import { WaitingGameComponent } from './../../components/waiting-game/waiting-game.component';
 import { WritingComponent } from './../../games/writing/writing.component';

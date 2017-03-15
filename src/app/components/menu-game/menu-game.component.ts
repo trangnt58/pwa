@@ -1,5 +1,7 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { SocketService } from './../../services/socket.service';
+
 
 declare const FB: any;
 
@@ -7,14 +9,23 @@ declare const FB: any;
   selector: 'app-menu-game',
   templateUrl: './menu-game.component.html',
   styleUrls: ['./menu-game.component.css'],
-  providers: [ ]
+  providers: [ SocketService ]
 })
 
 export class MenuGameComponent implements OnInit {
-  constructor( private router: Router ) { }
+  connection: any;
+  messages: Object[] = [];
+  constructor( private router: Router, private socketService: SocketService ) { }
 
   ngOnInit() {
+    this.connection = this.socketService.getMessages().subscribe(message => {
+      console.log(message);
+      this.messages.push(message);
+    })
     
+  }
+  ngDestroy() {
+    this.connection.unsubscribe();
   }
 
   playWord() {
@@ -28,5 +39,11 @@ export class MenuGameComponent implements OnInit {
   toLearn() {
     this.router.navigate(['/learn']);
   }
+
+  sendRealtime(){
+    this.socketService.sendMessage("aaaa");
+  }
+
+   
 
 }
