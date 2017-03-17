@@ -9,7 +9,7 @@ import { WordService } from './../../services/word.service';
 import { HelperService} from './../../services/helper.service';
 import { GlobalVarsService } from './../../services/global-vars.service';
 import { GameService } from './../../services/game.service';
-
+import { SocketService } from './../../services/socket.service';
 
 import {
   Input,
@@ -24,7 +24,7 @@ import {
   selector: 'app-play-word',
   templateUrl: './play-word.component.html',
   styleUrls: ['./play-word.component.css'],
-  providers: [ WordService, HelperService, GameService ]
+  providers: [ WordService, HelperService, GameService, SocketService ]
 })
 export class PlayWordComponent implements OnInit {
   @ViewChild(WritingComponent) writingComponent;
@@ -74,7 +74,10 @@ export class PlayWordComponent implements OnInit {
       }
   };
 
+  socket: any;
+
   constructor( private wordService: WordService, private gameService: GameService,
+    private socketService: SocketService,
     private helperService: HelperService, 
     private globalVars: GlobalVarsService,
     public dialog: MdDialog ) { }
@@ -89,9 +92,27 @@ export class PlayWordComponent implements OnInit {
       if (value['_id'] != undefined) {
         this.profile = value;
         this.from = this.profile;
+        //console.log(this.from);
         this.from['score'] = 0;
+        //this.socketService.connectSocket(value['_id']);
       }
     });
+
+    this.globalVars.fullSocket.subscribe(value => {
+      if(value != null) {
+        this.socket = value['socket'];
+        let idUser = value['profile']['_id'];
+        this.socketService.receiveRequestSocket(this.socket, idUser).subscribe(res => {
+          console.log(res);
+        });
+      }
+    });
+
+    // this.socketService.receiveRequestSocket(this.socket, this.from['_id']).subscribe(res => {
+    //   console.log(res);
+    // });
+   
+    
   }
 
   openDialog() {
@@ -313,5 +334,13 @@ export class PlayWordComponent implements OnInit {
     this.to = request['to']['id'];
     this.to['score'] = 0;
     this.openDialog();
+  }
+
+  sendRequestSocket(){
+    let requestSocket = {};
+    requestSocket['fromId'] = this.from['_id'];
+    requestSocket['toId'] = this.to['_id'];
+    requestSocket['toSocketId'] = this.to['socketId'];
+    this.socketService.sendRequest(this.socket, requestSocket);
   }
 }

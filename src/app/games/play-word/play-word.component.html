@@ -1,8 +1,10 @@
 <div *ngIf="!isReady" class="play-word">
-  <app-my-friends (selectFriend)="selectFriend($event)">
+  <app-my-friends [from]="from" (selectFriend)="selectFriend($event)">
   </app-my-friends>
   <div>
     <button md-raised-button (click)="openDialog()" [disabled]="!selectedFriend" color="primary">Bắt đầu
+    </button>
+    <button md-raised-button (click)="sendRequestSocket()" [disabled]="!selectedFriend" color="primary"> Gửi yêu cầu
     </button>
   </div>
   <app-game-request (request)="request($event)"></app-game-request>

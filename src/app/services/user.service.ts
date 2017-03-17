@@ -9,7 +9,7 @@ export class UserService {
 
   getUser(email): Promise<Object> {
     return new Promise(resolve => {
-      this.http.get('http://localhost:3000/users/api/'+email).subscribe(result => {
+      this.http.get('http://localhost:3000/users/api/'+ email).subscribe(result => {
         resolve(result.json());
       });
     });
@@ -19,7 +19,7 @@ export class UserService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
      return new Promise(resolve => {
-      this.http.post('http://localhost:3000/users/edit/'+id, JSON.stringify(user), {headers: headers})
+      this.http.post('http://localhost:3000/users/edit/'+ id, JSON.stringify(user), {headers: headers})
       .subscribe(res => {
         resolve(res.json());
       });
@@ -28,7 +28,7 @@ export class UserService {
 
   getListFriend(id): Promise<Object> {
   	return new Promise(resolve => {
-      this.http.get('http://localhost:3000/users/api/friend/'+id).subscribe(result => {
+      this.http.get('http://localhost:3000/users/api/friend/'+ id).subscribe(result => {
         resolve(result.json());
       });
     });

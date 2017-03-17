@@ -2,10 +2,16 @@
 <div *ngIf="friends" class="friends-list">
 	<div class="item-friend" *ngFor="let item of friends" (click)="chooseFriend(item)">
     <div class="avatar">
-	    <img md-card-avatar [@friendState]="item.state" *ngIf="!item.imageUrl" src="/assets/images/default-avatar.png">
-	    <img md-card-avatar [@friendState]="item.state" *ngIf="item.imageUrl" src="{{item.imageUrl}}">
+	    <img md-card-avatar [@friendState]="item.state" *ngIf="!item.imageUrl" 
+	    src="/assets/images/default-avatar.png" 
+	    [ngStyle]="item.online ? {'opacity': '1'}: {'opacity': '0.4'} ">
+	    <img md-card-avatar [@friendState]="item.state" *ngIf="item.imageUrl" 
+	    src="{{item.imageUrl}}"
+	    [ngStyle]="item.online ? {'opacity': '1'}: {'opacity': '0.4'} ">
+	    <span class="status" *ngIf="item.online" style="background-color: #2196f3;">&nbsp;</span>
+	    <span class="status" *ngIf="!item.online" style="background-color: gray">&nbsp;</span>
     </div>
-    <p class="name-friend">{{item.name}}</p>
+    <p class="name-friend" style="margin: 0;">{{item.name}}</p>
 	</div>
 </div>
 <div style="clear: both;"></div>

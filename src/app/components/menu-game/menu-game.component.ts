@@ -18,10 +18,10 @@ export class MenuGameComponent implements OnInit {
   constructor( private router: Router, private socketService: SocketService ) { }
 
   ngOnInit() {
-    this.connection = this.socketService.getMessages().subscribe(message => {
-      console.log(message);
-      this.messages.push(message);
-    })
+    // this.connection = this.socketService.getMessages().subscribe(message => {
+    //   console.log(message);
+    //   this.messages.push(message);
+    // })
     
   }
   ngDestroy() {

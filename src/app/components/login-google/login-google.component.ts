@@ -80,7 +80,7 @@ export class LoginGoogleComponent implements OnInit {
             if (res == null) {
               this.loginService.login(this.profile).then(res => {
                 console.log(res['_id']);
-                this.profile['id'] = res['_id'];
+                this.profile['_id'] = res['_id'];
                 this.globalVars.setProfile(this.profile);
               });
             } else {

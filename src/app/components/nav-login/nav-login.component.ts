@@ -3,6 +3,7 @@ import { GlobalVarsService } from '../../services/global-vars.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { UserService } from '../../services/user.service';
+import { SocketService } from './../../services/socket.service';
 
 declare var gapi: any;
 
@@ -10,7 +11,7 @@ declare var gapi: any;
   selector: 'app-nav-login',
   templateUrl: './nav-login.component.html',
   styleUrls: ['./nav-login.component.css'],
-  providers: [ LoginService, UserService ]
+  providers: [ LoginService, UserService, SocketService ]
 })
 export class NavLoginComponent implements OnInit {
 
@@ -20,6 +21,7 @@ export class NavLoginComponent implements OnInit {
 
   constructor (private globalVars: GlobalVarsService, 
     private userService: UserService, private loginService: LoginService, 
+    private socketService: SocketService,
     private zone: NgZone, private router: Router ) {
 	}
 
@@ -34,8 +36,21 @@ export class NavLoginComponent implements OnInit {
   	this.globalVars.profile.subscribe(value => {
   		this.zone.run(() => {
   			this.profile = value;
+        if(this.profile['_id'] != undefined) {
+          var socket = this.socketService.connectSocket(this.profile['_id']);
+          this.setGlobal(this.profile,socket);
+        }
   		});
   	});
+  }
+
+  //set socket and profile to global
+  setGlobal(profile, socket){
+    this.globalVars.setSocket(socket);
+    var fullSocket = {};
+    fullSocket['profile'] = profile;
+    fullSocket['socket'] = socket;
+    this.globalVars.setFullSocket(fullSocket);
   }
 
   start() {
@@ -63,7 +78,7 @@ export class NavLoginComponent implements OnInit {
               if (res == null) {
                 this.loginService.login(this.profile).then(res => {
                   console.log(res['_id']);
-                  this.profile['id'] = res['_id'];
+                  this.profile['_id'] = res['_id'];
                   this.globalVars.setProfile(this.profile);
                 });
               } else {
@@ -72,12 +87,6 @@ export class NavLoginComponent implements OnInit {
                   this.profile = res;
                   this.globalVars.setProfile(this.profile);
                 });
-
-                // this.userService.getUser(this.profile['email']).then(res => {
-                //   console.log(res['_id']);
-                //   this.profile['id'] = res['_id'];
-                //   this.globalVars.setProfile(this.profile);
-                // });
               }
             });
 
@@ -107,5 +116,12 @@ export class NavLoginComponent implements OnInit {
 
   goProfile() {
     this.router.navigate(['/profile']);
+  }
+
+  ngOnDestroy() {
+    if(this.profile['_id'] != undefined) {
+      this.socketService.disconnect(this.profile['_id']);
+    }
+    
   }
 }

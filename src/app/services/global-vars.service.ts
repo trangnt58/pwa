@@ -9,6 +9,8 @@ export class GlobalVarsService {
   constructor() { }
   public isUserLoggedIn : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public profile: BehaviorSubject<Object> = new BehaviorSubject<Object>({});
+  public socket: BehaviorSubject<Object> = new BehaviorSubject<Object>(null);
+  public fullSocket: BehaviorSubject<Object> = new BehaviorSubject<Object>(null);
 
   setLoginStatus(isLoggedIn){
    this.isUserLoggedIn.next(isLoggedIn);
@@ -16,5 +18,13 @@ export class GlobalVarsService {
 
   setProfile(profile) {
     this.profile.next(profile);
+  }
+
+  setSocket(socket) {
+  	this.socket.next(socket);
+  }
+
+  setFullSocket(fullSocket){
+  	this.fullSocket.next(fullSocket);
   }
 }

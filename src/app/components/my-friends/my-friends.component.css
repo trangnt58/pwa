@@ -5,6 +5,7 @@
 }
 
 .item-friend img{
+	position: relative;
 	width: 80px;
 	height: 80px;
 	border: 1px solid #03a9f4;
@@ -20,6 +21,15 @@
 
 .friends-list {
 	margin-left: 40px;
+}
+
+.status {
+	display: inline-block;
+	position: relative;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	top: -24px;
 }
 
 .primary {

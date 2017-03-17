@@ -1,12 +1,13 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { GlobalVarsService } from './../../services/global-vars.service';
 import { UserService } from './../../services/user.service';
+import { SocketService } from './../../services/socket.service';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
-  providers: [ UserService ]
+  providers: [ UserService, SocketService ]
 })
 export class ProfileComponent implements OnInit {
 	profile: Object = {};
@@ -14,7 +15,7 @@ export class ProfileComponent implements OnInit {
   requests: Object[] = [];
   noRequest: boolean = false;
   constructor(private globalVars: GlobalVarsService, 
-    private userService: UserService, private zone: NgZone) { }
+    private userService: UserService, private zone: NgZone, private socketService: SocketService) { }
 
   ngOnInit() {
   	this.globalVars.profile.subscribe(value => {
@@ -23,6 +24,7 @@ export class ProfileComponent implements OnInit {
   		});
 
       if (value['_id'] != undefined) {
+        this.socketService.connectSocket(value['_id']);
         this.userService.getFriend(value['_id']).then(res => {
           this.zone.run(() => {
             this.friends = res;
