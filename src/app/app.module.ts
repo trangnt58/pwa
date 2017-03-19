@@ -32,6 +32,7 @@ import { CircleProgressComponent } from './components/circle-progress/circle-pro
 import { GamePlayerComponent } from './components/game-player/game-player.component';
 import { LearningComponent } from './components/learning/learning.component';
 import { WordDialogComponent } from './components/word-dialog/word-dialog.component';
+import { GameRequestDialogComponent } from './components/game-request-dialog/game-request-dialog.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -74,7 +75,8 @@ const appRoutes: Routes = [
     CircleProgressComponent,
     GamePlayerComponent,
     LearningComponent,
-    WordDialogComponent
+    WordDialogComponent,
+    GameRequestDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -87,7 +89,8 @@ const appRoutes: Routes = [
   providers: [ GlobalVarsService ],
   entryComponents: [
     WaitingGameComponent,
-    WordDialogComponent
+    WordDialogComponent,
+    GameRequestDialogComponent
   ],
 
   bootstrap: [AppComponent]

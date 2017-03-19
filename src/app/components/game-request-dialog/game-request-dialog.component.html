@@ -1,0 +1,15 @@
+<h4 class="primary text-center"> Yêu cầu </h4>
+<div *ngIf="from">
+<p class="text-center"> {{from.name}} đã gửi yêu cầu cho bạn</p>
+<div class="item-friend ">
+      <div class="avatar" style="margin: 0 auto;">
+        <img md-card-avatar *ngIf="!from.imageUrl" src="/assets/images/default-avatar.png">
+        <img md-card-avatar *ngIf="from.imageUrl" src="{{from.imageUrl}}">
+      </div>
+      <p class="name-friend text-center primary">{{from.name}}</p>
+</div>
+<div class="action">
+    <button md-button (click)="cancel()">Hủy</button>
+    <button md-button (click)="agree()">Chấp nhận</button>
+</div>
+</div>

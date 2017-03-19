@@ -124,7 +124,7 @@ export class ReadingComponent implements OnInit {
         }
       }
       this.onCorrect.emit(false);
-      this.getAnswer(item);
+      //this.getAnswer(item);
     }
 
   }

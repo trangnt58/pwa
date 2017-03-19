@@ -43,6 +43,66 @@ export class SocketService {
     socket.emit('send-request', request);
   }
 
+  sendResponse(socket, response) {
+    socket.emit('send-response', response);
+  }
+
+  beginGame(socket) {
+    let observable = new Observable(observer => {
+      socket.on('begin-game', (data) => {
+        observer.next(data);    
+      });
+
+      return () => {
+        socket.disconnect();
+      };  
+    })     
+    return observable;
+  }
+
+  sendAns(socket, data) {
+    socket.emit('send-answer', data);
+  }
+
+  receiveAnsFriend(socket){
+     let observable = new Observable(observer => {
+      socket.on('receive-answer', (data) => {
+        observer.next(data);    
+      });
+
+      return () => {
+        socket.disconnect();
+      };  
+    })     
+    return observable;
+  }
+
+  receiveResponse(socket) {
+    let observable = new Observable(observer => {
+      socket.on('receive-response', (data) => {
+        observer.next(data);    
+      });
+
+      return () => {
+        socket.disconnect();
+      };  
+    })     
+    return observable;
+  }
+
+  waitAccept(socket) {
+    let observable = new Observable(observer => {
+      socket.on('wait-accept', (data) => {
+        observer.next(data);    
+      });
+
+      return () => {
+        socket.disconnect();
+      };  
+    })     
+    return observable;
+  }
+
   receiveRequestSocket(socket, userId) {
     if(userId == undefined) return null;
     //this.connectSocket(userId);

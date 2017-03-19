@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
 
 import { WaitingGameComponent } from './../../components/waiting-game/waiting-game.component';
+import { GameRequestDialogComponent } from './../../components/game-request-dialog/game-request-dialog.component';
+
 import { WritingComponent } from './../../games/writing/writing.component';
 import { ReadingComponent } from './../../games/reading/reading.component';
 import { GameRequestComponent } from './../../components/game-request/game-request.component';
@@ -10,15 +12,6 @@ import { HelperService} from './../../services/helper.service';
 import { GlobalVarsService } from './../../services/global-vars.service';
 import { GameService } from './../../services/game.service';
 import { SocketService } from './../../services/socket.service';
-
-import {
-  Input,
-  trigger,
-  state,
-  style,
-  transition,
-  animate
-} from '@angular/core';
 
 @Component({
   selector: 'app-play-word',
@@ -75,6 +68,10 @@ export class PlayWordComponent implements OnInit {
   };
 
   socket: any;
+  dialogRef: any;
+  onlineGame: boolean = false;
+  isReceiver: boolean = false;
+  playerSocketId: String;
 
   constructor( private wordService: WordService, private gameService: GameService,
     private socketService: SocketService,
@@ -92,9 +89,7 @@ export class PlayWordComponent implements OnInit {
       if (value['_id'] != undefined) {
         this.profile = value;
         this.from = this.profile;
-        //console.log(this.from);
         this.from['score'] = 0;
-        //this.socketService.connectSocket(value['_id']);
       }
     });
 
@@ -103,46 +98,99 @@ export class PlayWordComponent implements OnInit {
         this.socket = value['socket'];
         let idUser = value['profile']['_id'];
         this.socketService.receiveRequestSocket(this.socket, idUser).subscribe(res => {
-          console.log(res);
+          this.openDialogReceiveRequest(res['from'],res['fromSocketId']);
+          this.isReceiver = true;
+          //this.playerSocketId = res['fromSocketId'];
         });
+
+        this.socketService.beginGame(this.socket).subscribe(res => {
+          if(res['agree'] == true) {
+            this.playerSocketId = res['playerSocketId'];
+            this.from = res['from'];
+            this.to = res['to'];
+            this.onlineGame = true;
+            this.contentGame = res['content'];
+            this.closeAllDialog();
+            this.ready();
+          }
+        });
+
+        this.socketService.receiveAnsFriend(this.socket).subscribe(res => {
+          if(res['correct'] == true) {
+            if(!this.isReceiver) {
+              this.to['score']++;
+            } else {
+              this.from['score']++;
+            }
+          }
+        })
       }
     });
+  }
 
-    // this.socketService.receiveRequestSocket(this.socket, this.from['_id']).subscribe(res => {
-    //   console.log(res);
-    // });
-   
-    
+  closeAllDialog() {
+    this.dialogRef.close();
   }
 
   openDialog() {
-      let config: MdDialogConfig = {
-        disableClose: true,
-        width: '50%',
-        height: '',
-        position: {
-          top: '',
-          bottom: '',
-          left: '',
-          right: ''
-        }
-      };
+    let config: MdDialogConfig = {
+      disableClose: true,
+      width: '50%',
+      height: '',
+      position: {
+        top: '',
+        bottom: '',
+        left: '',
+        right: ''
+      }
+    };
 
-      let dialogRef = this.dialog.open(WaitingGameComponent, config );
-      let instance = dialogRef.componentInstance;
-      instance.from = this.from;
-      instance.to = this.to;
-      
-      dialogRef.afterClosed().subscribe(result => {
-        //this.selectedOption = result;
-        if(result == true) {
-          this.ready();
-        }
-      });
-    }
+    this.dialogRef = this.dialog.open(WaitingGameComponent, config );
+    let instance = this.dialogRef.componentInstance;
+    instance.from = this.from;
+    instance.to = this.to;
+    instance.isOnline = true;
+    
+    this.dialogRef.afterClosed().subscribe(result => {
+      if(result == true) {
+        //this.ready();
+      }
+    });
+  }
+
+  openDialogReceiveRequest(fromUser, fromSocketId) {
+    let config: MdDialogConfig = {
+      disableClose: true,
+      width: '50%',
+      height: '',
+      position: {
+        top: '',
+        bottom: '',
+        left: '',
+        right: ''
+      }
+    };
+
+    this.dialogRef = this.dialog.open(GameRequestDialogComponent, config );
+    let instance = this.dialogRef.componentInstance;
+    instance.from = fromUser;
+    instance.fromSocketId = fromSocketId;
+    this.dialogRef.afterClosed().subscribe(result => {
+      if(result == true) {
+        //this.ready();
+      }
+    });
+
+  }
   
 
   ready() {
+    if (this.onlineGame) {
+      this.isReady = true;
+      this.reload();
+      return;
+    }
+
     //check nếu người được chọn trùng với người ý yêu cầu
     if(!this.check()) {
       this.isReady = true;
@@ -178,17 +226,17 @@ export class PlayWordComponent implements OnInit {
     this.count++;
 
     //Nếu không phải là một yêu cầu có sẵn thì tiến hành random;
-    if(!this.isRequest) {
+    if(!this.isRequest && !this.onlineGame) {
       this.random();
       this.choices = null;
       this.countDownTimer();
     }
     
-    if (this.isRequest) {
+    if (this.isRequest || this.onlineGame) {
       let i = this.count - 1;
-      this.curWord = this.contentGame[i];
-      if (this.contentGame[i]['type'] == 'reading' && this.contentGame[i]['choice'] != undefined) {
-        this.choices = this.contentGame[i]['choice'];
+      this.curWord = this.contentGame[i]['word'];
+      if (this.contentGame[i]['type'] == 'reading' && this.contentGame[i]['choices'] != undefined) {
+        this.choices = this.contentGame[i]['choices'];
       }
       this.selectedGame = this.contentGame[i]['type'];
       this.countDownTimer();
@@ -230,6 +278,20 @@ export class PlayWordComponent implements OnInit {
   }
 
   onCorrect(correct: boolean): void {
+    if (this.onlineGame) {
+      if(correct) {
+        let data = {};
+        data['correct'] = true;
+        data['playerSocketId'] = this.playerSocketId;
+        this.socketService.sendAns(this.socket, data);
+        this.createScore();
+      return;
+      }else {
+        return;
+      }
+    }
+
+    //game offline, đúng thì thoát nhanh;
     if (correct) {
       this.createScore();
       this.refresh();
@@ -244,6 +306,14 @@ export class PlayWordComponent implements OnInit {
   createScore() {
     this.score++;
     this.percent = this.score*100/this.max;
+    if (this.onlineGame) {
+      if(this.isReceiver) {
+        this.to['score']++;
+      } else {
+        this.from['score']++;
+      }
+      return;
+    }
     if(!this.isRequest) {
       this.from['score']++;
     } else {
@@ -262,6 +332,13 @@ export class PlayWordComponent implements OnInit {
 
       // Khi hết giờ
       if (this.counter <= 0) {
+        clearInterval(this.interval);
+      
+        if (this.onlineGame) {
+          this.refresh();
+          return;
+        }
+        
         if(this.selectedGame == 'writing') {
           this.writingComponent.showAnswer = true;
           this.writingComponent.getAnswer();
@@ -339,8 +416,14 @@ export class PlayWordComponent implements OnInit {
   sendRequestSocket(){
     let requestSocket = {};
     requestSocket['fromId'] = this.from['_id'];
+    requestSocket['from'] = this.from;
     requestSocket['toId'] = this.to['_id'];
     requestSocket['toSocketId'] = this.to['socketId'];
     this.socketService.sendRequest(this.socket, requestSocket);
+    this.openDialog();
+
+    this.socketService.waitAccept(this.socket).subscribe(res => {
+        console.log(res);
+    });
   }
 }
