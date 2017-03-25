@@ -37,6 +37,7 @@ export class ReadingComponent implements OnInit {
 	@Input() allWords: Object[] = [];
   @Input() choices: Object[];
 	answers: Object[] = [];
+  answerPlayer: String;
 
   clicked: boolean = false;
   constructor(private helperService: HelperService) { }
@@ -55,53 +56,16 @@ export class ReadingComponent implements OnInit {
       for (let i = 0; i < this.answers.length; i++) {
         this.answers[i]['state'] = null;
       }
+
+      this.speak();
       return;
     }
-
-    
-    //Random
-    let NO_OF_ANS = 4;
-    this.clicked = false;
-    if (this.allWords.length < NO_OF_ANS) {
-      NO_OF_ANS = this.allWords.length;
-    }
-
-    // Tạo mảng các từ sai
-    let wrongWord = [];
-    for (let i = 0; i < this.allWords.length; i++) {
-      if (this.curWord['id'] != this.allWords[i]['id']) {
-        wrongWord.push(this.allWords[i]);
-      }
-    }
-
-    // Random vị trí từ đúng
-    let position = this.helperService.random(NO_OF_ANS);
-
-    // Tạo mảng các câu trả lời
-    this.answers = [];
-
-    for (let i = 0; i < NO_OF_ANS; i++) {
-      let temp;
-
-      if (i == position) {
-        temp = JSON.parse(JSON.stringify(this.curWord));
-      } else {
-        let r = this.helperService.random(wrongWord.length);
-        temp = JSON.parse(JSON.stringify(wrongWord[r]));
-        wrongWord.splice(r, 1);
-      }
-
-      this.answers.push(temp);
-    }
-
-
-    this.speak();
   }
 
   checkAnswer(item) {
     if (item == null) {
       for (let i = 0; i < this.answers.length; i++) {
-        if (this.curWord['id'] == this.answers[i]['id']) {
+        if (this.curWord['_id'] == this.answers[i]['_id']) {
           this.answers[i]['state'] = 'right';
           break;
         }
@@ -111,34 +75,29 @@ export class ReadingComponent implements OnInit {
     this.clicked = true;
     if (item.id == this.curWord['id']) {
       item['state'] = 'right';
-      this.onCorrect.emit(true);
       this.getAnswer(item);
+      this.onCorrect.emit(true);
+      
      
     } else {
       item['state'] = 'wrong';
       //Tìm cái đúng để hiện lên @@
       for (let i = 0; i < this.answers.length; i++) {
-        if (this.curWord['id'] == this.answers[i]['id']) {
+        if (this.curWord['_id'] == this.answers[i]['_id']) {
           this.answers[i]['state'] = 'right';
           break;
         }
       }
+      this.getAnswer(item);
       this.onCorrect.emit(false);
-      //this.getAnswer(item);
+      
     }
 
   }
 
   getAnswer(item) {
-    let question = {};
-    question = this.curWord;
-    question['choice'] = this.answers;
-    question['type'] = 'reading';
-    question['state'] == null;
-    this.saveQuestion.emit(question);
-
     let answer = '';
-    if ( item == null) {
+    if (item == null) {
       answer = null;
     } else {
       answer = item['content'];

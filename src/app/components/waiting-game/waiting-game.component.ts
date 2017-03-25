@@ -19,6 +19,7 @@ export class WaitingGameComponent implements OnInit {
 	interval: any;
 	isReady: boolean = false;
   status: String = "";
+  toSocketId: any;
 
   constructor( public dialogRef: MdDialogRef<WaitingGameComponent>,
     private socketService: SocketService, private globalVars: GlobalVarsService) { }
@@ -43,46 +44,37 @@ export class WaitingGameComponent implements OnInit {
           //đồng ý
           if(res['agree']) {
             clearInterval(this.interval);
-            this.status = "Bạn chơi đã đồng ý.";
-
+            this.status = "Bạn chơi đã đồng ý. <br> Đang tải...";
           } else {
             this.status = "Yêu cầu không được chấp nhận.";
-            clearInterval(this.interval);
-            setTimeout(() => {
-              this.dialogRef.close(this.isReady);
-            }, 2000);
+            this.cancel();
           }
         });
-        // this.socketService.beginGame(this.socket).subscribe(res => {
-        //       if(res['agree'] == true) {
-        //         console.log(res['content']);
-        //         this.ready();
-        //       }
-        // });
       });
       this.count = 10;
       this.interval = setInterval(() => {
         this.count -=1;
         if (this.count == 0) {
-         // this.ready();
-         this.status = "Yêu cầu không được chấp nhận.";
-         clearInterval(this.interval);
-
+          var data = {};
+          data['toSocketId'] = this.toSocketId;
+          this.socketService.finishRequest(this.socket, data);
+          this.status = "Yêu cầu không được chấp nhận.";
+          this.cancel();
         }  
       }, 1000);
-
     }
   }
 
   ready() {
   	this.isReady = true;
   	clearInterval(this.interval);
-  	this.dialogRef.close(this.isReady);
+  	//this.dialogRef.close(this.isReady);
   }
 
   cancel() {
-  	clearInterval(this.interval);
-  	this.dialogRef.close(this.isReady);
+    clearInterval(this.interval);
+      setTimeout(() => {
+        this.dialogRef.close(this.isReady);
+    }, 1000);
   }
-
 }

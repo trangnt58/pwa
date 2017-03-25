@@ -15,3 +15,37 @@
 	border-radius: 50%;
 	vertical-align: middle;
 }
+
+.notification-container {
+    position: relative;
+   /* width: 16px;
+    height: 16px;
+    top: 15px;
+    left: 15px;*/
+}
+
+.notification-counter {   
+    position: absolute;
+    top: 5px;
+    left: 22px;
+    
+    background-color: rgba(212, 19, 13, 1);
+    color: #fff;
+    border-radius: 3px;
+    padding: 1px 3px;
+    font: 8px Verdana;
+}
+
+.list-notify {
+	display: inline-block; 
+	position: absolute; 
+	z-index: 1000;
+	top: 23px; 
+	right: 0;
+	width: 60vh;
+	background-color: white;
+	color: black;
+	padding: 15px;
+	border: 1px solid rgba(128, 128, 128, 0.2)
+}
+

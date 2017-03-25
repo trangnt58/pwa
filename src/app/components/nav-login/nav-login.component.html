@@ -1,11 +1,22 @@
 <span *ngIf="!isLogin">
 	<span routerLink="/login" class="right-menu">Log in</span>
- 	<span routerLink="/register" class="right-menu">Register</span>
+ 	<!-- <span routerLink="/register" class="right-menu">Register</span> -->
 </span>
 
 <div *ngIf="isLogin" class="right-menu">
 	<img class="avatar" src="{{profile.imageUrl}}"> 
 	<span style="vertical-align: middle; line-height: 64px;">{{profile.name}}</span>
+	<span style="position: relative;">
+	<button md-icon-button class="notification-container" (click)="showNotify()">
+    <md-icon>public</md-icon>
+    <span class="notification-counter">1</span>
+  </button>
+  <div class="list-notify" *ngIf="showNoti">
+  	Test Notification
+  </div>
+
+  </span>
+
 	<button md-icon-button [mdMenuTriggerFor]="menu">
   	<md-icon>more_vert</md-icon>
 	</button>
@@ -14,10 +25,10 @@
 	    <md-icon>account_circle</md-icon>
 	    <span>Thông tin cá nhân</span>
 	  </button>
-		<button md-menu-item>
+		<!-- <button md-menu-item>
 	    <md-icon>assignment</md-icon>
 	    <span>Góc học tập</span>
-	  </button>
+	  </button> -->
 	  <button md-menu-item (click)="logOut()">
 	    <md-icon>exit_to_app</md-icon>
 	    <span>Đăng xuất</span>

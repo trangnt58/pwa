@@ -1,13 +1,16 @@
 .item-friend {
-	max-width: 80px;
+	max-width: 60px;
 	float: left;
 	margin: 0px 15px;
 }
 
-.item-friend img{
+.avatar {
 	position: relative;
-	width: 80px;
-	height: 80px;
+}
+
+.item-friend img{
+	width: 60px;
+	height: 60px;
 	border: 1px solid #03a9f4;
 	border-radius: 50%;
 	cursor: pointer;
@@ -25,13 +28,17 @@
 
 .status {
 	display: inline-block;
-	position: relative;
-	width: 18px;
-	height: 18px;
+	position: absolute;
+	width: 15px;
+	height: 15px;
 	border-radius: 50%;
-	top: -24px;
+	bottom: 6px;
 }
 
 .primary {
 	color: #2196f3;
+}
+
+.info-choose {
+	margin: 5px;
 }

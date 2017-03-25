@@ -1,0 +1,22 @@
+
+	<md-card *ngIf="user">
+	  <md-card-header>
+	    <div md-card-avatar>
+		    <img md-card-avatar *ngIf="!user.imageUrl" src="/assets/images/default-avatar.png">
+		    <img md-card-avatar *ngIf="user.imageUrl" src="{{user.imageUrl}}">
+	    </div>
+	    <md-card-title>{{user.name}}</md-card-title>
+	    <md-card-subtitle>{{user.email}}</md-card-subtitle>
+
+	    <button *ngIf="!user.isFriend&&!isMe&&!user.isRequest&&state!='isFriend'" md-raised-button 
+	    	(click)="createFriend()"> 
+	    	Add Friend
+	    </button>
+	
+	    <button *ngIf="state=='isFriend'||user.isFriend" md-raised-button (click)="unfriend()"> Unfriend
+	    </button>
+	    <button *ngIf="user.isRequest" md-raised-button (click)="acceptRequest()"> Accept
+	    </button>
+	    <md-icon *ngIf="user.isRequest" mdTooltip="Ignore this!" (click)="ignoreRequest()" style="cursor: pointer;">clear</md-icon>
+	  </md-card-header>
+	</md-card>

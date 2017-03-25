@@ -29,3 +29,8 @@
 	display: table-cell; 
 	vertical-align: middle;
 }
+
+.score {
+	font-size: 25px;
+	font-weight: bold;
+}

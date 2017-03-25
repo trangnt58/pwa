@@ -24,6 +24,10 @@ export class SocketService {
     return this.socket;
   }
 
+  goPlayWord(socket) {
+    socket.emit('go-play-word');
+  }
+
   getFriendList(socket, userId: string) {
     //this.connectSocket(userId);
     socket.emit('friend-list', userId);
@@ -38,6 +42,102 @@ export class SocketService {
     })     
     return observable;
   }
+
+  listenEvent(socket, nameEvent) {
+    let observable = new Observable(observer => {
+      socket.on(nameEvent, (data) => {
+        observer.next(data);    
+      });
+
+      return () => {
+        socket.disconnect();
+      };  
+    })     
+    return observable;
+  }
+
+  sendAndListenEvent(socket, sendEvent, listenEvent, data) {
+    socket.emit(sendEvent, data);
+    let observable = new Observable(observer => {
+      socket.on(listenEvent, (data) => {
+        observer.next(data);    
+      });
+
+      return () => {
+        socket.disconnect();
+      };  
+    })     
+    return observable;
+  }
+
+  sendListenEventArr(socket, sendEvent, listenEvent, data) {
+    socket.emit(sendEvent, data);
+    let observable = new Observable<Object[]>(observer => {
+      socket.on(listenEvent, (data) => {
+        observer.next(data);    
+      });
+
+      return () => {
+        socket.disconnect();
+      };  
+    })     
+    return observable;
+  }
+
+  sendEvent(socket, nameEvent, data) {
+    socket.emit(nameEvent, data);
+  }
+
+  getFriendshipRequest(socket, userId: string) {
+    socket.emit('friendship-request', userId);
+    let observable = new Observable<Object[]>(observer => {
+      socket.on('friendship-response', (data) => {
+        observer.next(data);    
+      });
+
+      return () => {
+        socket.disconnect();
+      };  
+    })     
+    return observable;
+  }
+
+  randomUser(socket, userId) {
+    socket.emit('random-user', userId);
+  }
+
+  receiveRandomUser(socket) {
+     let observable = new Observable(observer => {
+      socket.on('random-user-response', (data) => {
+        observer.next(data);    
+      });
+
+      return () => {
+        socket.disconnect();
+      };  
+    })     
+    return observable;
+
+  }
+
+  /* Người chơi gửi yêu cầu nhưng không nhận được phản hồi */
+  finishRequest(socket, request) {
+    socket.emit('finish-request', request);
+  }
+
+  receiveFinish(socket) {
+     let observable = new Observable(observer => {
+      socket.on('close-dialog', (data) => {
+        observer.next(data);    
+      });
+
+      return () => {
+        socket.disconnect();
+      };  
+    })     
+    return observable;
+  }
+
 
   sendRequest(socket, request) {
     socket.emit('send-request', request);
@@ -131,51 +231,77 @@ export class SocketService {
 
   // }
 
-  sendMessage(message){
-  	this.socket = io(this.BASE_URL);
-    this.socket.emit('add-message', message);    
-  }
 
-  getMessages() {
-    let observable = new Observable(observer => {
-      this.socket = io(this.BASE_URL);
-      this.socket.on('message', (data) => {
+  getNumOfOnline(socket){
+     let observable = new Observable(observer => {
+      socket.on('sum-online', (data) => {
         observer.next(data);    
       });
+
       return () => {
-        this.socket.disconnect();
+        socket.disconnect();
       };  
     })     
     return observable;
-  }  
+  }
+
+  /* 
+  * Method to get history game recent.
+  */
+  getHistory(socket, userId){
+    socket.emit('history', userId);
+  }
+
+
+  createFriend(socket, data) {
+    socket.emit('create-friend', data);
+  }
+
+  createFriendRequest(socket) {
+    let observable = new Observable(observer => {
+      socket.on('create-friend-request', (data) => {
+        observer.next(data);    
+      });
+
+      return () => {
+        socket.disconnect();
+      };  
+    })     
+    return observable;
+  }
+
+  unfriend(socket, data) {
+    socket.emit('unfriend', data);
+    let observable = new Observable(observer => {
+      socket.on('unfriend-response', (data) => {
+        observer.next(data);    
+      });
+
+      return () => {
+        socket.disconnect();
+      };  
+    })     
+    return observable;
+  }
+
 
 
   /* 
   * Method to emit the logout event.
   */
-  logout(userId):any{
+  logoutGame(socket, userId):any{
+    socket.emit('logout-game', userId);
+  }
 
-    this.socket.emit('logout', userId);
-
-    let observable = new Observable(observer => {
-      this.socket.on('logout-response', (data) => {
-        observer.next(data);    
-      });
-
-      return () => {
-        
-        this.socket.disconnect();
-      };  
-    })     
-    return observable;
+  logout(socket, userId):any{
+    socket.emit('logout', userId);
   }
 
   /* 
   * Method to emit the disconnect event.
   */
-  disconnect(userId):any {
-    //this.socket.emit()
-    this.socket.emit('disconnect', userId);
-  }
+  // disconnect(userId):any {
+  //   this.socket.emit('disconnect', userId);
+  // }
 
 }

@@ -94,4 +94,12 @@ export class UserService {
       });
     });
   }
+
+  ignore(from, to): Promise<Object> {
+    return new Promise(resolve => {
+      this.http.get('http://localhost:3000/friends/ignore/'+from+'/'+to).subscribe(result => {
+        resolve(result.json());
+      });
+    });
+  }
 }

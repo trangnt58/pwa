@@ -1,0 +1,13 @@
+<div *ngIf="user">
+	<div class="avatar">
+	  <img md-card-avatar *ngIf="!user.imageUrl" 
+		  src="/assets/images/default-avatar.png" 
+		  [ngStyle]="user.online ? {'opacity': '1'}: {'opacity': '0.4'} ">
+	  <img md-card-avatar *ngIf="user.imageUrl" 
+		  src="{{user.imageUrl}}"
+		  [ngStyle]="user.online ? {'opacity': '1'}: {'opacity': '0.4'} ">
+	  <span class="status" *ngIf="user.online" style="background-color: #2196f3;">&nbsp;</span>
+	  <span class="status" *ngIf="!user.online" style="background-color: gray">&nbsp;</span>
+  </div>
+  <p class="username" style="margin: 0;">{{user.name}}</p>
+</div>

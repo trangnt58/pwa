@@ -1,0 +1,24 @@
+.avatar {
+	position: relative;
+}
+.username {
+	font-size: 12px;
+}
+
+img {
+	width: 80px;
+	height: 80px;
+	border: 1px solid #03a9f4;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.status {
+	display: inline-block;
+	position: absolute;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	bottom: 5px;
+	left: 0;
+}

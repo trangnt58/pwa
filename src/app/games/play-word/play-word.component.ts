@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, HostListener,  ViewChild } from '@angular/core';
 import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
 
 import { WaitingGameComponent } from './../../components/waiting-game/waiting-game.component';
@@ -9,8 +9,8 @@ import { ReadingComponent } from './../../games/reading/reading.component';
 import { GameRequestComponent } from './../../components/game-request/game-request.component';
 import { WordService } from './../../services/word.service';
 import { HelperService} from './../../services/helper.service';
-import { GlobalVarsService } from './../../services/global-vars.service';
 import { GameService } from './../../services/game.service';
+import { GlobalVarsService } from './../../services/global-vars.service';
 import { SocketService } from './../../services/socket.service';
 
 @Component({
@@ -72,6 +72,9 @@ export class PlayWordComponent implements OnInit {
   onlineGame: boolean = false;
   isReceiver: boolean = false;
   playerSocketId: String;
+  scorePerQues: number = 0;
+  countCorrect: number = 0;
+  isPlaying: boolean = false;
 
   constructor( private wordService: WordService, private gameService: GameService,
     private socketService: SocketService,
@@ -80,16 +83,15 @@ export class PlayWordComponent implements OnInit {
     public dialog: MdDialog ) { }
 
   ngOnInit() {
-    this.wordService.getAllWord().then(res => {
-      this.allWords = res;
-      this.words = this.helperService.getRandomArrayElements(this.allWords, this.max);
-    });
 
     this.globalVars.profile.subscribe(value => {
       if (value['_id'] != undefined) {
         this.profile = value;
         this.from = this.profile;
         this.from['score'] = 0;
+
+        // this.socket = this.socketService.connectSocket(this.profile['_id']);
+        // this.setGlobal(this.profile, this.socket);
       }
     });
 
@@ -97,10 +99,13 @@ export class PlayWordComponent implements OnInit {
       if(value != null) {
         this.socket = value['socket'];
         let idUser = value['profile']['_id'];
+        // turn on online status
+        this.socketService.goPlayWord(this.socket);
         this.socketService.receiveRequestSocket(this.socket, idUser).subscribe(res => {
-          this.openDialogReceiveRequest(res['from'],res['fromSocketId']);
-          this.isReceiver = true;
-          //this.playerSocketId = res['fromSocketId'];
+          if (!this.isPlaying) {
+            this.openDialogReceiveRequest(res['from'],res['fromSocketId']);
+            this.isReceiver = true;
+          }
         });
 
         this.socketService.beginGame(this.socket).subscribe(res => {
@@ -110,17 +115,27 @@ export class PlayWordComponent implements OnInit {
             this.to = res['to'];
             this.onlineGame = true;
             this.contentGame = res['content'];
+            this.max = this.contentGame.length;
             this.closeAllDialog();
             this.ready();
+          } else {
+            console.log('bị từ chối rồi');
           }
         });
 
         this.socketService.receiveAnsFriend(this.socket).subscribe(res => {
+          if (res['answer'].length == this.max) {
+            if(!this.isReceiver) {
+              this.turn['toAns'] = res['answer'];
+            } else {
+              this.turn['fromAns'] = res['answer'];
+            }
+          }
           if(res['correct'] == true) {
             if(!this.isReceiver) {
-              this.to['score']++;
+              this.to['score'] = res['score'];
             } else {
-              this.from['score']++;
+              this.from['score'] = res['score'];
             }
           }
         })
@@ -128,11 +143,22 @@ export class PlayWordComponent implements OnInit {
     });
   }
 
-  closeAllDialog() {
-    this.dialogRef.close();
+  //set socket and profile to global
+  setGlobal(profile, socket){
+    this.globalVars.setSocket(socket);
+    var fullSocket = {};
+    fullSocket['profile'] = profile;
+    fullSocket['socket'] = socket;
+    this.globalVars.setFullSocket(fullSocket);
   }
 
-  openDialog() {
+  closeAllDialog() {
+    this.dialogRef.close();
+    this.isPlaying = true;
+  }
+
+  openDialog(toSocketId) {
+    this.isPlaying = true;
     let config: MdDialogConfig = {
       disableClose: true,
       width: '50%',
@@ -149,16 +175,19 @@ export class PlayWordComponent implements OnInit {
     let instance = this.dialogRef.componentInstance;
     instance.from = this.from;
     instance.to = this.to;
+    instance.toSocketId = toSocketId;
     instance.isOnline = true;
     
     this.dialogRef.afterClosed().subscribe(result => {
-      if(result == true) {
-        //this.ready();
-      }
+      console.log(result);
+      // if(result == false) {
+      //   this.isPlaying = false;
+      // }
     });
   }
 
   openDialogReceiveRequest(fromUser, fromSocketId) {
+    this.isPlaying = true;
     let config: MdDialogConfig = {
       disableClose: true,
       width: '50%',
@@ -175,10 +204,10 @@ export class PlayWordComponent implements OnInit {
     let instance = this.dialogRef.componentInstance;
     instance.from = fromUser;
     instance.fromSocketId = fromSocketId;
+    instance.numOfQues = this.max;
     this.dialogRef.afterClosed().subscribe(result => {
-      if(result == true) {
-        //this.ready();
-      }
+      console.log(result);
+      this.isPlaying = false;
     });
 
   }
@@ -220,17 +249,11 @@ export class PlayWordComponent implements OnInit {
     this.colorProgressbar = 'primary';
     if (this.count == this.max)  {
       this.doneGame();
-      this.isEnd = true;      
+      this.isEnd = true;   
+      this.isPlaying = false;   
       return;
     }
     this.count++;
-
-    //Nếu không phải là một yêu cầu có sẵn thì tiến hành random;
-    if(!this.isRequest && !this.onlineGame) {
-      this.random();
-      this.choices = null;
-      this.countDownTimer();
-    }
     
     if (this.isRequest || this.onlineGame) {
       let i = this.count - 1;
@@ -244,15 +267,6 @@ export class PlayWordComponent implements OnInit {
 
   }
 
-  random() {
-    // Chọn từ ngẫu nhiên
-    let i = this.helperService.random(this.words.length);
-    this.curWord = this.words[i];
-
-    // Chọn game ngẫu nhiên
-    let j = this.helperService.random(this.typeGame.length);
-    this.selectedGame = this.typeGame[j];
-  }
 
   next() {
     if (this.count == this.max) {
@@ -260,12 +274,7 @@ export class PlayWordComponent implements OnInit {
       this.isEnd = true;
       return;
     }
-    for (let i = 0; i < this.words.length; i++) {
-      if (this.words[i]['id'] == this.curWord['id']) {
-        this.words.splice(i, 1);
-        break;
-      }
-    }
+
     clearInterval(this.interval);
     this.reload();
   }
@@ -277,16 +286,30 @@ export class PlayWordComponent implements OnInit {
     }, 1000);
   }
 
+  sendAnswerSocket(status){
+    let data = {};
+    data['answer'] = this.answers;
+    data['playerSocketId'] = this.playerSocketId;
+    // Trả lời đúng
+    if(status == true) {
+      data['correct'] = true;
+      data['score'] = this.score;
+    }
+    else {
+      data['correct'] = false;
+      data['score'] = 0;
+    }
+    this.socketService.sendAns(this.socket, data);
+  }
+
   onCorrect(correct: boolean): void {
     if (this.onlineGame) {
       if(correct) {
-        let data = {};
-        data['correct'] = true;
-        data['playerSocketId'] = this.playerSocketId;
-        this.socketService.sendAns(this.socket, data);
         this.createScore();
-      return;
-      }else {
+        this.sendAnswerSocket(true);    
+        return;
+      }else {       
+        this.sendAnswerSocket(false);
         return;
       }
     }
@@ -304,20 +327,19 @@ export class PlayWordComponent implements OnInit {
   }
 
   createScore() {
-    this.score++;
-    this.percent = this.score*100/this.max;
+    var maxScore = 40000;
+    var scoreMaxPerQues = maxScore/this.max;
+    this.scorePerQues = Math.round(scoreMaxPerQues*this.counter/100);
+    this.score += this.scorePerQues;
+    this.countCorrect++;
+    this.percent = this.countCorrect*100/this.max;
     if (this.onlineGame) {
       if(this.isReceiver) {
-        this.to['score']++;
+        this.to['score'] = this.score;
       } else {
-        this.from['score']++;
+        this.from['score'] = this.score;
       }
       return;
-    }
-    if(!this.isRequest) {
-      this.from['score']++;
-    } else {
-      this.to['score']++;
     }
   }
 
@@ -333,8 +355,14 @@ export class PlayWordComponent implements OnInit {
       // Khi hết giờ
       if (this.counter <= 0) {
         clearInterval(this.interval);
-      
         if (this.onlineGame) {
+          if (this.selectedGame == 'reading') {
+            let clicked = this.readingComponent.clicked;
+            if (!clicked) {
+              this.readingComponent.getAnswer(null);
+              this.sendAnswerSocket(null);
+            }
+          }
           this.refresh();
           return;
         }
@@ -346,43 +374,49 @@ export class PlayWordComponent implements OnInit {
           return;
         }
         if (this.selectedGame == 'reading') {
-           // hết thời gian mà chưa trả lời thì set câu trả lời = null
+          // hết thời gian mà chưa trả lời thì set câu trả lời = null
           this.readingComponent.getAnswer(null);
           this.readingComponent.checkAnswer(null);
           this.refresh();
           return;
         }
       }
-    }, 80);
+    }, 60);
   }
 
   saveGame(item) {
     this.turnGame.push(item);
   }
 
-  saveQuestion(question: Object) {
-    this.allQuestions.push(question);
-  }
-
   userAnswer(userAnswer: String) {
     this.answers.push(userAnswer);
   }
 
+
   doneGame() {
-    //user khởi đầu game
-    if (!this.isRequest) {   
-      this.turn['from']['id']= this.profile['_id'];
-      this.turn['from']['score'] = this.score;
-      this.turn['to']['id'] = this.playerFriend['_id'];
+    if (this.onlineGame) {
       this.turn['game'] = 'word';
-      this.turn['content'] = this.allQuestions;
-      this.turn['fromAns'] = this.answers;
-    //game là từ người khác yêu cầu
-    } else {
-      this.turn['toAns'] = this.answers;
-      this.turn['to']['score'] = this.score;
+      this.turn['contentGame'] = this.contentGame;
+      if (this.isReceiver) {
+        this.turn['toAns'] = this.answers;
+      }
+      else {
+        this.turn['fromAns'] = this.answers;
+      }
     }
-    
+    //user khởi đầu game
+    // if (!this.isRequest) {   
+    //   this.turn['from']['id']= this.profile['_id'];
+    //   this.turn['from']['score'] = this.score;
+    //   this.turn['to']['id'] = this.playerFriend['_id'];
+    //   this.turn['game'] = 'word';
+    //   this.turn['content'] = this.allQuestions;
+    //   this.turn['fromAns'] = this.answers;
+    // //game là từ người khác yêu cầu
+    // } else {
+    //   this.turn['toAns'] = this.answers;
+    //   this.turn['to']['score'] = this.score;
+    // }
   }
 
   selectFriend(friend: Object) {
@@ -402,6 +436,11 @@ export class PlayWordComponent implements OnInit {
     }
   }
 
+  toUser(toUser: Object) {
+    this.to = toUser;
+    this.sendRequestSocket();
+  }
+
   request(request: Object) {
     this.isRequest = true;
     this.turn = request;
@@ -410,7 +449,7 @@ export class PlayWordComponent implements OnInit {
     this.from['score'] = request['from']['score'];
     this.to = request['to']['id'];
     this.to['score'] = 0;
-    this.openDialog();
+    //this.openDialog();
   }
 
   sendRequestSocket(){
@@ -420,10 +459,28 @@ export class PlayWordComponent implements OnInit {
     requestSocket['toId'] = this.to['_id'];
     requestSocket['toSocketId'] = this.to['socketId'];
     this.socketService.sendRequest(this.socket, requestSocket);
-    this.openDialog();
+    this.openDialog(this.to['socketId']);
 
     this.socketService.waitAccept(this.socket).subscribe(res => {
         console.log(res);
     });
   }
+
+  goBack(goBack: boolean): void {
+    this.isReady = false;
+    this.isEnd = false;
+  }
+
+  ngOnDestroy() {
+    if (this.socket != undefined) {
+      this.socketService.logoutGame(this.socket, this.profile['_id']);
+    }
+  }
+
+  // @HostListener('window:beforeunload', ['$event'])
+  // beforeunloadHandler(event) {
+  //   if (this.socket != undefined) {
+  //     this.socketService.logout(this.socket, this.profile['_id']);
+  //   }
+  // }
 }

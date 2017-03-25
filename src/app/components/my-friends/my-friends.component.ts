@@ -46,30 +46,19 @@ export class MyFriendsComponent implements OnInit {
     	this.globalVars.socket.subscribe(socket => {
         if (value['_id'] != undefined && socket != null) {
           this.socketService.getFriendList(socket,value['_id']).subscribe(res => {
-              if(res['singleUser'] && this.checkUserInList(res['list_friend']['_id'])) {
+            if(res['type'] =='list') {
+              this.friends = res['list_friend'];
+            } else {
+              if (res['singleUser'] && this.checkUserInList(res['list_friend']['_id'])) {
                 if(this.friends.length > 0) {
                   this.friends = this.friends.filter(function( obj ) {
                     return obj['_id'] !== res['list_friend']['_id'];
                   });
                 }
                 this.friends.push(res['list_friend']);
-              } else {
-                if(res['userDisconnected'] && this.checkUserInList(res['list_friend']['_id'])){
-                  this.friends = this.friends.filter(function( obj ) {
-                    return obj['_id'] !== res['list_friend']['_id'];
-                  });
-                }else{
-                  this.friends = res['list_friend'];
-                } 
-              }           
-            
+              }
+            }          
           });
-          // //http request
-          // this.userService.getFriend(value['_id']).then(res => {
-          //   this.zone.run(() => {
-          //     this.friends = res;
-          //   });
-          // });
         }
       });
     });
@@ -86,14 +75,20 @@ export class MyFriendsComponent implements OnInit {
       }
     }
     item['state'] = 'active';
-    this.playerFriend = item;
-    this.selectedFriend = true;
-    this.selectFriend.emit(item);
+    
+    if (item.online == true) {
+      this.playerFriend = item;
+      this.selectedFriend = true;
+      this.selectFriend.emit(item);
+    } else {
+      this.playerFriend = null;
+      this.selectedFriend = false;
+    }
   }
 
   checkUserInList(userId){
     if (this.friends.length >= 0){
-      for(let i = 0; i<this.friends.length; i++){
+      for(let i = 0; i < this.friends.length; i++){
         if(userId == this.friends[i]['_id']) {
           return true;
         }

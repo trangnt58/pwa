@@ -2,16 +2,20 @@
   <app-my-friends [from]="from" (selectFriend)="selectFriend($event)">
   </app-my-friends>
   <div>
-    <button md-raised-button (click)="openDialog()" [disabled]="!selectedFriend" color="primary">Bắt đầu
-    </button>
-    <button md-raised-button (click)="sendRequestSocket()" [disabled]="!selectedFriend" color="primary"> Gửi yêu cầu
+   <!--  <button md-raised-button (click)="openDialog()" [disabled]="!selectedFriend" color="primary">Bắt đầu
+    </button> -->
+    <button md-raised-button (click)="sendRequestSocket()" [disabled]="!selectedFriend" 
+      color="primary"> Challenge
     </button>
   </div>
-  <app-game-request (request)="request($event)"></app-game-request>
+  <!-- <app-game-request (request)="request($event)"></app-game-request> -->
+  <app-random-user (toUser)="toUser($event)"></app-random-user>
+  <!-- <app-history></app-history> -->
 </div>
 <div class="play-word" *ngIf="isReady">
   <div *ngIf="!isEnd">
-  <md-progress-bar mode="determinate" value="{{counter}}" color="{{colorProgressbar}}"></md-progress-bar>
+  <md-progress-bar mode="determinate" value="{{counter}}" color="{{colorProgressbar}}">
+  </md-progress-bar>
   <app-game-player [from]="from" [to]="to"></app-game-player>
     <app-circle-progress style="float: right;"
        [percent]="percent"
@@ -25,20 +29,19 @@
        [time]="0"
       >
     </app-circle-progress>
-    <!-- <button md-button (click)="next()">Next</button> -->
-    <!-- <p style="text-align: right;">Score: {{score}}/{{max}}</p> -->
     <p style="text-align: right;">Question: {{this.count}}/{{max}}</p>
     <app-reading [curWord]="curWord" [allWords]="allWords" [choices]="choices" 
     *ngIf="selectedGame == 'reading'"
-    (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)" 
-    (saveQuestion)="saveQuestion($event)">
+    (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)">
     </app-reading>
     <app-writing [curWord]="curWord" *ngIf="selectedGame == 'writing' "
-    (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)"
-    (saveQuestion)="saveQuestion($event)">
+    (onCorrect)="onCorrect($event)" (userAnswer)="userAnswer($event)">
     </app-writing>
   </div>
   <div *ngIf="isEnd">
-    <app-my-answer [from]="from" [to]="to" [turnGame]="turn" [isRequest]="isRequest"></app-my-answer>
+    <app-game-player [from]="from" [to]="to"></app-game-player>
+    <app-my-answer [from]="from" [to]="to" [turnGame]="turn" [isOnline]="onlineGame" 
+      [isRequest]="isRequest" (goBack)="goBack($event)" [isReceiver]="isReceiver">
+    </app-my-answer>
   </div>
 </div>

@@ -9,7 +9,8 @@
 		        <img md-card-avatar *ngIf="from.imageUrl" src="{{from.imageUrl}}">
 		      </div>
 			    <md-card-title>{{from.name}}</md-card-title>
-			    <md-card-subtitle *ngIf="from.score != 'undefined' ">{{from.score}}</md-card-subtitle>
+			    <md-card-subtitle class="score" *ngIf="from.score != 'undefined' ">{{from.score}}
+			    </md-card-subtitle>
 		    </md-card-header>
 	    </md-card>
     </div>
@@ -27,7 +28,7 @@
 		        <img md-card-avatar *ngIf="to.imageUrl" src="{{to.imageUrl}}">
 		      </div>
 		      <md-card-title>{{to.name}}</md-card-title>
-			    <md-card-subtitle *ngIf="to.score">{{to.score}}</md-card-subtitle>
+			    <md-card-subtitle class="score" *ngIf="to.score">{{to.score}}</md-card-subtitle>
 		    </md-card-header>
 	    </md-card>
     </div>

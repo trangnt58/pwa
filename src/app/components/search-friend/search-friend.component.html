@@ -3,14 +3,10 @@
 </md-input-container>
 
 <button md-button color="primary" (click)="search()">Search</button>
+
 <div *ngIf="result">
-	<md-card class="example-card" *ngFor="let item of result">
-	  <md-card-header>
-	    <div md-card-avatar></div>
-	    <md-card-title>{{item.name}}</md-card-title>
-	    <md-card-subtitle>{{item.email}}</md-card-subtitle>
-	    <button md-raised-button (click)="createFriend(item)"> Kết bạn </button>
-	  </md-card-header>
-	  
-	</md-card>
+	<div class="caption" *ngIf="result.length == 0 "> 0 result</div>
+	<div *ngFor="let item of result">
+		<app-user-item [user]="item"></app-user-item>
+	</div>
 </div>

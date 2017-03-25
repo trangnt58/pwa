@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {MdDialog, MdDialogRef} from '@angular/material';
+import { MdDialog, MdDialogRef } from '@angular/material';
 import { SocketService } from './../../services/socket.service';
 import { GlobalVarsService } from './../../services/global-vars.service';
 
@@ -12,6 +12,7 @@ import { GlobalVarsService } from './../../services/global-vars.service';
 export class GameRequestDialogComponent implements OnInit {
 	@Input() from : Object;
 	@Input() fromSocketId: String;
+  @Input() numOfQues: Number;
   to: Object;
 
 	isAgree: boolean = false;
@@ -25,13 +26,11 @@ export class GameRequestDialogComponent implements OnInit {
       if(value != null) {
         this.socket = value['socket'];
         this.to = value['profile'];
-        // this.socketService.beginGame(this.socket).subscribe(res => {
-        //   if(res['agree'] == true) {
-        //     this.isAgree = true;
-        //    	console.log(res['content']);
-        //     this.dialogRef.close(this.isAgree);
-        //   }
-        // });
+        this.socketService.receiveFinish(this.socket).subscribe(res => {
+          if(res['close']) {
+            this.dialogRef.close(this.isAgree);
+          }
+        });
       }
     });
   }
@@ -50,6 +49,7 @@ export class GameRequestDialogComponent implements OnInit {
   sendResponse() {
   	let response = {};
   	response['agree'] = this.isAgree;
+    response['numOfQues'] = this.numOfQues
   	response['fromSocketId'] = this.fromSocketId;
     response['from'] = this.from;
     response['to'] = this.to;

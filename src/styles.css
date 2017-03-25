@@ -17,3 +17,11 @@ body {
 .text-center {
 	text-align: center;
 }
+
+.size14 {
+	font-size: 14px;
+}
+
+.caption {
+	font-size: 12px;
+}

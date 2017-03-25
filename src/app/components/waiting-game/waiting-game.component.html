@@ -23,9 +23,9 @@
     </div>
   </div>
   <div class="action">
-    <h4 class="primary" style="text-align: center;">{{status}}</h4>
+    <h4 class="primary" style="text-align: center;" [innerHTML]="status"></h4>
     <h1 class="primary" style="text-align: center;">{{count}}</h1>
-    <button md-button (click)="cancel()">Hủy</button>
-    <button md-button (click)="ready()">Chơi ngay</button>
+   <!--  <button md-button (click)="cancel()">Hủy</button>
+    <button md-button (click)="ready()">Chơi ngay</button> -->
   </div>
 </div>

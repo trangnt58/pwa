@@ -12,25 +12,25 @@
 	</tr>
 	<tr *ngFor="let item of content; let i = 'index'">
 		<td>
-			<h4 md-line>{{item.content}}</h4>
-	    <p md-line> {{item.meaning}} </p>
+			<h4 md-line>{{item.word.content}}</h4>
+	    <p md-line> {{item.word.meaning}} </p>
 		</td>
 		<td class="text-center">
 		<span *ngIf="fromAns">
-			<md-icon *ngIf="!compare(item.content, fromAns[i])" color="warn">highlight_off</md-icon>
-			<md-icon *ngIf="compare(item.content, fromAns[i])" color="primary">check_circle</md-icon>
+			<md-icon *ngIf="!compare(item.word.content, fromAns[i])" color="warn">highlight_off</md-icon>
+			<md-icon *ngIf="compare(item.word.content, fromAns[i])" color="primary">check_circle</md-icon>
 		</span>
 		</td>
 		<td class="text-center">
 			<span *ngIf="toAns">
-			<md-icon *ngIf="!compare(item.content, toAns[i])" color="warn">highlight_off</md-icon>
-			<md-icon *ngIf="compare(item.content, toAns[i])" color="primary">check_circle</md-icon>
+			<md-icon *ngIf="!compare(item.word.content, toAns[i])" color="warn">highlight_off</md-icon>
+			<md-icon *ngIf="compare(item.word.content, toAns[i])" color="primary">check_circle</md-icon>
 		</span>
 		</td>
 	</tr>
 </table>
 <div style="float: right;">
-  <button md-raised-button color="primary" routerLink="/"><md-icon>home</md-icon></button>
-  <button [disabled]="isSend" md-raised-button color="primary" 
-  		(click)="sendRequestGame()">Send Request Game</button>
+  <button md-raised-button color="primary" (click)="goPlayWord()"><md-icon>chevron_left</md-icon> Back to game</button>
+  <!-- <button [disabled]="isSend" md-raised-button color="primary" 
+  		(click)="sendRequestGame()">Send Request Game</button> -->
 </div>

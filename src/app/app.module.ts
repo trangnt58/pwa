@@ -19,7 +19,6 @@ import { LoginGoogleComponent } from './components/login-google/login-google.com
 import { SongpopComponent } from './games/songpop/songpop.component';
 import { NavLoginComponent } from './components/nav-login/nav-login.component';
 import { LoginFacebookComponent } from './components/login-facebook/login-facebook.component';
-import { RegisterComponent } from './components/register/register.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { SearchFriendComponent } from './components/search-friend/search-friend.component';
 import { WritingComponent } from './games/writing/writing.component';
@@ -33,6 +32,11 @@ import { GamePlayerComponent } from './components/game-player/game-player.compon
 import { LearningComponent } from './components/learning/learning.component';
 import { WordDialogComponent } from './components/word-dialog/word-dialog.component';
 import { GameRequestDialogComponent } from './components/game-request-dialog/game-request-dialog.component';
+import { RandomUserComponent } from './components/random-user/random-user.component';
+import { UserCardComponent } from './components/user-card/user-card.component';
+import { HistoryComponent } from './components/history/history.component';
+import { PushNotificationsModule } from 'angular2-notifications';
+import { UserItemComponent } from './components/user-item/user-item.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -40,7 +44,6 @@ const appRoutes: Routes = [
   { path: 'playword', component: PlayWordComponent },
   { path: 'login', component: LoginComponent },
   { path: 'profile', component: ProfileComponent},
-  { path: 'register', component: RegisterComponent },
   { path: 'login-google', component: LoginGoogleComponent },
   { path: 'songpop', component: SongpopComponent },
   { path: 'learn', component: LearningComponent },
@@ -63,7 +66,6 @@ const appRoutes: Routes = [
     SongpopComponent,
     NavLoginComponent,
     LoginFacebookComponent,
-    RegisterComponent,
     ProfileComponent,
     SearchFriendComponent,
     WritingComponent,
@@ -76,7 +78,11 @@ const appRoutes: Routes = [
     GamePlayerComponent,
     LearningComponent,
     WordDialogComponent,
-    GameRequestDialogComponent
+    GameRequestDialogComponent,
+    RandomUserComponent,
+    UserCardComponent,
+    HistoryComponent,
+    UserItemComponent
   ],
   imports: [
     BrowserModule,
@@ -84,7 +90,8 @@ const appRoutes: Routes = [
     HttpModule,
     MaterialModule.forRoot(),
     FlexLayoutModule.forRoot(),
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    PushNotificationsModule
   ],
   providers: [ GlobalVarsService ],
   entryComponents: [
