@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
+import { Config } from './config';
 
 @Injectable()
 export class LoginService {
@@ -11,20 +12,16 @@ export class LoginService {
   	let headers = new Headers();
     headers.append('Content-Type', 'application/json');
      return new Promise(resolve => {
-      this.http.post('http://localhost:3000/users/api/create', JSON.stringify(user), {headers: headers})
+      this.http.post(Config.url+ '/users/api/create', JSON.stringify(user), {headers: headers})
       .subscribe(res => {
         resolve(res.json());
       });
     });
-    // this.http.post('http://localhost:3000/users/api/create', JSON.stringify(user), {headers: headers})
-    //   .subscribe(res => {
-    //     console.log(res.json());
-    //   });
   }
 
   checkExist(email): Promise<Object> {
     return new Promise(resolve => {
-      this.http.get('http://localhost:3000/users/api/'+ email).subscribe(result => {
+      this.http.get(Config.url+'/users/api/'+ email).subscribe(result => {
         resolve(result.json());
       });
     });

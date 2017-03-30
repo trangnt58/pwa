@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
-
+import { Config } from './config';
 
 @Injectable()
 export class GameService {
@@ -11,7 +11,7 @@ export class GameService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
      return new Promise(resolve => {
-      this.http.post('http://localhost:3000/api/games/create', JSON.stringify(game), { headers: headers })
+      this.http.post(Config.url+'/api/games/create', JSON.stringify(game), { headers: headers })
       .subscribe(res => {
         resolve(res.json());
       });
@@ -22,7 +22,7 @@ export class GameService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
      return new Promise(resolve => {
-      this.http.post('http://localhost:3000/api/games/update/'+id, JSON.stringify(turn), { headers: headers })
+      this.http.post(Config.url+'/api/games/update/'+id, JSON.stringify(turn), { headers: headers })
       .subscribe(res => {
         resolve(res.json());
       });

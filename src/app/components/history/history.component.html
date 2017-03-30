@@ -1,1 +1,22 @@
 <h3 class="primary"><md-icon>history</md-icon> History</h3>
+<div *ngIf="history.length==0" class="caption">Không có trận đấu nào gần đây.</div>
+<md-list *ngIf="history.length>0">
+  <div *ngFor="let item of history">
+  	<div class="flex-container item-history" 
+	    fxLayout="row"
+	    fxLayoutAlign="space-around start">
+	  <div class="flex-item" fxFlex="50%">
+	  	<div class="avatar">
+		    <img md-card-avatar *ngIf="item.player1.id.imageUrl" src="{{item.player1.id.imageUrl}}">
+		    <span>{{item.player1.id.name}}</span>
+	    </div>
+    	
+    </div>
+    <div class="flex-item" fxFlex>
+    	<p class="win-score">
+    		{{item.player1.win}} : {{item.player2.win}}
+    	</p>
+    </div>
+    </div>
+  </div>
+</md-list>

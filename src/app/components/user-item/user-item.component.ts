@@ -14,27 +14,29 @@ export class UserItemComponent implements OnInit {
 	@Input() user: Object = {};
 	socket: any;
 	isMe: boolean = false;
-	isFriend: boolean = false;
-  isRequest: boolean =false;
   requests: Object[] = [];
   state: String = '';
+  sendRequest: boolean = false;
+  mySocketId: String;
+
   constructor( private socketService: SocketService,
     private globalVars: GlobalVarsService,
     private userService: UserService ) { }
 
   ngOnInit() {
+    this.globalVars.mySocketId.subscribe(value => {
+      if(value != null) {
+        this.mySocketId = value;
+      }
+    });
+
   	this.globalVars.fullSocket.subscribe(value => {
   		if(value != null) {
   			this.profile = value['profile'];
         var myId = value['profile']['_id'];
         var friendId = this.user['_id'];
   			this.socket = value['socket'];  
-  			if(this.profile['list_friend'].indexOf(this.user['_id']) >= 0) {
-  				this.isFriend = true;
-          this.state = 'isFriend';
-  			}
         if (this.profile['_id'] == this.user['_id']) this.isMe = true;
-  			      
   		}
   	})
 
@@ -44,7 +46,6 @@ export class UserItemComponent implements OnInit {
     if (requests.length > 0) {
       for(let i = 0; i < requests.length; i++) {
         if(requests[i]['_id'] == friendId) {
-          this.isRequest = true;
           this.state = 'isRequest';
           break;
         }
@@ -54,7 +55,8 @@ export class UserItemComponent implements OnInit {
 
   unfriend() {
     var data = {};
-    data['from'] = this.profile;
+    this.updateSocketId();
+    data['from'] = this.profile; 
     data['to'] = this.user;
     this.socketService.sendEvent(this.socket, 'unfriend', data);
   }
@@ -63,28 +65,35 @@ export class UserItemComponent implements OnInit {
     if(this.profile['_id'] != undefined) {
       let friend: Object = {};
       friend['from'] = this.profile['_id'];
+      this.updateSocketId();
       friend['fromInfo'] = this.profile;
       friend['to'] = this.user['_id'];
-      if(this.user['onApp'] == true) {
-        friend['toSocketId'] = this.user['socketId'];
-        this.socketService.createFriend(this.socket, friend);
-      } 
+      friend['toSocketId'] = this.user['socketId'];
+      this.socketService.createFriend(this.socket, friend);
+      this.sendRequest = true;
+    }
+  }
+
+  updateSocketId() {
+    if(this.mySocketId != null) {
+      this.profile['socketId'] = this.mySocketId;
     }
   }
 
   acceptRequest(){
+    this.updateSocketId();
     var data = {};
     data['from'] = this.user;
     data['to'] = this.profile;
     this.socketService.sendEvent(this.socket, 'accept-request', data);
-    this.user = null;
   }
 
   ignoreRequest() {
-  	this.userService.ignore(this.user['_id'], this.profile['_id']).then( res => {
-  		console.log(res);
-  		this.user = null;
-  	});
+    this.updateSocketId();
+    var data = {};
+    data['from'] = this.user;
+    data['to'] = this.profile;
+    this.socketService.sendEvent(this.socket, 'delete-request', data);
   }
 
 }

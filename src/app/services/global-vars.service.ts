@@ -11,6 +11,7 @@ export class GlobalVarsService {
   public profile: BehaviorSubject<Object> = new BehaviorSubject<Object>({});
   public socket: BehaviorSubject<Object> = new BehaviorSubject<Object>(null);
   public fullSocket: BehaviorSubject<Object> = new BehaviorSubject<Object>(null);
+  public mySocketId: BehaviorSubject<String> = new BehaviorSubject<String>(null);
 
   setLoginStatus(isLoggedIn){
    this.isUserLoggedIn.next(isLoggedIn);
@@ -22,6 +23,10 @@ export class GlobalVarsService {
 
   setSocket(socket) {
   	this.socket.next(socket);
+  }
+
+  setMySocketId(socketId) {
+    this.mySocketId.next(socketId);
   }
 
   setFullSocket(fullSocket){

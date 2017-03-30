@@ -44,7 +44,7 @@ export class WaitingGameComponent implements OnInit {
           //đồng ý
           if(res['agree']) {
             clearInterval(this.interval);
-            this.status = "Bạn chơi đã đồng ý. <br> Đang tải...";
+            this.status = "Bạn chơi đã đồng ý. <br> Đang tải game...";
           } else {
             this.status = "Yêu cầu không được chấp nhận.";
             this.cancel();

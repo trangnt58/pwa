@@ -35,34 +35,43 @@ export class MyFriendsComponent implements OnInit {
 	friends: Object[] = [];
   selectedFriend: boolean = false;
   playerFriend: Object = {};
+  socket: any;
+  profile: Object = {};
 
   constructor(private globalVars: GlobalVarsService, 
     private userService: UserService, private socketService: SocketService,
     private zone: NgZone ) { }
 
   ngOnInit() {
-    this.globalVars.profile.subscribe( value => {
-      if(value['_id'] == undefined) return;
-    	this.globalVars.socket.subscribe(socket => {
-        if (value['_id'] != undefined && socket != null) {
-          this.socketService.getFriendList(socket,value['_id']).subscribe(res => {
+    this.globalVars.fullSocket.subscribe(res => {
+        if (res != null) {
+          this.socket = res['socket'];
+          this.profile = res['profile']
+          this.socketService.getFriendList(this.socket,this.profile['_id']).subscribe(res => {
             if(res['type'] =='list') {
               this.friends = res['list_friend'];
             } else {
               if (res['singleUser'] && this.checkUserInList(res['list_friend']['_id'])) {
                 if(this.friends.length > 0) {
+                  console.log(res['list_friend']['socketId']);
                   this.friends = this.friends.filter(function( obj ) {
                     return obj['_id'] !== res['list_friend']['_id'];
                   });
                 }
                 this.friends.push(res['list_friend']);
               }
+              
+              if (res['type'] == 'new-friend') {
+                this.friends.push(res['user']);
+
+              }
+              if (res['type'] == 'unfriend') {
+                this.friends = this.removeInArray(this.friends, res['user']);
+              }
             }          
           });
         }
-      });
-    });
-    
+    });  
   }
 
   chooseFriend(item) {
@@ -96,6 +105,13 @@ export class MyFriendsComponent implements OnInit {
       return false;
     }
 
+  }
+
+  removeInArray(arr, user) {
+    arr = arr.filter(function( obj ) {
+      return obj['_id'] !== user['_id'];
+    });
+    return arr;
   }
 
 }

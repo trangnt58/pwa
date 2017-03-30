@@ -29,22 +29,6 @@ export class MenuGameComponent implements OnInit {
         this.isLogin = true;
       }
     });
-    // this._push.create('Test', {body: 'something'}).subscribe(
-    //         res => console.log(res),
-    //         err => console.log(err)
-    //     )
-    
-    // if (this._push.permission == 'granted') {
-    //   this._push.create('Test', {body: 'something'}).subscribe(
-    //         res => console.log(res),
-    //         err => console.log(err)
-    //     );
-    // } else {
-    //   this._push.requestPermission();
-    // }
-    
-  
-  
     // this.connection = this.socketService.getMessages().subscribe(message => {
     //   console.log(message);
     //   this.messages.push(message);

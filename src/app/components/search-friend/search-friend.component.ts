@@ -29,13 +29,13 @@ export class SearchFriendComponent implements OnInit {
     this.globalVars.fullSocket.subscribe(value => {
       if(value != null) {
         this.socket = value['socket'];
-        this.socketService.getFriendshipRequest(this.socket, value['profile']['_id']).subscribe(res => {  
+        this.socketService.getFriendshipRequest(this.socket, value['profile']['_id']).subscribe(res => {          
           this.requests = res;
         });
 
         this.socketService.listenEvent(this.socket, 'new-user').subscribe(res => {
           if(this.getNewArray(this.requests, res) != null) {
-            console.log('a new user in requests online');
+            //console.log('a new user in requests online');
             this.requests = this.getNewArray(this.requests, res);
             for (let i = 0; i < this.requests.length; i++) {
               this.requests[i]['isRequest'] = true;
@@ -43,7 +43,7 @@ export class SearchFriendComponent implements OnInit {
           }
 
           if(this.getNewArray(this.result, res) != null) {
-            console.log('a new user in search result online');
+            //console.log('a new user in search result online');
             this.result = this.getNewArray(this.result, res);
           }
         });
@@ -64,6 +64,11 @@ export class SearchFriendComponent implements OnInit {
     return null;
   }
 
+   onKey(event: any) { 
+    this.search();
+  }
+
+
 
   search(){
     if(this.query != '') {
@@ -71,29 +76,15 @@ export class SearchFriendComponent implements OnInit {
       data['query'] = this.query;
       this.socketService.sendListenEventArr(this.socket,'search-user','search-user-response', data).subscribe(
         res => {
+          for(let i = 0 ;i < res.length; i++) {
+            res[i]['state'] = '';
+          }
           this.result = res;
        });
     }
     else {
       this.result = [];
     }
-  	// if(this.query != '') {
-  	// 	this.userService.findUser(this.query).then(res => {
-  	// 		this.zone.run(() => {
-  	// 			this.result = res;
-   //        for(let i = 0; i < this.result.length; i++){
-   //          for(let j = 0; j < this.requests.length; j++) {
-   //            if(this.result[i]['_id'] == this.requests[j]['_id']){
-   //              this.result[i]['isRequest'] = true;
-   //              break;
-   //            }
-   //          }
-   //        }
-  	// 	  });		
-  	// 	});
-  	// } else {
-   //    this.result = [];
-   //  }
   }
 
   createFriend(item){

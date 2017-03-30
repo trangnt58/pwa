@@ -30,20 +30,20 @@ export class ProfileComponent implements OnInit {
         this.socketService.getFriendList(this.socket, id).subscribe(res => {
           if (res['type'] =='list') {
             this.zone.run(() => {
+              
+              for (let i = 0; i < res['list_friend'].length; i++) {
+                res['list_friend'][i]['state'] = 'isFriend';
+              }
               this.friends = res['list_friend'];
             });
           } else {
             if (res['type'] == 'unfriend') {
-              this.zone.run(() => {
-                this.friends = this.removeInArray(this.friends, res['user']);
-              });
+              this.friends = this.removeInArray(this.friends, res['user']);
             }
 
             if (res['type'] == 'new-friend') {
-              res['user']['isFriend'] = true;
-              res['user']['isRequest'] = false;
+              res['user']['state'] = 'isFriend';
               this.friends.push(res['user']);
-              this.requests = this.removeInArray(this.requests, res['user']);
             }
           }
         });
@@ -61,16 +61,9 @@ export class ProfileComponent implements OnInit {
         });
 
         this.socketService.listenEvent(this.socket, 'new-user').subscribe(res => {
-          if(this.getNewArray(this.requests, res) != null) {
-            console.log('a new user in requests online');
-            this.requests = this.getNewArray(this.requests, res);
-            for (let i = 0; i < this.requests.length; i++) {
-              this.requests[i]['isRequest'] = true;
-            }
-          }
-
           if(this.getNewArray(this.friends, res) != null) {
-            console.log('a new user in friends online');
+            //console.log('a new user in friends online');
+            res['state'] = 'isFriend';
             this.friends = this.getNewArray(this.friends, res);
           }
         });

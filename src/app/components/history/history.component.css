@@ -1,0 +1,17 @@
+.avatar img {
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	vertical-align: middle;
+}
+
+.item-history {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.win-score {
+	font-size: 18px;
+  color: #2196F3;
+}
+

@@ -25,6 +25,8 @@ export class NavLoginComponent implements OnInit {
   showNoti: boolean = false;
   dialogRef: any;
   socket: any;
+  mySocketId: String;
+  requests: Object[] = [];
 
   constructor (private globalVars: GlobalVarsService, 
     private userService: UserService, private loginService: LoginService, 
@@ -45,37 +47,100 @@ export class NavLoginComponent implements OnInit {
   	this.globalVars.profile.subscribe(value => {
   		this.zone.run(() => {
   			this.profile = value;
-        if(this.profile['_id'] != undefined) {
+        if(value['_id'] != undefined) {
           this.socket = this.socketService.connectSocket(this.profile['_id']);
           this.setGlobal(this.profile, this.socket);
         }
   		});
   	});
 
+    //get correct socket from mlab
+    this.globalVars.mySocketId.subscribe(value => {
+      if(value != null) {
+        this.mySocketId = value;
+      }
+    });
+
     this.globalVars.fullSocket.subscribe(value => {
       if(value != null) {
         this.socket = value['socket'];
+        var id = value['profile']['_id'];
+        this.socketService.listenEvent(this.socket, 'get-info-socket').subscribe(res => {
+          this.globalVars.setMySocketId(res);
+        });
+
         this.socketService.createFriendRequest(this.socket).subscribe(res => {
-          //console.log(res);
           this.createPush('Yêu cầu kết bạn', res['fromInfo']['name'] + ' đã gửi yêu cầu kết bạn'); 
+          res['fromInfo']['state'] = 'isRequest';
+          this.requests.push(res['fromInfo']);
+        });
+
+        this.socketService.getFriendshipRequest(this.socket, id).subscribe(res => {
+          this.zone.run(() => {
+            this.requests = res;
+            if(this.requests.length == 0) {
+            } else {
+            for (let i = 0; i < this.requests.length; i++) {
+                this.requests[i]['state'] = 'isRequest';
+              }
+            }
+          }); 
+        });
+
+        this.socketService.listenEvent(this.socket, 'new-user').subscribe(res => {
+          if(this.getNewArray(this.requests, res) != null) {
+            //console.log('a new user in requests online ' + res['socketId']);
+            this.requests = this.getNewArray(this.requests, res);
+            for (let i = 0; i < this.requests.length; i++) {
+              this.requests[i]['state'] = 'isRequest';
+            }
+          }
+        });
+
+        this.socketService.listenEvent(this.socket, 'list-response').subscribe(res => {
+          if(res['type'] == 'delete') {
+            this.requests = this.removeInArray(this.requests, res['user']);
+          }
         });
       }
     });
 
   }
 
+  getNewArray(arr, newUser) {
+    for(let i = 0; i < arr.length; i++) {
+      if (newUser['_id'] == arr[i]['_id']) {
+        arr = arr.filter(function( obj ) {
+          return obj['_id'] !== newUser['_id'];
+        });
+        arr.push(newUser);
+        return arr;
+      }
+    }
+    return null;
+  }
+
+  removeInArray(arr, user) {
+    arr = arr.filter(function( obj ) {
+      return obj['_id'] !== user['_id'];
+    });
+    return arr;
+  }
+
   createPush(title, body) {
     if (this._push.permission == 'granted') {
-      this._push.create(title, {body: body, icon: 'assets/images/default-avatar.png'}).subscribe(
-            res => console.log(res),
-            err => console.log(err)
+      this._push.create(title, {
+        body: body, 
+        icon: 'assets/images/default-avatar.png'
+      }).subscribe(
+            res => {},
+            err => {}
         );
     }
   }
 
-  // //set socket and profile to global
+  //set socket and profile to global
   setGlobal(profile, socket){
-    this.globalVars.setSocket(socket);
     var fullSocket = {};
     fullSocket['profile'] = profile;
     fullSocket['socket'] = socket;

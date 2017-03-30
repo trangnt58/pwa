@@ -1,11 +1,12 @@
 <md-input-container>
-  <input md-input placeholder="Search a friend" [(ngModel)]="query">
+  <input md-input placeholder="Search a friend" 
+  [(ngModel)]="query" (keyup)="onKey($event)">
 </md-input-container>
 
-<button md-button color="primary" (click)="search()">Search</button>
+<!-- <button md-button color="primary" (click)="search()">Search</button> -->
 
-<div *ngIf="result">
-	<div class="caption" *ngIf="result.length == 0 "> 0 result</div>
+<div *ngIf="result" class="search-result">
+<!-- 	<div class="caption" *ngIf="result.length == 0 "> 0 result</div> -->
 	<div *ngFor="let item of result">
 		<app-user-item [user]="item"></app-user-item>
 	</div>

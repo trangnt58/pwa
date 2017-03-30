@@ -24,6 +24,11 @@
     left: 15px;*/
 }
 
+md-list-item {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
 .notification-counter {   
     position: absolute;
     top: 5px;
@@ -45,7 +50,15 @@
 	width: 60vh;
 	background-color: white;
 	color: black;
-	padding: 15px;
+	padding: 6px 15px 15px 15px;
 	border: 1px solid rgba(128, 128, 128, 0.2)
 }
 
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0; 
+}

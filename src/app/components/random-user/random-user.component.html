@@ -1,8 +1,8 @@
-<h3 class="primary"><md-icon>casino</md-icon> Tìm người chơi online bất kỳ</h3>
+<h3 class="primary"><md-icon>casino</md-icon> Random Opponent</h3>
 <span class="numOfOnline"> {{numOfOnline - 1}} người khác đang online</span>
 <div *ngIf="numOfOnline > 1">
 	<button style="margin-bottom: 10px;" color="primary" md-raised-button (click)="random()">
-		<md-icon>search</md-icon> Tìm đối thủ
+		<md-icon>search</md-icon> Search for a Player
 	</button>
 	<app-user-card *ngIf = "randomUser" [user]="randomUser"></app-user-card>
 	<button *ngIf = "randomUser" color="primary" md-raised-button (click)="sendRequest()">Gửi yêu cầu</button>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
-
+import { Config } from './config';
 
 @Injectable()
 export class UserService {
@@ -9,7 +9,7 @@ export class UserService {
 
   getUser(email): Promise<Object> {
     return new Promise(resolve => {
-      this.http.get('http://localhost:3000/users/api/'+ email).subscribe(result => {
+      this.http.get(Config.url + '/users/api/'+ email).subscribe(result => {
         resolve(result.json());
       });
     });
@@ -19,7 +19,7 @@ export class UserService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
      return new Promise(resolve => {
-      this.http.post('http://localhost:3000/users/edit/'+ id, JSON.stringify(user), {headers: headers})
+      this.http.post(Config.url + '/users/edit/'+ id, JSON.stringify(user), {headers: headers})
       .subscribe(res => {
         resolve(res.json());
       });
@@ -28,7 +28,7 @@ export class UserService {
 
   getListFriend(id): Promise<Object> {
   	return new Promise(resolve => {
-      this.http.get('http://localhost:3000/users/api/friend/'+ id).subscribe(result => {
+      this.http.get(Config.url+'/users/api/friend/'+ id).subscribe(result => {
         resolve(result.json());
       });
     });
@@ -36,7 +36,7 @@ export class UserService {
 
   getFriend(id): Promise<Object[]> {
   	return new Promise(resolve => {
-      this.http.get('http://localhost:3000/users/api/friend/'+ id).subscribe(result => {
+      this.http.get(Config.url + '/users/api/friend/'+ id).subscribe(result => {
         resolve(result.json());
       });
     });
@@ -46,7 +46,7 @@ export class UserService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
      return new Promise(resolve => {
-      this.http.post('http://localhost:3000/friends/create', JSON.stringify(request), {headers: headers})
+      this.http.post(Config.url + '/friends/create', JSON.stringify(request), {headers: headers})
       .subscribe(res => {
         resolve(res.json());
       });
@@ -57,7 +57,7 @@ export class UserService {
 
   findUser(input): Promise<Object[]> {
   	return new Promise(resolve => {
-      this.http.get('http://localhost:3000/users/search/'+ input).subscribe(result => {
+      this.http.get(Config.url + '/users/search/'+ input).subscribe(result => {
         resolve(result.json());
       });
     });
@@ -65,7 +65,7 @@ export class UserService {
 
   getRequestFriend(id): Promise<Object[]> {
     return new Promise(resolve => {
-      this.http.get('http://localhost:3000/friends/request/'+id).subscribe(result => {
+      this.http.get(Config.url + '/friends/request/'+id).subscribe(result => {
         resolve(result.json());
       });
     });
@@ -75,13 +75,13 @@ export class UserService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
      return new Promise(resolve => {
-      this.http.post('http://localhost:3000/friends/agree/'+from+'/'+to, {headers: headers})
+      this.http.post(Config.url + '/friends/agree/'+from+'/'+to, {headers: headers})
       .subscribe(res => {
         resolve(res.json());
       });
     });
     // return new Promise(resolve => {
-    //   this.http.get('http://localhost:3000/friends/agree/'+from+'/'+to).subscribe(result => {
+    //   this.http.get(Config.url + '/friends/agree/'+from+'/'+to).subscribe(result => {
     //     resolve(result.json());
     //   });
     // });
@@ -89,7 +89,7 @@ export class UserService {
 
   cancel(user, friend): Promise<Object> {
     return new Promise(resolve => {
-      this.http.get('http://localhost:3000/friends/cancel/'+user+'/'+friend).subscribe(result => {
+      this.http.get(Config.url + '/friends/cancel/'+user+'/'+friend).subscribe(result => {
         resolve(result.json());
       });
     });
@@ -97,7 +97,7 @@ export class UserService {
 
   ignore(from, to): Promise<Object> {
     return new Promise(resolve => {
-      this.http.get('http://localhost:3000/friends/ignore/'+from+'/'+to).subscribe(result => {
+      this.http.get(Config.url + '/friends/ignore/'+from+'/'+to).subscribe(result => {
         resolve(result.json());
       });
     });

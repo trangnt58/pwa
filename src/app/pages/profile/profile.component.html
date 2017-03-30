@@ -1,6 +1,6 @@
-<md-tab-group>
-  <md-tab label="Thông tin cơ bản">
-  	<div class="flex-container game-box" 
+<div class="profile">
+<h3 class="primary"><md-icon>info_outline</md-icon> Personal Information </h3>
+<div class="flex-container game-box" 
      fxLayout="row" 
      fxLayoutAlign="center center" 
     	>
@@ -14,40 +14,29 @@
 		  	<p>Name: {{profile.name}}</p>
   			<p>Email: {{profile.email}}</p>
 		  </div>
-		</div> 
-    </md-tab>
-  <md-tab label="Bạn bè">
-  <div class="flex-container game-box" 
-     fxLayout="row" 
-     fxLayoutAlign="space-around start" 
-    >
-    <div class="flex-item" fxFlex="50%">
-		  <p> Bạn bè của tôi </p>
-		  	<div *ngIf="friends.length == 0" class="caption">Bạn chưa có bạn.</div>
-			  <div *ngIf="friends.length > 0">
-			  	<div *ngFor="let item of friends">
-			  		<app-user-item [user]="item"></app-user-item>
-					</div>
-				</div>
-				
-			</div>
-			<div class="flex-item" fxFlex="50%">
-				<p>Tìm kiếm thêm bạn:</p>
-				<md-icon>search</md-icon>
-				<app-search-friend></app-search-friend>
-			</div>
-		</div>
-  </md-tab>
+</div> 
 
-  <md-tab label="Yêu cầu kết bạn">
-  	<div *ngIf="noRequest" class="caption"> 0 yêu cầu</div>
-  	<div *ngIf="requests">
-	  	<div *ngFor="let item of requests">
-	  		<app-user-item [user]="item"></app-user-item>
-			</div>
+	<div class="flex-container game-box" 
+	     fxLayout="row" fxLayout.xs="column" fxLayout.sm="row" 
+	     fxLayoutAlign="space-around start">
+	  <div class="flex-item" fxFlex="50%">
+	  	<h3 class="primary"><md-icon>people_outline</md-icon> My friends</h3>
+	  </div>
+		<div class="flex-item search-box" fxFlex="50%">
+			<md-icon>search</md-icon>
+			<app-search-friend></app-search-friend>
 		</div>
-  </md-tab>
-</md-tab-group>
+	</div>
+	<div>
+	  	<div *ngIf="friends.length == 0" class="caption">Bạn chưa có bạn.</div>
+		  <div *ngIf="friends.length > 0">
+		  	<div *ngFor="let item of friends">
+		  		<app-user-item [user]="item"></app-user-item>
+				</div>
+			</div>
+	</div>
+</div>
+
 
 
 

@@ -4,3 +4,12 @@
 	height: 80px;
 	margin: 0 auto;
 }
+
+.profile {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+.search-box {
+	position: relative;
+}

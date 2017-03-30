@@ -89,9 +89,6 @@ export class PlayWordComponent implements OnInit {
         this.profile = value;
         this.from = this.profile;
         this.from['score'] = 0;
-
-        // this.socket = this.socketService.connectSocket(this.profile['_id']);
-        // this.setGlobal(this.profile, this.socket);
       }
     });
 
@@ -115,8 +112,9 @@ export class PlayWordComponent implements OnInit {
             this.to = res['to'];
             this.onlineGame = true;
             this.contentGame = res['content'];
-            this.max = this.contentGame.length;
+            this.max = this.contentGame.length;  
             this.closeAllDialog();
+            this.isPlaying = true;
             this.ready();
           } else {
             console.log('bị từ chối rồi');
@@ -153,8 +151,10 @@ export class PlayWordComponent implements OnInit {
   }
 
   closeAllDialog() {
-    this.dialogRef.close();
-    this.isPlaying = true;
+    if(this.dialogRef != undefined) {
+      this.dialogRef.close();
+    }
+    //this.isPlaying = true;
   }
 
   openDialog(toSocketId) {
@@ -179,10 +179,7 @@ export class PlayWordComponent implements OnInit {
     instance.isOnline = true;
     
     this.dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
-      // if(result == false) {
-      //   this.isPlaying = false;
-      // }
+      this.isPlaying = false;
     });
   }
 
@@ -206,7 +203,6 @@ export class PlayWordComponent implements OnInit {
     instance.fromSocketId = fromSocketId;
     instance.numOfQues = this.max;
     this.dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       this.isPlaying = false;
     });
 
@@ -249,8 +245,7 @@ export class PlayWordComponent implements OnInit {
     this.colorProgressbar = 'primary';
     if (this.count == this.max)  {
       this.doneGame();
-      this.isEnd = true;   
-      this.isPlaying = false;   
+      this.isEnd = true;     
       return;
     }
     this.count++;
@@ -395,6 +390,7 @@ export class PlayWordComponent implements OnInit {
 
   doneGame() {
     if (this.onlineGame) {
+      this.isPlaying = false; 
       this.turn['game'] = 'word';
       this.turn['contentGame'] = this.contentGame;
       if (this.isReceiver) {
@@ -424,16 +420,6 @@ export class PlayWordComponent implements OnInit {
     this.playerFriend = friend;
     this.to = friend;
     this.to['score'] = 0;
-  }
-
-  sendRequestGame() {
-    if (!this.isRequest) {
-      this.gameService.createGame(this.turn).then(res => {
-        console.log(res);
-      });
-    } else {
-      //update Game
-    }
   }
 
   toUser(toUser: Object) {
@@ -476,11 +462,4 @@ export class PlayWordComponent implements OnInit {
       this.socketService.logoutGame(this.socket, this.profile['_id']);
     }
   }
-
-  // @HostListener('window:beforeunload', ['$event'])
-  // beforeunloadHandler(event) {
-  //   if (this.socket != undefined) {
-  //     this.socketService.logout(this.socket, this.profile['_id']);
-  //   }
-  // }
 }

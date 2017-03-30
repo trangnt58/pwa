@@ -2,12 +2,14 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { GameService } from './../../services/game.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { MdSnackBar } from '@angular/material';
+import { GlobalVarsService } from './../../services/global-vars.service';
+import { SocketService } from './../../services/socket.service';
 
 @Component({
   selector: 'app-my-answer',
   templateUrl: './my-answer.component.html',
   styleUrls: ['./my-answer.component.css'],
-  providers: [ GameService ]
+  providers: [ GameService, SocketService ]
 })
 export class MyAnswerComponent implements OnInit {
   @Output() goBack = new EventEmitter<boolean>();
@@ -21,17 +23,24 @@ export class MyAnswerComponent implements OnInit {
   fromAns = [];
   toAns = [];
   isSend: boolean = false;
+  socket: any;
   constructor( private gameService: GameService, private router: Router, 
-    public snackBar: MdSnackBar) { }
+    private globalVars: GlobalVarsService, 
+    private socketService: SocketService,) { }
 
   ngOnInit() {
     this.content = this.turnGame['contentGame'];
     this.fromAns = this.turnGame['fromAns'];
     this.toAns = this.turnGame['toAns'];
-    
-    if (this.isReceiver) {
-      this.saveGame();
-    }
+   
+    this.globalVars.fullSocket.subscribe(res => {
+      if(res != null) {
+        this.socket = res['socket'];
+         if (this.isReceiver) {
+          this.saveGame();
+        }
+      }
+    })
   }
 
   compare(str1, str2) {
@@ -56,34 +65,32 @@ export class MyAnswerComponent implements OnInit {
     turn['played'] = true;
     turn['from']['score'] = this.from['score'];
     turn['to']['score'] = this.to['score'];
-    this.gameService.createGame(turn).then(res => {
-      console.log('success');
-      //console.log(res);
-    });
+    // this.gameService.createGame(turn).then(res => {
+    //   console.log('success');
+    //   //console.log(res);
+    // });
+
+    var history: Object = {
+      "player1": {
+        "id": this.from['_id'],
+        "win": 0
+      },
+      "player2": {
+        "id": this.to['_id'],
+        "win": 0
+      }
+    }
+
+    if (this.from['score'] >= this.to['score']) {
+      history['player1']['win'] = 1;
+    } else {
+      history['player2']['win'] = 1;
+    }
+    if(this.socket != null) {
+      this.socketService.sendEvent(this.socket, 'save-history', history);
+    }
+
   }
-
-  // sendRequestGame() {
-  //   if (!this.isRequest) {
-  //     this.gameService.createGame(this.turnGame).then(res => {
-  //       this.openSnackBar('Send request success!');
-  //       this.isSend = true;
-  //       //this.router.navigate(['/playword']);
-  //     });
-  //   } else {
-  //     console.log(this.turnGame);
-  //     this.gameService.updateGame(this.turnGame['_id'], this.turnGame).then(res => {
-  //       this.openSnackBar('Save success!');
-  //       this.isSend = true;
-  //       //this.router.navigate(['/playword']);
-  //     });
-  //   }
-  // }
-
-  // openSnackBar(message) {
-  //   this.snackBar.open(message,'', {
-  //     duration: 3000,
-  //   });
-  // }
 
   goPlayWord() {
     this.goBack.emit(true);

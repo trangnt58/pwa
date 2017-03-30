@@ -25,7 +25,6 @@ export class RandomUserComponent implements OnInit {
     		this.idUser = value['profile']['_id'];
     		this.socketService.receiveRandomUser(this.socket).subscribe(res => {
     			this.randomUser = res;
-
     		});
         this.socketService.getNumOfOnline(this.socket).subscribe(res => {
           if(res != null) this.numOfOnline = Number(res);

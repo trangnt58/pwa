@@ -3,9 +3,8 @@ import { Injectable } from '@angular/core';
 
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
+import { Config } from './config';
 
-/*npm install @types/socket.io-client --save
-*/
 import * as io from 'socket.io-client';
 
 @Injectable()
@@ -14,7 +13,7 @@ export class SocketService {
 	/* 
 	* specifying Base URL.
 	*/
-	private BASE_URL = 'http://localhost:3000';  
+	private BASE_URL = Config.url;  
   private socket;
 
   constructor() {}

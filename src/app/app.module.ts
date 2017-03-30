@@ -90,7 +90,7 @@ const appRoutes: Routes = [
     HttpModule,
     MaterialModule.forRoot(),
     FlexLayoutModule.forRoot(),
-    RouterModule.forRoot(appRoutes),
+    RouterModule.forRoot(appRoutes, {useHash: true}),
     PushNotificationsModule
   ],
   providers: [ GlobalVarsService ],

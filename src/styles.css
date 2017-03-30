@@ -25,3 +25,13 @@ body {
 .caption {
 	font-size: 12px;
 }
+
+.list-notify md-card {
+	padding: 0 !important;
+	box-shadow: none !important;
+}
+
+.list-notify md-card md-card-header md-card-title,
+.list-notify md-card md-card-header md-card-subtitle{
+	font-size: 12px;
+}

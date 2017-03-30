@@ -8,15 +8,15 @@
 	    <md-card-title>{{user.name}}</md-card-title>
 	    <md-card-subtitle>{{user.email}}</md-card-subtitle>
 
-	    <button *ngIf="!user.isFriend&&!isMe&&!user.isRequest&&state!='isFriend'" md-raised-button 
-	    	(click)="createFriend()"> 
+	    <button *ngIf="user.state==''&&!isMe" 	
+	       md-raised-button [disabled]="sendRequest"
+	    	(click)="createFriend()" > 
 	    	Add Friend
 	    </button>
-	
-	    <button *ngIf="state=='isFriend'||user.isFriend" md-raised-button (click)="unfriend()"> Unfriend
+	    <button *ngIf="user.state=='isFriend'" md-raised-button (click)="unfriend()"> Unfriend
 	    </button>
-	    <button *ngIf="user.isRequest" md-raised-button (click)="acceptRequest()"> Accept
+	    <button *ngIf="user.state=='isRequest'" md-raised-button (click)="acceptRequest()"> Accept
 	    </button>
-	    <md-icon *ngIf="user.isRequest" mdTooltip="Ignore this!" (click)="ignoreRequest()" style="cursor: pointer;">clear</md-icon>
+	    <md-icon *ngIf="user.state=='isRequest'" mdTooltip="Ignore this!" (click)="ignoreRequest()" style="cursor: pointer;">clear</md-icon>
 	  </md-card-header>
 	</md-card>

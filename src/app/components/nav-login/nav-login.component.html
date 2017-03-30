@@ -8,11 +8,20 @@
 	<span style="vertical-align: middle; line-height: 64px;">{{profile.name}}</span>
 	<span style="position: relative;">
 	<button md-icon-button class="notification-container" (click)="showNotify()">
-    <md-icon>public</md-icon>
-    <span class="notification-counter">1</span>
+    <!-- <md-icon>public</md-icon> -->
+    <md-icon>supervisor_account</md-icon>
+    <span class="notification-counter"  *ngIf="requests.length>0">{{requests.length}}
+    </span>
   </button>
   <div class="list-notify" *ngIf="showNoti">
-  	Test Notification
+  	<span class="caption"> Friend Requests </span>
+  	<hr>
+  	<div class="caption" *ngIf="requests.length==0"> Chưa có yêu cầu nào </div>
+  	<md-list *ngIf="requests.length>0">
+		  <md-list-item *ngFor="let item of requests">
+		  	<app-user-item [user]="item"></app-user-item>
+		  </md-list-item>
+		</md-list>
   </div>
 
   </span>

@@ -8,8 +8,9 @@
       </div>
       <p class="name-friend text-center primary">{{from.name}}</p>
 </div>
+<h4 *ngIf="status" class="primary" style="text-align: center;" [innerHTML]="status"></h4>
 <div class="action">
-    <button md-button (click)="cancel()">Hủy</button>
-    <button md-button (click)="agree()">Chấp nhận</button>
+    <button md-button (click)="cancel()" [disabled]="status" >Hủy</button>
+    <button md-button (click)="agree()" [disabled]="status" >Chấp nhận</button>
 </div>
 </div>

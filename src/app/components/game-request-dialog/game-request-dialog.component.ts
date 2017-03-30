@@ -17,6 +17,7 @@ export class GameRequestDialogComponent implements OnInit {
 
 	isAgree: boolean = false;
 	socket: any;
+  status: String = null;
 
   constructor(public dialogRef: MdDialogRef<GameRequestDialogComponent>, 
   	private socketService: SocketService, private globalVars: GlobalVarsService) { }
@@ -38,7 +39,7 @@ export class GameRequestDialogComponent implements OnInit {
   agree() {
   	this.isAgree = true;
   	this.sendResponse();
-  	//this.dialogRef.close(this.isAgree);
+    this.status = "Đang tải game..."
   }
 
   cancel() {
