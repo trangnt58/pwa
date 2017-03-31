@@ -10,6 +10,7 @@ import { GameRequestDialogComponent } from './../../components/game-request-dial
 import { PushNotificationsService } from 'angular2-notifications';
 
 declare var gapi: any;
+declare const FB: any;
 
 @Component({
   selector: 'app-nav-login',
@@ -170,7 +171,6 @@ export class NavLoginComponent implements OnInit {
               //lần đầu đăng nhập
               if (res == null) {
                 this.loginService.login(this.profile).then(res => {
-                 // console.log(res['_id']);
                   this.profile['_id'] = res['_id'];
                   this.globalVars.setProfile(this.profile);
                 });
@@ -194,20 +194,28 @@ export class NavLoginComponent implements OnInit {
   }
 
   logOut() {
-    this.auth2 = gapi.auth2.getAuthInstance();
-    
-    this.auth2.signOut().then(() => {
-      if (this.socket != undefined) {
-        this.socketService.logout(this.socket,this.profile['_id']);
-      }
-      console.log('User signed out.');
-      this.zone.run(() => {
+    if (this.profile['method'] == 'facebook') {
+      FB.logout((response) => {
         this.globalVars.setLoginStatus(false);
-        this.isLogin = false;
-        this.profile = {};
         this.router.navigate(['/login']);
-      })
-    });
+        return;
+      });
+    } else {
+      this.auth2 = gapi.auth2.getAuthInstance();
+      
+      this.auth2.signOut().then(() => {
+        if (this.socket != undefined) {
+          this.socketService.logout(this.socket,this.profile['_id']);
+        }
+        console.log('User signed out.');
+        this.zone.run(() => {
+          this.globalVars.setLoginStatus(false);
+          this.isLogin = false;
+          this.profile = {};
+          this.router.navigate(['/login']);
+        });
+      });
+    }
   }
 
   goProfile() {

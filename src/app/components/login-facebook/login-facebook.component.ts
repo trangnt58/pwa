@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { GlobalVarsService } from '../../services/global-vars.service';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 declare const FB: any;
 
@@ -8,49 +10,60 @@ declare const FB: any;
   styleUrls: ['./login-facebook.component.css']
 })
 export class LoginFacebookComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-  loginFB() {
-    console.log('dang login');
-    FB.login((result: any) => {
-      console.log(result);
-    }, { scope: 'user_friends' });
-  }
-
-  testAPI() {
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function(response) {
-      console.log(JSON.stringify(response));
+  profile: Object = {};
+  constructor( private globalVars: GlobalVarsService, private router: Router) {
+     FB.init({
+      appId      : '1848098138804243',
+      xfbml      : true,
+      cookie    : true,
+      version    : 'v2.8'
     });
   }
 
-  statusChangeCallback(response) {
-    console.log(response);
-    // The response object is returned with a status field that lets the
-    // app know the current login status of the person.
-    // Full docs on the response object can be found in the documentation
-    // for FB.getLoginStatus().
-    if (response.status === 'connected') {
-      // Logged into your app and Facebook.
-      this.testAPI();
-    } else if (response.status === 'not_authorized') {
-      // The person is logged into Facebook, but not your app.
-      this.loginFB();
-    } else {
-      // The person is not logged into Facebook, so we're not sure if
-      // they are logged into this app or not.
-      console.log('enter');
-      this.loginFB();
-    }
+  ngOnInit() {
+    FB.getLoginStatus(response => {
+      this.statusChangeCallback(response);
+    });
   }
 
-  checkLoginState() {
-    FB.getLoginStatus((response) => {
-      this.statusChangeCallback(response);
+  loginFB() {
+    FB.login((result: any) => {
+      console.log(result);
+      this.getInfoUser();
+    }, { scope: 'email' });
+  }
+
+  getInfoUser() {
+    FB.api('me?fields=id,name,email,picture', (res) => {
+      if (res != null) {
+        this.profile['name'] = res.name;
+        this.profile['imageUrl'] = res.picture.data.url;
+        this.profile['email'] = res.email;
+        this.profile['method'] = 'facebook';
+        this.globalVars.setProfile(this.profile);
+        this.globalVars.setLoginStatus(true);
+        this.router.navigate(['/menugame']);
+        //console.log(res);
+        // 
+      }
+       
+    });
+  }
+
+  statusChangeCallback(res) {
+    if (res.status === 'connected') {
+      this.getInfoUser();      
+    } else if (res.status === 'not_authorized') {
+        
+    }else {
+        
+    }
+  };
+
+
+  logout() {
+    FB.logout(function(response) {
+      console.log(response);
     });
   }
 

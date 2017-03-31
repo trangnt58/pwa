@@ -22,7 +22,6 @@ export class LoginGoogleComponent implements OnInit {
   constructor(private zone: NgZone, private globalVars: GlobalVarsService, 
     private userService: UserService, private loginService: LoginService, 
     private router: Router) { 
-    // this.globalVars.isUserLoggedIn.subscribe(value => console.log(value));
   }
 
   ngOnInit() {
@@ -31,10 +30,8 @@ export class LoginGoogleComponent implements OnInit {
 
   start() {
     gapi.load('auth2', () => {
-      // Retrieve the singleton for the GoogleAuth library and set up the client.
       this.auth2 = gapi.auth2.init({
         client_id: '736288713251-26srbi81jha5n1aithe4av668oh5pn12.apps.googleusercontent.com'
-        //scope: 'https://www.googleapis.com/auth/drive'
       });
 
       this.auth2.then(() => {
@@ -84,19 +81,12 @@ export class LoginGoogleComponent implements OnInit {
                 this.globalVars.setProfile(this.profile);
               });
             } else {
-              //đã đăng nhập
-              // this.userService.getUser(this.profile['email']).then(res => {
-              //   console.log(res['_id']);
-              //   this.profile['id'] = res['_id'];
-              //   this.globalVars.setProfile(this.profile);
-              // });
              this.userService.updateUser(this.profile['email'], this.profile).then(res => {
                 this.profile = res;
                 this.globalVars.setProfile(this.profile);
               });
             }
           });
-
 
           this.globalVars.setLoginStatus(true);
          
