@@ -53,7 +53,6 @@ export class MyFriendsComponent implements OnInit {
             } else {
               if (res['singleUser'] && this.checkUserInList(res['list_friend']['_id'])) {
                 if(this.friends.length > 0) {
-                  console.log(res['list_friend']['socketId']);
                   this.friends = this.friends.filter(function( obj ) {
                     return obj['_id'] !== res['list_friend']['_id'];
                   });
@@ -92,6 +91,7 @@ export class MyFriendsComponent implements OnInit {
     } else {
       this.playerFriend = null;
       this.selectedFriend = false;
+      this.selectFriend.emit(item);
     }
   }
 

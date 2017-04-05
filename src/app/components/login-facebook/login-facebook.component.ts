@@ -1,18 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { GlobalVarsService } from '../../services/global-vars.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { LoginService } from '../../services/login.service';
+import { CoolLocalStorage } from 'angular2-cool-storage';
 
 declare const FB: any;
 
 @Component({
   selector: 'app-login-facebook',
   templateUrl: './login-facebook.component.html',
-  styleUrls: ['./login-facebook.component.css']
+  styleUrls: ['./login-facebook.component.css'],
+  providers: [ LoginService ]
 })
 export class LoginFacebookComponent implements OnInit {
   profile: Object = {};
-  constructor( private globalVars: GlobalVarsService, private router: Router) {
-     FB.init({
+  localStorage: CoolLocalStorage;
+  constructor( private globalVars: GlobalVarsService, private router: Router,
+    private loginService: LoginService,
+    localStorage: CoolLocalStorage) {
+    this.localStorage = localStorage;
+    FB.init({
       appId      : '1848098138804243',
       xfbml      : true,
       cookie    : true,
@@ -21,14 +28,11 @@ export class LoginFacebookComponent implements OnInit {
   }
 
   ngOnInit() {
-    FB.getLoginStatus(response => {
-      this.statusChangeCallback(response);
-    });
+    
   }
 
   loginFB() {
     FB.login((result: any) => {
-      console.log(result);
       this.getInfoUser();
     }, { scope: 'email' });
   }
@@ -40,13 +44,9 @@ export class LoginFacebookComponent implements OnInit {
         this.profile['imageUrl'] = res.picture.data.url;
         this.profile['email'] = res.email;
         this.profile['method'] = 'facebook';
-        this.globalVars.setProfile(this.profile);
-        this.globalVars.setLoginStatus(true);
-        this.router.navigate(['/menugame']);
-        //console.log(res);
-        // 
-      }
-       
+        //save on mlab
+        this.createUser();    
+      }     
     });
   }
 
@@ -60,11 +60,13 @@ export class LoginFacebookComponent implements OnInit {
     }
   };
 
-
-  logout() {
-    FB.logout(function(response) {
-      console.log(response);
+  createUser() {
+    this.loginService.updateInfo(this.profile['email'], 'facebook', this.profile).then(res => {
+      this.profile = res;
+      this.globalVars.setProfile(this.profile);
+      this.globalVars.setLoginStatus(true);
+      this.localStorage.setItem('login', 'facebook');
+      this.router.navigate(['/menugame']);
     });
   }
-
 }

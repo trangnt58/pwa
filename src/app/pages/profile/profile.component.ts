@@ -30,7 +30,6 @@ export class ProfileComponent implements OnInit {
         this.socketService.getFriendList(this.socket, id).subscribe(res => {
           if (res['type'] =='list') {
             this.zone.run(() => {
-              
               for (let i = 0; i < res['list_friend'].length; i++) {
                 res['list_friend'][i]['state'] = 'isFriend';
               }
@@ -62,7 +61,6 @@ export class ProfileComponent implements OnInit {
 
         this.socketService.listenEvent(this.socket, 'new-user').subscribe(res => {
           if(this.getNewArray(this.friends, res) != null) {
-            //console.log('a new user in friends online');
             res['state'] = 'isFriend';
             this.friends = this.getNewArray(this.friends, res);
           }
@@ -74,7 +72,6 @@ export class ProfileComponent implements OnInit {
   agree(item) {
     this.userService.agreeRequest(item['_id'], this.profile['_id']).then(res => {
       console.log(res);
-      console.log('đã đồng ý');
     });
   }
 

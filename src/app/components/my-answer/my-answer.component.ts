@@ -49,27 +49,6 @@ export class MyAnswerComponent implements OnInit {
   }
 
   saveGame() {
-    
-    var turn: Object = {
-        "from": {
-          "id": "",
-          "score": 0
-        },
-        "to": {
-          "id": "",
-          "score": 0
-        }
-    };
-    turn['from']['id'] = this.from['_id'];
-    turn['to']['id'] = this.to['_id'];
-    turn['played'] = true;
-    turn['from']['score'] = this.from['score'];
-    turn['to']['score'] = this.to['score'];
-    // this.gameService.createGame(turn).then(res => {
-    //   console.log('success');
-    //   //console.log(res);
-    // });
-
     var history: Object = {
       "player1": {
         "id": this.from['_id'],
@@ -81,9 +60,10 @@ export class MyAnswerComponent implements OnInit {
       }
     }
 
-    if (this.from['score'] >= this.to['score']) {
+    if (this.from['score'] > this.to['score']) {
       history['player1']['win'] = 1;
-    } else {
+    }
+    if(this.from['score'] < this.to['score']){
       history['player2']['win'] = 1;
     }
     if(this.socket != null) {

@@ -8,6 +8,7 @@ import { SocketService } from './../../services/socket.service';
 import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
 import { GameRequestDialogComponent } from './../../components/game-request-dialog/game-request-dialog.component';
 import { PushNotificationsService } from 'angular2-notifications';
+import { CoolLocalStorage } from 'angular2-cool-storage';
 
 declare var gapi: any;
 declare const FB: any;
@@ -19,6 +20,8 @@ declare const FB: any;
   providers: [ LoginService, UserService, SocketService ]
 })
 export class NavLoginComponent implements OnInit {
+  localStorage: CoolLocalStorage;
+
   @ViewChild(PlayWordComponent) playWordComponent;
 	isLogin: boolean = false;
 	profile: Object = {};
@@ -34,11 +37,21 @@ export class NavLoginComponent implements OnInit {
     private socketService: SocketService,
     private zone: NgZone, private router: Router,
     public dialog: MdDialog,
-    private _push: PushNotificationsService) {
+    private _push: PushNotificationsService,
+    localStorage: CoolLocalStorage) {
+    this.localStorage = localStorage;
 	}
 
   ngOnInit() {
-  	this.start();
+    // Check nếu đã đăng nhập
+    var method = this.localStorage.getItem('login');
+    if (method == 'google') {
+      this.startGoogle();
+    }
+    if (method == 'facebook') {
+      this.startFacebook();
+    }
+ 
   	this.globalVars.isUserLoggedIn.subscribe(value => {
   		this.zone.run(() => {
   			this.isLogin = value;
@@ -57,13 +70,13 @@ export class NavLoginComponent implements OnInit {
 
     //get correct socket from mlab
     this.globalVars.mySocketId.subscribe(value => {
-      if(value != null) {
+      if (value != null) {
         this.mySocketId = value;
       }
     });
 
     this.globalVars.fullSocket.subscribe(value => {
-      if(value != null) {
+      if (value != null) {
         this.socket = value['socket'];
         var id = value['profile']['_id'];
         this.socketService.listenEvent(this.socket, 'get-info-socket').subscribe(res => {
@@ -90,7 +103,6 @@ export class NavLoginComponent implements OnInit {
 
         this.socketService.listenEvent(this.socket, 'new-user').subscribe(res => {
           if(this.getNewArray(this.requests, res) != null) {
-            //console.log('a new user in requests online ' + res['socketId']);
             this.requests = this.getNewArray(this.requests, res);
             for (let i = 0; i < this.requests.length; i++) {
               this.requests[i]['state'] = 'isRequest';
@@ -136,8 +148,12 @@ export class NavLoginComponent implements OnInit {
       }).subscribe(
             res => {},
             err => {}
-        );
+      );
     }
+  }
+
+  saveLocal(method) {
+    this.localStorage.setItem('login', method);
   }
 
   //set socket and profile to global
@@ -148,7 +164,7 @@ export class NavLoginComponent implements OnInit {
     this.globalVars.setFullSocket(fullSocket);
   }
 
-  start() {
+  startGoogle() {
     gapi.load('auth2', () => {
       this.auth2 = gapi.auth2.init({
         client_id: '736288713251-26srbi81jha5n1aithe4av668oh5pn12.apps.googleusercontent.com'
@@ -165,53 +181,87 @@ export class NavLoginComponent implements OnInit {
 	          this.profile['name'] = res.getName();
 	          this.profile['imageUrl'] = res.getImageUrl();
             this.profile['email'] = res.getEmail();
-	          this.globalVars.setLoginStatus(true);
+            this.profile['method'] = 'google';
             //save mlab
-            this.loginService.checkExist(this.profile['email']).then(res => {
-              //lần đầu đăng nhập
-              if (res == null) {
-                this.loginService.login(this.profile).then(res => {
-                  this.profile['_id'] = res['_id'];
-                  this.globalVars.setProfile(this.profile);
-                });
-              } else {
-                //đã đăng nhập
-                this.userService.updateUser(this.profile['email'], this.profile).then(res => {
-                  this.profile = res;
-                  this.globalVars.setProfile(this.profile);
-                });
-              }
-            });
-
+            this.loginService.updateInfo(this.profile['email'], 'google', this.profile).then(res => {
+              this.profile = res;
+              this.globalVars.setProfile(this.profile);
+              this.globalVars.setLoginStatus(true);
+            });         
         	});
         } else {
-          console.log('not login');
           this.globalVars.setLoginStatus(false);
         }
       });
 
-     });
+    });
+  }
+
+  startFacebook() {
+    FB.init({
+      appId      : '1848098138804243',
+      xfbml      : true,
+      cookie    : true,
+      version    : 'v2.8'
+    });
+
+    FB.getLoginStatus(response => {
+      this.statusChangeCallback(response);
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  getInfoUser() {
+    FB.api('me?fields=id,name,email,picture', (res) => {
+      if (res != null) {
+        this.profile['name'] = res.name;
+        this.profile['imageUrl'] = res.picture.data.url;
+        this.profile['email'] = res.email;
+        this.profile['method'] = 'facebook';
+        //save on mlab
+        this.createUser();    
+      }     
+    });
+  }
+
+  statusChangeCallback(res) {
+    if (res.status === 'connected') {
+      this.getInfoUser();      
+    } else if (res.status === 'not_authorized') {
+        
+    }else {
+        
+    }
+  };
+
+  createUser() {
+    this.loginService.updateInfo(this.profile['email'], 'facebook', this.profile).then(res => {
+      this.profile = res;
+      this.globalVars.setProfile(this.profile);
+      this.globalVars.setLoginStatus(true);
+      this.localStorage.setItem('login', 'facebook');
+    });
   }
 
   logOut() {
     if (this.profile['method'] == 'facebook') {
       FB.logout((response) => {
         this.globalVars.setLoginStatus(false);
+        this.localStorage.setItem('login', '');
         this.router.navigate(['/login']);
         return;
       });
     } else {
-      this.auth2 = gapi.auth2.getAuthInstance();
-      
+      this.auth2 = gapi.auth2.getAuthInstance();      
       this.auth2.signOut().then(() => {
         if (this.socket != undefined) {
           this.socketService.logout(this.socket,this.profile['_id']);
         }
-        console.log('User signed out.');
         this.zone.run(() => {
           this.globalVars.setLoginStatus(false);
-          this.isLogin = false;
-          this.profile = {};
+          this.globalVars.setFullSocket(null);
+          this.localStorage.setItem('login', '');
           this.router.navigate(['/login']);
         });
       });

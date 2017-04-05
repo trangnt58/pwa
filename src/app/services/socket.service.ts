@@ -204,8 +204,6 @@ export class SocketService {
 
   receiveRequestSocket(socket, userId) {
     if(userId == undefined) return null;
-    //this.connectSocket(userId);
-   // this.socket.emit('friend-list', userId);
     let observable = new Observable(observer => {
       socket.on('send-request-response', (data) => {
         observer.next(data);    
@@ -217,19 +215,6 @@ export class SocketService {
     })     
     return observable;
   }
-
-
-  // getFriendList(userId: string): Promise<Object[]> {
-  //   this.socket = io(this.BASE_URL);
-  //   this.socket.emit('friend-list', userId);
-  //   return new Promise(resolve => {
-  //     this.socket.on('friend-list-response', (data) => {
-  //       resolve(data);    
-  //     });
-  //   });
-
-  // }
-
 
   getNumOfOnline(socket){
      let observable = new Observable(observer => {
@@ -299,8 +284,10 @@ export class SocketService {
   /* 
   * Method to emit the disconnect event.
   */
-  // disconnect(userId):any {
-  //   this.socket.emit('disconnect', userId);
-  // }
+  disconnect(socket):any {
+    socket.disconnect();
+    // console.log('disconnect');
+    // socket.emit('disconnect');
+  }
 
 }

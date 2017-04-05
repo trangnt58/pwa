@@ -75,6 +75,7 @@ export class PlayWordComponent implements OnInit {
   scorePerQues: number = 0;
   countCorrect: number = 0;
   isPlaying: boolean = false;
+  isInit: boolean = false;
 
   constructor( private wordService: WordService, private gameService: GameService,
     private socketService: SocketService,
@@ -83,6 +84,7 @@ export class PlayWordComponent implements OnInit {
     public dialog: MdDialog ) { }
 
   ngOnInit() {
+    this.isInit = true;
 
     this.globalVars.profile.subscribe(value => {
       if (value['_id'] != undefined) {
@@ -93,9 +95,10 @@ export class PlayWordComponent implements OnInit {
     });
 
     this.globalVars.fullSocket.subscribe(value => {
-      if(value != null) {
+      if (value != null && this.isInit) {
         this.socket = value['socket'];
         let idUser = value['profile']['_id'];
+        
         // turn on online status
         this.socketService.goPlayWord(this.socket);
         this.socketService.receiveRequestSocket(this.socket, idUser).subscribe(res => {
@@ -400,23 +403,15 @@ export class PlayWordComponent implements OnInit {
         this.turn['fromAns'] = this.answers;
       }
     }
-    //user khởi đầu game
-    // if (!this.isRequest) {   
-    //   this.turn['from']['id']= this.profile['_id'];
-    //   this.turn['from']['score'] = this.score;
-    //   this.turn['to']['id'] = this.playerFriend['_id'];
-    //   this.turn['game'] = 'word';
-    //   this.turn['content'] = this.allQuestions;
-    //   this.turn['fromAns'] = this.answers;
-    // //game là từ người khác yêu cầu
-    // } else {
-    //   this.turn['toAns'] = this.answers;
-    //   this.turn['to']['score'] = this.score;
-    // }
   }
 
   selectFriend(friend: Object) {
-    this.selectedFriend = true;
+    if(friend['online'] == true) {
+      this.selectedFriend = true;
+    }else {
+      this.selectedFriend = false;
+    }
+   
     this.playerFriend = friend;
     this.to = friend;
     this.to['score'] = 0;
@@ -435,7 +430,6 @@ export class PlayWordComponent implements OnInit {
     this.from['score'] = request['from']['score'];
     this.to = request['to']['id'];
     this.to['score'] = 0;
-    //this.openDialog();
   }
 
   sendRequestSocket(){
@@ -448,7 +442,7 @@ export class PlayWordComponent implements OnInit {
     this.openDialog(this.to['socketId']);
 
     this.socketService.waitAccept(this.socket).subscribe(res => {
-        console.log(res);
+      console.log(res);
     });
   }
 
@@ -458,8 +452,9 @@ export class PlayWordComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    this.isInit = false;
     if (this.socket != undefined) {
-      this.socketService.logoutGame(this.socket, this.profile['_id']);
+      this.socketService.logout(this.socket,this.profile['_id']);
     }
   }
 }

@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { MaterialModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule, Routes } from '@angular/router';
+import { CoolStorageModule } from 'angular2-cool-storage';
 
 import { GlobalVarsService } from './services/global-vars.service';
 
@@ -91,7 +92,8 @@ const appRoutes: Routes = [
     MaterialModule.forRoot(),
     FlexLayoutModule.forRoot(),
     RouterModule.forRoot(appRoutes, {useHash: true}),
-    PushNotificationsModule
+    PushNotificationsModule,
+    CoolStorageModule
   ],
   providers: [ GlobalVarsService ],
   entryComponents: [

@@ -24,21 +24,11 @@ export class MenuGameComponent implements OnInit {
     private _push: PushNotificationsService ) { }
 
   ngOnInit() {
-    this.globalVars.profile.subscribe(value => {
-      if(value['_id'] != undefined) {
-        this.isLogin = true;
-      }
+    this.globalVars.isUserLoggedIn.subscribe(value => {
+      this.isLogin = value;
     });
-    // this.connection = this.socketService.getMessages().subscribe(message => {
-    //   console.log(message);
-    //   this.messages.push(message);
-    // })
-    
   }
-  ngDestroy() {
-    this.connection.unsubscribe();
-  }
-
+ 
   playWord() {
     if(!this.isLogin) {
       this.openSnackBar('You must log in to play this game.');

@@ -8,21 +8,23 @@ export class LoginService {
   constructor(private http: Http) { }
 
   login(user){
-
   	let headers = new Headers();
     headers.append('Content-Type', 'application/json');
      return new Promise(resolve => {
-      this.http.post(Config.url+ '/users/api/create', JSON.stringify(user), {headers: headers})
+      this.http.post(Config.url+ '/api/users/create', JSON.stringify(user), {headers: headers})
       .subscribe(res => {
         resolve(res.json());
       });
     });
   }
 
-  checkExist(email): Promise<Object> {
-    return new Promise(resolve => {
-      this.http.get(Config.url+'/users/api/'+ email).subscribe(result => {
-        resolve(result.json());
+  updateInfo(email, method, user): Promise<Object> {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+     return new Promise(resolve => {
+      this.http.post(Config.url + '/api/users/edit/'+ email + '/'+ method, JSON.stringify(user), {headers: headers})
+      .subscribe(res => {
+        resolve(res.json());
       });
     });
   }

@@ -3,6 +3,7 @@ import { GlobalVarsService } from '../../services/global-vars.service';
 import { LoginService } from '../../services/login.service';
 import { UserService } from '../../services/user.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { CoolLocalStorage } from 'angular2-cool-storage';
 
 declare var gapi: any;
 
@@ -21,7 +22,7 @@ export class LoginGoogleComponent implements OnInit {
   
   constructor(private zone: NgZone, private globalVars: GlobalVarsService, 
     private userService: UserService, private loginService: LoginService, 
-    private router: Router) { 
+    private router: Router, private localStorage: CoolLocalStorage) { 
   }
 
   ngOnInit() {
@@ -30,6 +31,7 @@ export class LoginGoogleComponent implements OnInit {
 
   start() {
     gapi.load('auth2', () => {
+
       this.auth2 = gapi.auth2.init({
         client_id: '736288713251-26srbi81jha5n1aithe4av668oh5pn12.apps.googleusercontent.com'
       });
@@ -39,58 +41,33 @@ export class LoginGoogleComponent implements OnInit {
         var googleUser = this.auth2.currentUser.get();
         
         if (isSignedIn) {
-          this.isLogin = true;
-          
-          var res =  googleUser.getBasicProfile();
-          this.profile['displayName'] = res.getName();
-          this.profile['imageUrl'] = res.getImageUrl();
-
-          this.globalVars.setLoginStatus(true);
-          this.globalVars.setProfile(this.profile);
-          this.router.navigate(['/']);
-
+          //Đã đăng nhập
+          this.attachSignin(document.getElementById('customBtn'));
         } else {
           this.globalVars.setLoginStatus(false);
           this.attachSignin(document.getElementById('customBtn'));
         }
       });
-
-     });
+    });
   }
 
   attachSignin(element) {
     this.auth2.attachClickHandler(element, {},
       (googleUser) => {
         this.zone.run(() => {
-          this.isLogin = true;
-          
-          this.isLogout = false;
           var res =  googleUser.getBasicProfile();
           this.profile['displayName'] = res.getName();
           this.profile['imageUrl'] = res.getImageUrl();
           this.profile['name'] = res.getName();
           this.profile['email'] = res.getEmail();
 
-          //save mlab
-          this.loginService.checkExist(this.profile['email']).then(res => {
-            //lần đầu đăng nhập
-            if (res == null) {
-              this.loginService.login(this.profile).then(res => {
-                console.log(res['_id']);
-                this.profile['_id'] = res['_id'];
-                this.globalVars.setProfile(this.profile);
-              });
-            } else {
-             this.userService.updateUser(this.profile['email'], this.profile).then(res => {
-                this.profile = res;
-                this.globalVars.setProfile(this.profile);
-              });
-            }
-          });
-
-          this.globalVars.setLoginStatus(true);
-         
-          this.router.navigate(['/']);
+          this.loginService.updateInfo(this.profile['email'], 'google', this.profile).then(res => {
+            this.profile = res;
+            this.globalVars.setProfile(this.profile);
+            this.globalVars.setLoginStatus(true);
+            this.localStorage.setItem('login', 'google');
+            this.router.navigate(['/']);
+          });          
         });
       },(error) => {
         alert(JSON.stringify(error, undefined, 2));
@@ -100,24 +77,4 @@ export class LoginGoogleComponent implements OnInit {
   sendData() {
     return this.profile;
   }
-
-// if render button
-   onSuccess(googleUser) {
-      console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-    }
-    onFailure(error) {
-      console.log(error);
-    }
-    renderButton() {
-      gapi.signin2.render('my-signin2', {
-        'scope': 'profile email',
-        'width': 240,
-        'height': 50,
-        'longtitle': true,
-        'theme': 'dark',
-        'onsuccess': this.onSuccess,
-        'onfailure': this.onFailure
-      });
-    }
- 
 }
