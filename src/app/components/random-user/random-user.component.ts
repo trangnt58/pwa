@@ -23,7 +23,7 @@ export class RandomUserComponent implements OnInit {
     	if (value != null) {
     		this.socket = value['socket'];
     		this.idUser = value['profile']['_id'];
-    		this.socketService.receiveRandomUser(this.socket).subscribe(res => {
+    		this.socketService.listenEvent(this.socket, 'random-user-response').subscribe(res => {
     			this.randomUser = res;
     		});
         this.socketService.getNumOfOnline(this.socket).subscribe(res => {
@@ -39,6 +39,5 @@ export class RandomUserComponent implements OnInit {
 
   sendRequest() {
     this.toUser.emit(this.randomUser);
-    console.log('Gửi yêu cầu');
   }
 }

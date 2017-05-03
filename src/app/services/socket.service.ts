@@ -9,7 +9,7 @@ import * as io from 'socket.io-client';
 
 @Injectable()
 export class SocketService {
-
+  
 	/* 
 	* specifying Base URL.
 	*/
@@ -28,7 +28,6 @@ export class SocketService {
   }
 
   getFriendList(socket, userId: string) {
-    //this.connectSocket(userId);
     socket.emit('friend-list', userId);
     let observable = new Observable(observer => {
       socket.on('friend-list-response', (data) => {
@@ -105,103 +104,6 @@ export class SocketService {
     socket.emit('random-user', userId);
   }
 
-  receiveRandomUser(socket) {
-     let observable = new Observable(observer => {
-      socket.on('random-user-response', (data) => {
-        observer.next(data);    
-      });
-
-      return () => {
-        socket.disconnect();
-      };  
-    })     
-    return observable;
-
-  }
-
-  /* Người chơi gửi yêu cầu nhưng không nhận được phản hồi */
-  finishRequest(socket, request) {
-    socket.emit('finish-request', request);
-  }
-
-  receiveFinish(socket) {
-     let observable = new Observable(observer => {
-      socket.on('close-dialog', (data) => {
-        observer.next(data);    
-      });
-
-      return () => {
-        socket.disconnect();
-      };  
-    })     
-    return observable;
-  }
-
-
-  sendRequest(socket, request) {
-    socket.emit('send-request', request);
-  }
-
-  sendResponse(socket, response) {
-    socket.emit('send-response', response);
-  }
-
-  beginGame(socket) {
-    let observable = new Observable(observer => {
-      socket.on('begin-game', (data) => {
-        observer.next(data);    
-      });
-
-      return () => {
-        socket.disconnect();
-      };  
-    })     
-    return observable;
-  }
-
-  sendAns(socket, data) {
-    socket.emit('send-answer', data);
-  }
-
-  receiveAnsFriend(socket){
-     let observable = new Observable(observer => {
-      socket.on('receive-answer', (data) => {
-        observer.next(data);    
-      });
-
-      return () => {
-        socket.disconnect();
-      };  
-    })     
-    return observable;
-  }
-
-  receiveResponse(socket) {
-    let observable = new Observable(observer => {
-      socket.on('receive-response', (data) => {
-        observer.next(data);    
-      });
-
-      return () => {
-        socket.disconnect();
-      };  
-    })     
-    return observable;
-  }
-
-  waitAccept(socket) {
-    let observable = new Observable(observer => {
-      socket.on('wait-accept', (data) => {
-        observer.next(data);    
-      });
-
-      return () => {
-        socket.disconnect();
-      };  
-    })     
-    return observable;
-  }
-
   receiveRequestSocket(socket, userId) {
     if(userId == undefined) return null;
     let observable = new Observable(observer => {
@@ -217,6 +119,7 @@ export class SocketService {
   }
 
   getNumOfOnline(socket){
+    socket.emit('get-sum-online');
      let observable = new Observable(observer => {
       socket.on('sum-online', (data) => {
         observer.next(data);    
@@ -236,47 +139,9 @@ export class SocketService {
     socket.emit('history', userId);
   }
 
-
-  createFriend(socket, data) {
-    socket.emit('create-friend', data);
-  }
-
-  createFriendRequest(socket) {
-    let observable = new Observable(observer => {
-      socket.on('create-friend-request', (data) => {
-        observer.next(data);    
-      });
-
-      return () => {
-        socket.disconnect();
-      };  
-    })     
-    return observable;
-  }
-
-  unfriend(socket, data) {
-    socket.emit('unfriend', data);
-    let observable = new Observable(observer => {
-      socket.on('unfriend-response', (data) => {
-        observer.next(data);    
-      });
-
-      return () => {
-        socket.disconnect();
-      };  
-    })     
-    return observable;
-  }
-
-
-
   /* 
-  * Method to emit the logout event.
+  * Method to emit the logout or exit game event.
   */
-  logoutGame(socket, userId):any{
-    socket.emit('logout-game', userId);
-  }
-
   logout(socket, userId):any{
     socket.emit('logout', userId);
   }
@@ -286,8 +151,6 @@ export class SocketService {
   */
   disconnect(socket):any {
     socket.disconnect();
-    // console.log('disconnect');
-    // socket.emit('disconnect');
   }
 
 }

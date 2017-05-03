@@ -1,7 +1,7 @@
 <div *ngIf="from&&to">
   <div  class="waiting-game flex-container" fxLayout="row" 
        fxLayoutAlign="space-around center" >
-    <div class="item-friend flex-item" fxFlex="33%">
+    <div class="item-friend flex-item" fxFlex="33%" fxFlex.xs="50">
     	<md-card>
 	    	<md-card-header>
 		      <div md-card-avatar>
@@ -14,7 +14,7 @@
 		    </md-card-header>
 	    </md-card>
     </div>
-    <div class="flex-item" fxFlex="30%" class="primary">
+    <div class="flex-item" fxFlex="30%" fxFlex.xs="0" class="primary">
       <div class="center bg-primary btn-challenge">
         <span> VS.</span>
       </div>
@@ -28,7 +28,7 @@
 		        <img md-card-avatar *ngIf="to.imageUrl" src="{{to.imageUrl}}">
 		      </div>
 		      <md-card-title>{{to.name}}</md-card-title>
-			    <md-card-subtitle class="score" *ngIf="to.score">{{to.score}}</md-card-subtitle>
+			    <md-card-subtitle class="score" *ngIf="to.score != 'undefined' ">{{to.score}}</md-card-subtitle>
 		    </md-card-header>
 	    </md-card>
     </div>

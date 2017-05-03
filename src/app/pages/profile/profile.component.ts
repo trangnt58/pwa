@@ -2,6 +2,8 @@ import { Component, OnInit, NgZone } from '@angular/core';
 import { GlobalVarsService } from './../../services/global-vars.service';
 import { UserService } from './../../services/user.service';
 import { SocketService } from './../../services/socket.service';
+import { MdSnackBar } from '@angular/material';
+
 
 @Component({
   selector: 'app-profile',
@@ -18,6 +20,7 @@ export class ProfileComponent implements OnInit {
   constructor(private globalVars: GlobalVarsService, 
     private userService: UserService, 
     private zone: NgZone, 
+    public snackBar: MdSnackBar,
     private socketService: SocketService) { }
 
   ngOnInit() {
@@ -63,6 +66,16 @@ export class ProfileComponent implements OnInit {
           if(this.getNewArray(this.friends, res) != null) {
             res['state'] = 'isFriend';
             this.friends = this.getNewArray(this.friends, res);
+          }
+        });
+
+        this.socketService.listenEvent(this.socket, 'invalid-request').subscribe( res => {
+          console.log(res['type']);
+          if(res['type'] == 'friend') {
+            this.openSnackBar('Người này đã có trong danh sách bạn bè.');
+          }
+          if(res['type'] == 'request') {
+            this.openSnackBar('Bạn đã gửi yêu cầu tới người này rồi.')
           }
         });
       }
@@ -111,5 +124,11 @@ export class ProfileComponent implements OnInit {
       }
     }
     return null;
+  }
+
+  openSnackBar(message) {
+    this.snackBar.open(message,'', {
+      duration: 2000,
+    });
   }
 }

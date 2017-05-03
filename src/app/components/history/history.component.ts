@@ -16,7 +16,6 @@ export class HistoryComponent implements OnInit {
 
   ngOnInit() {
   	this.globalVars.fullSocket.subscribe(value => {
-
       if(value != null) {
         this.socket = value['socket'];
         this.profile = value['profile'];

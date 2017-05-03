@@ -68,8 +68,6 @@ export class SearchFriendComponent implements OnInit {
     this.search();
   }
 
-
-
   search(){
     if(this.query != '') {
       var data = {};
@@ -84,21 +82,6 @@ export class SearchFriendComponent implements OnInit {
     }
     else {
       this.result = [];
-    }
-  }
-
-  createFriend(item){
-    if(this.profile['_id'] != undefined) {
-      let friend: Object = {};
-      friend['from'] = this.profile['_id'];
-      friend['fromInfo'] = this.profile;
-      friend['to'] = item['_id'];
-      if(item['onApp'] == true) {
-        friend['toSocketId'] = item['socketId'];
-        this.socketService.createFriend(this.socket, friend);
-      } else {
-        
-      }    
     }
   }
 }

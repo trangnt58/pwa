@@ -40,7 +40,7 @@ export class WaitingGameComponent implements OnInit {
       this.globalVars.fullSocket.subscribe(res => {
         if(res == null) return;
         this.socket = res['socket'];
-        this.socketService.receiveResponse(this.socket).subscribe(res => {
+        this.socketService.listenEvent(this.socket, 'receive-response').subscribe(res => {
           //đồng ý
           if(res['agree']) {
             clearInterval(this.interval);
@@ -57,7 +57,7 @@ export class WaitingGameComponent implements OnInit {
         if (this.count == 0) {
           var data = {};
           data['toSocketId'] = this.toSocketId;
-          this.socketService.finishRequest(this.socket, data);
+          this.socketService.sendEvent(this.socket, 'finish-request', data);
           this.status = "Yêu cầu không được chấp nhận.";
           this.cancel();
         }  
@@ -68,7 +68,6 @@ export class WaitingGameComponent implements OnInit {
   ready() {
   	this.isReady = true;
   	clearInterval(this.interval);
-  	//this.dialogRef.close(this.isReady);
   }
 
   cancel() {

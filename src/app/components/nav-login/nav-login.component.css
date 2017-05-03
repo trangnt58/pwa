@@ -17,15 +17,15 @@
 }
 
 .notification-container {
-    position: relative;
-   /* width: 16px;
-    height: 16px;
-    top: 15px;
-    left: 15px;*/
+  position: relative;
+}
+
+md-list {
+  padding: 0 !important;
 }
 
 md-list-item {
-  padding-bottom: 10px;
+  padding: 15px;
   border-bottom: 1px solid #ccc;
 }
 
@@ -33,7 +33,6 @@ md-list-item {
     position: absolute;
     top: 5px;
     left: 22px;
-    
     background-color: rgba(212, 19, 13, 1);
     color: #fff;
     border-radius: 3px;
@@ -54,11 +53,16 @@ md-list-item {
 	border: 1px solid rgba(128, 128, 128, 0.2)
 }
 
+@media screen and (max-width: 350px) {
+  .list-notify {
+    max-width: 35vh;
+  }
+}
+
 hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 1em 0;
-    padding: 0; 
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  padding: 0; 
 }

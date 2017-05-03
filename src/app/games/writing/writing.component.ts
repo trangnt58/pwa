@@ -46,6 +46,10 @@ export class WritingComponent implements OnInit {
     return str1.trim().toLowerCase() == str2.trim().toLowerCase();
   }
 
+  speak() {
+    
+  }
+
   getAnswer() {
     this.gotAnswer = true;
 

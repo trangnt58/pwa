@@ -1,0 +1,16 @@
+md-card {
+	cursor: pointer;
+	padding: 15px;
+}
+
+.list-section {
+	padding-left: 20px;
+}
+
+.inline-item {
+	display: inline-block;
+}
+
+.title {
+	font-family: 'Noto Sans', sans-serif;
+}

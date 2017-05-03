@@ -1,0 +1,16 @@
+{
+  "routing": {
+    "index": "/index.html",
+    "routes": {
+      "/": {
+        "prefix": false
+      },
+      "/some/routes-group-prefix": {
+        "prefix": true
+      },
+      "/some/specific-route": {
+        "prefix": false
+      }
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import { Component, OnInit, NgZone, ViewChild, HostListener } from '@angular/core';
 import { GlobalVarsService } from '../../services/global-vars.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { PlayWordComponent } from '../../games/play-word/play-word.component';
 import { LoginService } from '../../services/login.service';
 import { UserService } from '../../services/user.service';
 import { SocketService } from './../../services/socket.service';
@@ -9,6 +8,11 @@ import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
 import { GameRequestDialogComponent } from './../../components/game-request-dialog/game-request-dialog.component';
 import { PushNotificationsService } from 'angular2-notifications';
 import { CoolLocalStorage } from 'angular2-cool-storage';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import {MdSnackBar} from '@angular/material';
+
+import 'rxjs/Rx';
 
 declare var gapi: any;
 declare const FB: any;
@@ -21,8 +25,8 @@ declare const FB: any;
 })
 export class NavLoginComponent implements OnInit {
   localStorage: CoolLocalStorage;
+  isConnected: Observable<boolean>;
 
-  @ViewChild(PlayWordComponent) playWordComponent;
 	isLogin: boolean = false;
 	profile: Object = {};
 	auth2: any;
@@ -32,17 +36,28 @@ export class NavLoginComponent implements OnInit {
   mySocketId: String;
   requests: Object[] = [];
 
+
   constructor (private globalVars: GlobalVarsService, 
     private userService: UserService, private loginService: LoginService, 
     private socketService: SocketService,
     private zone: NgZone, private router: Router,
     public dialog: MdDialog,
     private _push: PushNotificationsService,
-    localStorage: CoolLocalStorage) {
+    localStorage: CoolLocalStorage,
+    public snackBar: MdSnackBar) {
     this.localStorage = localStorage;
+    this.isConnected = Observable.merge(
+      Observable.of(navigator.onLine),
+      Observable.fromEvent(window, 'online').map(() => true),
+      Observable.fromEvent(window, 'offline').map(() => false));
 	}
 
   ngOnInit() {
+    this.isConnected.subscribe(res => {
+      if(res == false) {
+        this.informOffline();
+      }
+    })
     // Check nếu đã đăng nhập
     var method = this.localStorage.getItem('login');
     if (method == 'google') {
@@ -83,7 +98,7 @@ export class NavLoginComponent implements OnInit {
           this.globalVars.setMySocketId(res);
         });
 
-        this.socketService.createFriendRequest(this.socket).subscribe(res => {
+        this.socketService.listenEvent(this.socket, 'create-friend-request').subscribe(res => {
           this.createPush('Yêu cầu kết bạn', res['fromInfo']['name'] + ' đã gửi yêu cầu kết bạn'); 
           res['fromInfo']['state'] = 'isRequest';
           this.requests.push(res['fromInfo']);
@@ -274,5 +289,19 @@ export class NavLoginComponent implements OnInit {
 
   showNotify() {
     this.showNoti = !this.showNoti;
+  }
+
+  informOffline() {
+    setTimeout(() => {
+      this.openSnackBar('App will move to offline mode', 2000);
+
+    },2000);
+    this.openSnackBar('You seem to have a bad network connection.', 2000);
+  }
+
+  openSnackBar(message: string, time: number) {
+    this.snackBar.open(message, '', {
+      duration: time,
+    });
   }
 }

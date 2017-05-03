@@ -1,0 +1,25 @@
+.flex-item {
+	padding: 20px;
+}
+
+img {
+	height: 140px;
+}
+
+.title {
+	font-family: 'Noto Sans', sans-serif;
+}
+
+md-card {
+	cursor: pointer;
+}
+
+.lock {
+	opacity: 0.35;
+}
+
+.lock md-icon {
+	color: gray !important;
+	opacity: 1;
+	float: right;
+}

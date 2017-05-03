@@ -42,7 +42,7 @@ export class MenuGameComponent implements OnInit {
   }
 
   toLearn() {
-    this.router.navigate(['/learn']);
+    this.router.navigate(['/topic']);
   }
 
   openSnackBar(message) {

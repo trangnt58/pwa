@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { GameService } from './../../services/game.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { MdSnackBar } from '@angular/material';
 import { GlobalVarsService } from './../../services/global-vars.service';
@@ -9,7 +8,7 @@ import { SocketService } from './../../services/socket.service';
   selector: 'app-my-answer',
   templateUrl: './my-answer.component.html',
   styleUrls: ['./my-answer.component.css'],
-  providers: [ GameService, SocketService ]
+  providers: [ SocketService ]
 })
 export class MyAnswerComponent implements OnInit {
   @Output() goBack = new EventEmitter<boolean>();
@@ -24,7 +23,7 @@ export class MyAnswerComponent implements OnInit {
   toAns = [];
   isSend: boolean = false;
   socket: any;
-  constructor( private gameService: GameService, private router: Router, 
+  constructor( private router: Router, 
     private globalVars: GlobalVarsService, 
     private socketService: SocketService,) { }
 

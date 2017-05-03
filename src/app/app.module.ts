@@ -6,6 +6,7 @@ import 'hammerjs';
 
 import { AppComponent } from './app.component';
 import { MaterialModule } from '@angular/material';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule, Routes } from '@angular/router';
 import { CoolStorageModule } from 'angular2-cool-storage';
@@ -17,7 +18,6 @@ import { PlayWordComponent } from './games/play-word/play-word.component';
 import { MenuGameComponent } from './components/menu-game/menu-game.component';
 import { LoginComponent } from './components/login/login.component';
 import { LoginGoogleComponent } from './components/login-google/login-google.component';
-import { SongpopComponent } from './games/songpop/songpop.component';
 import { NavLoginComponent } from './components/nav-login/nav-login.component';
 import { LoginFacebookComponent } from './components/login-facebook/login-facebook.component';
 import { ProfileComponent } from './pages/profile/profile.component';
@@ -26,7 +26,6 @@ import { WritingComponent } from './games/writing/writing.component';
 import { ReadingComponent } from './games/reading/reading.component';
 import { MyAnswerComponent } from './components/my-answer/my-answer.component';
 import { MyFriendsComponent } from './components/my-friends/my-friends.component';
-import { GameRequestComponent } from './components/game-request/game-request.component';
 import { WaitingGameComponent } from './components/waiting-game/waiting-game.component';
 import { CircleProgressComponent } from './components/circle-progress/circle-progress.component';
 import { GamePlayerComponent } from './components/game-player/game-player.component';
@@ -38,6 +37,9 @@ import { UserCardComponent } from './components/user-card/user-card.component';
 import { HistoryComponent } from './components/history/history.component';
 import { PushNotificationsModule } from 'angular2-notifications';
 import { UserItemComponent } from './components/user-item/user-item.component';
+import { TopicComponent } from './components/topic/topic.component';
+import { SectionComponent } from './components/section/section.component';
+import { WarningOfflineComponent } from './components/warning-offline/warning-offline.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -46,8 +48,9 @@ const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'profile', component: ProfileComponent},
   { path: 'login-google', component: LoginGoogleComponent },
-  { path: 'songpop', component: SongpopComponent },
-  { path: 'learn', component: LearningComponent },
+  { path: 'topic', component: TopicComponent },
+  { path: 'topic/:topicId', component: SectionComponent },
+  { path: 'topic/:topicId/:sectionId', component: LearningComponent },
   {
     path: '',
     redirectTo: '/menugame',
@@ -64,7 +67,6 @@ const appRoutes: Routes = [
     MenuGameComponent,
     LoginComponent,
     LoginGoogleComponent,
-    SongpopComponent,
     NavLoginComponent,
     LoginFacebookComponent,
     ProfileComponent,
@@ -73,7 +75,6 @@ const appRoutes: Routes = [
     ReadingComponent,
     MyAnswerComponent,
     MyFriendsComponent,
-    GameRequestComponent,
     WaitingGameComponent,
     CircleProgressComponent,
     GamePlayerComponent,
@@ -83,14 +84,18 @@ const appRoutes: Routes = [
     RandomUserComponent,
     UserCardComponent,
     HistoryComponent,
-    UserItemComponent
+    UserItemComponent,
+    TopicComponent,
+    SectionComponent,
+    WarningOfflineComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
-    MaterialModule.forRoot(),
-    FlexLayoutModule.forRoot(),
+    MaterialModule,
+    BrowserAnimationsModule,
+    FlexLayoutModule,
     RouterModule.forRoot(appRoutes, {useHash: true}),
     PushNotificationsModule,
     CoolStorageModule

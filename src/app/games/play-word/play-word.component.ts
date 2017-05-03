@@ -3,13 +3,10 @@ import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
 
 import { WaitingGameComponent } from './../../components/waiting-game/waiting-game.component';
 import { GameRequestDialogComponent } from './../../components/game-request-dialog/game-request-dialog.component';
-
 import { WritingComponent } from './../../games/writing/writing.component';
 import { ReadingComponent } from './../../games/reading/reading.component';
-import { GameRequestComponent } from './../../components/game-request/game-request.component';
 import { WordService } from './../../services/word.service';
 import { HelperService} from './../../services/helper.service';
-import { GameService } from './../../services/game.service';
 import { GlobalVarsService } from './../../services/global-vars.service';
 import { SocketService } from './../../services/socket.service';
 
@@ -17,12 +14,11 @@ import { SocketService } from './../../services/socket.service';
   selector: 'app-play-word',
   templateUrl: './play-word.component.html',
   styleUrls: ['./play-word.component.css'],
-  providers: [ WordService, HelperService, GameService, SocketService ]
+  providers: [ WordService, HelperService, SocketService ]
 })
 export class PlayWordComponent implements OnInit {
   @ViewChild(WritingComponent) writingComponent;
   @ViewChild(ReadingComponent) readingComponent;
-  @ViewChild(GameRequestComponent) gameRequestComponent;
 
   score: number = 0;
   percent: number = 0;
@@ -31,9 +27,8 @@ export class PlayWordComponent implements OnInit {
   allWords: any;
   answers: Object[] = [];
   curWord: Object = {};
-  max = 5; 
+  max = 2; 
   isEnd: boolean = false;
-  typeGame = ['reading', 'writing'];
   counter: number = 100;
   selectedGame: string;
   interval: any;
@@ -77,7 +72,7 @@ export class PlayWordComponent implements OnInit {
   isPlaying: boolean = false;
   isInit: boolean = false;
 
-  constructor( private wordService: WordService, private gameService: GameService,
+  constructor( private wordService: WordService,
     private socketService: SocketService,
     private helperService: HelperService, 
     private globalVars: GlobalVarsService,
@@ -90,7 +85,6 @@ export class PlayWordComponent implements OnInit {
       if (value['_id'] != undefined) {
         this.profile = value;
         this.from = this.profile;
-        this.from['score'] = 0;
       }
     });
 
@@ -108,23 +102,24 @@ export class PlayWordComponent implements OnInit {
           }
         });
 
-        this.socketService.beginGame(this.socket).subscribe(res => {
+        this.socketService.listenEvent(this.socket, 'begin-game').subscribe(res => {
           if(res['agree'] == true) {
             this.playerSocketId = res['playerSocketId'];
             this.from = res['from'];
             this.to = res['to'];
+            this.to['score'] = 0;
+            this.from['score'] = 0;
             this.onlineGame = true;
             this.contentGame = res['content'];
-            this.max = this.contentGame.length;  
+            this.max = this.contentGame.length;
+            this.answers = [];  
             this.closeAllDialog();
             this.isPlaying = true;
             this.ready();
-          } else {
-            console.log('bị từ chối rồi');
           }
         });
 
-        this.socketService.receiveAnsFriend(this.socket).subscribe(res => {
+        this.socketService.listenEvent(this.socket, 'receive-answer').subscribe(res => {
           if (res['answer'].length == this.max) {
             if(!this.isReceiver) {
               this.turn['toAns'] = res['answer'];
@@ -214,34 +209,14 @@ export class PlayWordComponent implements OnInit {
 
   ready() {
     if (this.onlineGame) {
+      this.count = 0;
+      this.countCorrect = 0;
+      this.percent = 0;
       this.isReady = true;
+      this.isEnd = false;
       this.reload();
       return;
     }
-
-    //check nếu người được chọn trùng với người ý yêu cầu
-    if(!this.check()) {
-      this.isReady = true;
-      this.reload();
-    } else {
-      this.isReady = true;
-      this.isRequest = true;
-      this.reload();
-    }
-    
-  }
-
-  check() {
-    let allTurns = [];
-    allTurns = this.gameRequestComponent.getTurns();
-    for (let i = 0; i < allTurns.length; i++) {
-      if (allTurns[i]['from']['_id'] == this.playerFriend['_id']) {
-        this.contentGame = allTurns[i]['content'];
-        this.max = allTurns[i]['content'].length;
-        return true;
-      }
-    }
-    return false;
   }
 
   reload() {
@@ -297,7 +272,7 @@ export class PlayWordComponent implements OnInit {
       data['correct'] = false;
       data['score'] = 0;
     }
-    this.socketService.sendAns(this.socket, data);
+    this.socketService.sendEvent(this.socket, 'send-answer', data);
   }
 
   onCorrect(correct: boolean): void {
@@ -357,6 +332,7 @@ export class PlayWordComponent implements OnInit {
           if (this.selectedGame == 'reading') {
             let clicked = this.readingComponent.clicked;
             if (!clicked) {
+              this.readingComponent.checkAnswer(null);
               this.readingComponent.getAnswer(null);
               this.sendAnswerSocket(null);
             }
@@ -422,27 +398,18 @@ export class PlayWordComponent implements OnInit {
     this.sendRequestSocket();
   }
 
-  request(request: Object) {
-    this.isRequest = true;
-    this.turn = request;
-    this.contentGame = request['content'];
-    this.from = request['from']['id'];
-    this.from['score'] = request['from']['score'];
-    this.to = request['to']['id'];
-    this.to['score'] = 0;
-  }
-
   sendRequestSocket(){
     let requestSocket = {};
+    this.from = this.profile;
     requestSocket['fromId'] = this.from['_id'];
     requestSocket['from'] = this.from;
     requestSocket['toId'] = this.to['_id'];
     requestSocket['toSocketId'] = this.to['socketId'];
-    this.socketService.sendRequest(this.socket, requestSocket);
+    this.socketService.sendEvent(this.socket, 'send-request',requestSocket);
     this.openDialog(this.to['socketId']);
 
-    this.socketService.waitAccept(this.socket).subscribe(res => {
-      console.log(res);
+    this.socketService.listenEvent(this.socket, 'wait-accept').subscribe(res => {
+      //console.log(res);
     });
   }
 

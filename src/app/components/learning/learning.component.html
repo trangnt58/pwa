@@ -1,38 +1,52 @@
-<div class="flex-container game-box" 
-     fxLayout="row" 
-     fxLayoutAlign="space-around start" 
-  >
-  <div class="flex-item list-word" fxFlex="30%">
-    <md-list>
-      <h3 md-subheader>Từ chưa thuộc</h3>
-      <md-list-item *ngFor="let item of words" (click)="changeWord(item)">
-        <md-icon md-list-avatar>note</md-icon>
-        <h4 md-line>{{item.content}}</h4>
-<!--         <p md-line> {{item.meaning}} </p>
- -->      </md-list-item>
-      <md-divider></md-divider>
-      <h3 md-subheader>Từ đã thuộc</h3>
-    </md-list>
-  </div>
-  <div class="flex-item" fxFlex="70%" style="margin-top: 150px;">
-    <md-card>
-      <md-card-header>
-        <div md-card-avatar></div>
-        <md-card-title><md-icon (click)="speak()">volume_up</md-icon>{{curWord.content}}</md-card-title>
-        <md-card-subtitle>{{curWord.meaning}}</md-card-subtitle>
-      </md-card-header>
-      <img md-card-image *ngIf="curWord.images" src="{{curWord.images.links[0]}}">
-      <md-card-content>
-      </md-card-content>
-      <md-card-actions>
-        <button md-raised-button [disabled]="disablePre" (click)="previous()" color="primary">
-          <md-icon>chevron_left</md-icon>
-          Pre
-        </button>
-        <button md-raised-button [disabled]="disableNext" (click)="next()" color="primary">
-          <md-icon>chevron_right</md-icon>
-          Next</button>
-      </md-card-actions>
-    </md-card>
+<div *ngIf="isLoading" class="spinner">
+  <md-spinner></md-spinner>
+  <p> Đang tải dữ liệu...</p>
+</div>
+<div *ngIf="!isLoading">
+  <app-warning-offline *ngIf="hasErr"></app-warning-offline>
+  <div *ngIf="!hasErr">
+    <div>
+      <img src="assets/images/1000word.jpg" class="inline-item header-info" 
+        (click)="goSection()">
+      <div class="inline-item">
+        <h3 class="primary title" (click)="goSection()"> {{curTopic['name']}}</h3>
+        <p class="caption accent"> <md-icon>book</md-icon> {{curSection['name']}}</p>
+      </div>
+    </div>
+    <div class="flex-container game-box" 
+         fxLayout="row" 
+         fxLayoutAlign="space-around start" 
+      >
+      <div class="flex-item list-word hide-mobile" fxFlex="30%">
+        <md-list>
+          <md-list-item *ngFor="let item of words" (click)="changeWord(item)">
+            <h4 md-line>{{item['content']}}</h4>
+          </md-list-item>
+          <md-divider></md-divider>
+        </md-list>
+      </div>
+      <div class="flex-item" fxFlex>
+        <md-card>
+          <md-card-header>
+            <div md-card-avatar></div>
+            <md-card-title><md-icon (click)="speak()">volume_up</md-icon>
+              <span style="font-size: 25px;">{{curWord['content']}}</span>
+            </md-card-title>
+            <md-card-subtitle>{{curWord['meaning']}}</md-card-subtitle>
+          </md-card-header>
+          <md-card-content>
+          </md-card-content>
+          <md-card-actions style="text-align: right;">
+            <button md-raised-button [disabled]="disablePre" (click)="previous()" color="primary">
+              <md-icon>chevron_left</md-icon>
+              Pre
+            </button>
+            <button md-raised-button [disabled]="disableNext" (click)="next()" color="primary">
+              <md-icon>chevron_right</md-icon>
+              Next</button>
+          </md-card-actions>
+        </md-card>
+      </div>
+    </div>
   </div>
 </div>

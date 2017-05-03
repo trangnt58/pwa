@@ -4,14 +4,14 @@
 	     fxLayout="row" 
 	     fxLayoutAlign="center center">
 	  <div class="flex-item profile" fxFlex="30%">
-	    <img md-card-avatar *ngIf="!profile.imageUrl" 
+	    <img md-card-avatar *ngIf="!profile['imageUrl']" 
 			  src="/assets/images/default-avatar.png">
-		  <img md-card-avatar *ngIf="profile.imageUrl" 
+		  <img md-card-avatar *ngIf="profile['imageUrl']" 
 			  src="{{profile.imageUrl}}">
 	  </div>
 	  <div class="flex-item" fxFlex="70%">
-	  	<p>Name: {{profile.name}}</p>
-			<p>Email: {{profile.email}}</p>
+	  	<p>Name: {{profile['name']}}</p>
+			<p>Email: {{profile['email']}}</p>
 		</div>
 	</div> 
 	<div class="flex-container game-box" 

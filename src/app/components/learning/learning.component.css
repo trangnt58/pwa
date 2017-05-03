@@ -18,7 +18,30 @@ md-card img {
 	display: block;
 	margin: 0 auto;
 }
+.header-info {
+	cursor: pointer;
+	width:120px; 
+	height: auto; 
+	border-radius: 5px;
+}
 
 md-icon {
 	cursor: pointer;
+}
+
+.inline-item {
+	display: inline-block;
+}
+
+.spinner {
+	margin-top: 20px;
+	text-align: center;
+}
+
+.spinner md-spinner{
+	margin: 0 auto;
+}
+ 
+md-card img {
+	margin-top: 10px;
 }

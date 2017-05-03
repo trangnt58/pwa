@@ -1,15 +1,17 @@
 <div *ngIf="from&&to">
   <div  class="waiting-game flex-container" fxLayout="row" 
-       fxLayoutAlign="space-around center" >
-    <div class="item-friend flex-item" fxFlex="33%">
+    fxLayout.xs="column"
+    fxLayoutAlign="space-around center" >
+    <div class="item-friend flex-item hide-mobile" fxFlex="33%">
       <div class="avatar">
         <img md-card-avatar *ngIf="!from.imageUrl" src="/assets/images/default-avatar.png">
         <img md-card-avatar *ngIf="from.imageUrl" src="{{from.imageUrl}}">
       </div>
       <p class="name-friend">{{from.name}}</p>
     </div>
-    <div class="flex-item" fxFlex="30%" class="primary">
-      <div class="center bg-primary btn-challenge">
+
+    <div class="flex-item hide-mobile" fxFlex="30%" class="primary">
+      <div class="center bg-primary btn-challenge hide-mobile">
         <span> VS.</span>
       </div>
     </div>
@@ -25,7 +27,5 @@
   <div class="action">
     <h4 class="primary" style="text-align: center;" [innerHTML]="status"></h4>
     <h1 class="primary" style="text-align: center;">{{count}}</h1>
-   <!--  <button md-button (click)="cancel()">Hủy</button>
-    <button md-button (click)="ready()">Chơi ngay</button> -->
   </div>
 </div>

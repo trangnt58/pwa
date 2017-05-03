@@ -69,7 +69,7 @@ export class UserItemComponent implements OnInit {
       friend['fromInfo'] = this.profile;
       friend['to'] = this.user['_id'];
       friend['toSocketId'] = this.user['socketId'];
-      this.socketService.createFriend(this.socket, friend);
+      this.socketService.sendEvent(this.socket, 'create-friend', friend);
       this.sendRequest = true;
     }
   }
@@ -95,5 +95,4 @@ export class UserItemComponent implements OnInit {
     data['to'] = this.profile;
     this.socketService.sendEvent(this.socket, 'delete-request', data);
   }
-
 }

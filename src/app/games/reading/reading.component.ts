@@ -77,8 +77,6 @@ export class ReadingComponent implements OnInit {
       item['state'] = 'right';
       this.getAnswer(item);
       this.onCorrect.emit(true);
-      
-     
     } else {
       item['state'] = 'wrong';
       //Tìm cái đúng để hiện lên @@

@@ -1,5 +1,5 @@
 <div *ngIf="!isReady" class="play-word">
-  <app-my-friends [from]="from" (selectFriend)="selectFriend($event)">
+  <app-my-friends [from]="profile" (selectFriend)="selectFriend($event)">
   </app-my-friends>
   <div>
     <button md-raised-button (click)="sendRequestSocket()" [disabled]="!selectedFriend" 

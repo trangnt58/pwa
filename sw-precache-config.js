@@ -1,14 +1,17 @@
 module.exports = {
-  navigateFallback: '/index.html',
-  stripPrefix: 'dist',
-  root: 'dist/',
   staticFileGlobs: [
-    'dist/index.html',
+    'dist/**.html',
     'dist/**.js',
     'dist/**.css',
-    'dist/assets/images/game/check-icon.png',
-    'dist/assets/images/game/songpop.png',
-    'dist/assets/lib/*.js',
-    'dist/assets/data/*.json'
-  ]
+    'dist/assets/images/*',
+    'dist/assets/icons/*',
+    'dist/assets/lib/*'
+  ],
+  root: 'dist',
+  stripPrefix: 'dist/',
+  navigateFallback: '/index.html',
+  runtimeCaching: [{
+    urlPattern: /egame-uet\.herokuapp\.com\/api/,
+    handler: 'networkFirst'
+  }]
 };

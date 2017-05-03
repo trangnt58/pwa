@@ -9,4 +9,7 @@
 md-icon {
 	cursor: pointer;
 }
+.content-body {
+	padding: 15px;
+}
 

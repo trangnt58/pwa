@@ -1,14 +1,12 @@
 <span *ngIf="!isLogin">
 	<span routerLink="/login" class="right-menu">Log in</span>
- 	<!-- <span routerLink="/register" class="right-menu">Register</span> -->
 </span>
 
 <div *ngIf="isLogin" class="right-menu">
-	<img class="avatar" src="{{profile.imageUrl}}"> 
-	<span style="vertical-align: middle; line-height: 64px;">{{profile.name}}</span>
+	<img class="avatar" src="{{profile.imageUrl}}" alt="avatar"> 
+	<span style="vertical-align: middle; line-height: 64px;" class="hide-mobile">{{profile.name}}</span>
 	<span style="position: relative;">
 	<button md-icon-button class="notification-container" (click)="showNotify()">
-    <!-- <md-icon>public</md-icon> -->
     <md-icon>supervisor_account</md-icon>
     <span class="notification-counter"  *ngIf="requests.length>0">{{requests.length}}
     </span>
@@ -16,7 +14,7 @@
   <div class="list-notify" *ngIf="showNoti">
   	<span class="caption"> Friend Requests </span>
   	<hr>
-  	<div class="caption" *ngIf="requests.length==0"> Chưa có yêu cầu nào </div>
+  	<div class="caption" *ngIf="requests.length==0"> 0 request. </div>
   	<md-list *ngIf="requests.length>0">
 		  <md-list-item *ngFor="let item of requests">
 		  	<app-user-item [user]="item"></app-user-item>
@@ -26,21 +24,17 @@
 
   </span>
 
-	<button md-icon-button [mdMenuTriggerFor]="menu">
+	<button md-icon-button [mdMenuTriggerFor]="menu" id="user-menu">
   	<md-icon>more_vert</md-icon>
 	</button>
 	<md-menu #menu="mdMenu">
 		<button md-menu-item (click)="goProfile()">
 	    <md-icon>account_circle</md-icon>
-	    <span>Thông tin cá nhân</span>
+	    <span>Personal Information</span>
 	  </button>
-		<!-- <button md-menu-item>
-	    <md-icon>assignment</md-icon>
-	    <span>Góc học tập</span>
-	  </button> -->
-	  <button md-menu-item (click)="logOut()">
+	  <button md-menu-item (click)="logOut()" id="logout">
 	    <md-icon>exit_to_app</md-icon>
-	    <span>Đăng xuất</span>
+	    <span>Logout</span>
 	  </button>
 	</md-menu>
 </div>

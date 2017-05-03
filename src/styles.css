@@ -3,11 +3,15 @@
 
 body {
   margin: 0 !important;
-  font-family: Tahoma, Verdana, sans-serif;
+  font-family: 'Noto Sans', sans-serif;
 }
 
 .primary {
 	color: #2196f3;
+}
+
+.accent {
+	color: #FF5722;
 }
 
 .bg-primary {
@@ -16,6 +20,10 @@ body {
 
 .text-center {
 	text-align: center;
+}
+
+.subhead {
+	font-size: 14px;
 }
 
 .size14 {
@@ -34,4 +42,14 @@ body {
 .list-notify md-card md-card-header md-card-title,
 .list-notify md-card md-card-header md-card-subtitle{
 	font-size: 12px;
+}
+
+.mat-list .mat-list-item .mat-list-item-content {
+	padding: 0 !important;
+}
+
+@media screen and (max-width: 599px) {
+  .hide-mobile {
+  	display: none !important;
+  }
 }

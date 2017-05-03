@@ -2,12 +2,12 @@
 	<tr>
 		<th></th>
 		<th class="text-center"> 
-			<img md-card-avatar *ngIf="!from.imageUrl" src="/assets/images/default-avatar.png">
-		  <img md-card-avatar *ngIf="from.imageUrl" src="{{from.imageUrl}}">
+			<img md-card-avatar *ngIf="!from['imageUrl']" src="/assets/images/default-avatar.png">
+		  <img md-card-avatar *ngIf="from['imageUrl']" src="{{from.imageUrl}}">
 		</th>
 		<th class="text-center">
-			<img md-card-avatar *ngIf="!to.imageUrl" src="/assets/images/default-avatar.png">
-		  <img md-card-avatar *ngIf="to.imageUrl" src="{{to.imageUrl}}">
+			<img md-card-avatar *ngIf="!to['imageUrl']" src="/assets/images/default-avatar.png">
+		  <img md-card-avatar *ngIf="to['imageUrl']" src="{{to.imageUrl}}">
 		</th>
 	</tr>
 	<tr *ngFor="let item of content; let i = 'index'">
@@ -31,6 +31,4 @@
 </table>
 <div style="float: right;">
   <button md-raised-button color="primary" (click)="goPlayWord()"><md-icon>chevron_left</md-icon> Back to game</button>
-  <!-- <button [disabled]="isSend" md-raised-button color="primary" 
-  		(click)="sendRequestGame()">Send Request Game</button> -->
 </div>

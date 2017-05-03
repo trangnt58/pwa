@@ -27,7 +27,7 @@ export class GameRequestDialogComponent implements OnInit {
       if(value != null) {
         this.socket = value['socket'];
         this.to = value['profile'];
-        this.socketService.receiveFinish(this.socket).subscribe(res => {
+        this.socketService.listenEvent(this.socket, 'close-dialog').subscribe(res => {
           if(res['close']) {
             this.dialogRef.close(this.isAgree);
           }
@@ -54,7 +54,7 @@ export class GameRequestDialogComponent implements OnInit {
   	response['fromSocketId'] = this.fromSocketId;
     response['from'] = this.from;
     response['to'] = this.to;
-  	this.socketService.sendResponse(this.socket, response);
+  	this.socketService.sendEvent(this.socket, 'send-response', response);
   }
 
 }
