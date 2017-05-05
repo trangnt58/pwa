@@ -30,7 +30,6 @@ import { WaitingGameComponent } from './components/waiting-game/waiting-game.com
 import { CircleProgressComponent } from './components/circle-progress/circle-progress.component';
 import { GamePlayerComponent } from './components/game-player/game-player.component';
 import { LearningComponent } from './components/learning/learning.component';
-import { WordDialogComponent } from './components/word-dialog/word-dialog.component';
 import { GameRequestDialogComponent } from './components/game-request-dialog/game-request-dialog.component';
 import { RandomUserComponent } from './components/random-user/random-user.component';
 import { UserCardComponent } from './components/user-card/user-card.component';
@@ -79,7 +78,6 @@ const appRoutes: Routes = [
     CircleProgressComponent,
     GamePlayerComponent,
     LearningComponent,
-    WordDialogComponent,
     GameRequestDialogComponent,
     RandomUserComponent,
     UserCardComponent,
@@ -103,7 +101,6 @@ const appRoutes: Routes = [
   providers: [ GlobalVarsService ],
   entryComponents: [
     WaitingGameComponent,
-    WordDialogComponent,
     GameRequestDialogComponent
   ],
 

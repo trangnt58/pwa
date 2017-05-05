@@ -9,6 +9,7 @@ module.exports = {
   ],
   root: 'dist',
   stripPrefix: 'dist/',
+  //importScripts: ['push-notification.js'],
   navigateFallback: '/index.html',
   runtimeCaching: [{
     urlPattern: /egame-uet\.herokuapp\.com\/api/,

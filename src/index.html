@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>EGame</title>
-  <base href="/">
+  <base href="./">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -20,15 +20,16 @@
   <app-root>Loading...</app-root>
   <!-- <script src="//connect.facebook.net/en_US/sdk.js"></script> -->
   <script src="assets/lib/sdk.js"></script>
+  <!-- <script src="../sw-main.js"></script> -->
   <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-      console.log('ServiceWorker registration successful with scope: ', registration.scope);
-    }).catch(function(err) {
-      console.log('ServiceWorker registration failed: ', err);
-    });
-  }
-</script>
-<noscript>Sorry, JavaScript needs to be enabled in order to run this application.</noscript>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      }).catch(function(err) {
+        console.log('ServiceWorker registration failed: ', err);
+      });
+    }
+  </script>
+  <noscript>Sorry, JavaScript needs to be enabled in order to run this application.</noscript>
 </body>
 </html>

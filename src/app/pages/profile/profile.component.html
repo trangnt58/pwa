@@ -26,7 +26,7 @@
 		</div>
 	</div>
 	<div>
-  	<div *ngIf="friends.length == 0" class="caption">Bạn chưa có bạn.</div>
+  	<div *ngIf="friends.length == 0" class="caption">You don't have any friends.</div>
 	  <div *ngIf="friends.length > 0">
 	  	<div *ngFor="let item of friends">
 	  		<app-user-item [user]="item"></app-user-item>

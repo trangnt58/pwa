@@ -30,7 +30,11 @@ export class MenuGameComponent implements OnInit {
   }
  
   playWord() {
-    if(!this.isLogin) {
+    if (!navigator.onLine) {
+      this.openSnackBar('You are offline. You need to enable online mode to play.');
+      return;
+    }
+    if (!this.isLogin) {
       this.openSnackBar('You must log in to play this game.');
       return;
     }

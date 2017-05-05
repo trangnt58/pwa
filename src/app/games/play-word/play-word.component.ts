@@ -27,7 +27,7 @@ export class PlayWordComponent implements OnInit {
   allWords: any;
   answers: Object[] = [];
   curWord: Object = {};
-  max = 2; 
+  max = 5; 
   isEnd: boolean = false;
   counter: number = 100;
   selectedGame: string;
@@ -401,6 +401,7 @@ export class PlayWordComponent implements OnInit {
   sendRequestSocket(){
     let requestSocket = {};
     this.from = this.profile;
+    this.isReceiver = false;
     requestSocket['fromId'] = this.from['_id'];
     requestSocket['from'] = this.from;
     requestSocket['toId'] = this.to['_id'];

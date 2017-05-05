@@ -79,8 +79,7 @@ export class SearchFriendComponent implements OnInit {
           }
           this.result = res;
        });
-    }
-    else {
+    } else {
       this.result = [];
     }
   }

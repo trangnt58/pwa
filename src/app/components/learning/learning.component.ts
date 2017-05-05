@@ -3,7 +3,6 @@ import { WordService } from './../../services/word.service';
 import { HelperService} from './../../services/helper.service';
 
 import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
-import { WordDialogComponent } from './../../components/word-dialog/word-dialog.component';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 @Component({
@@ -87,11 +86,8 @@ export class LearningComponent implements OnInit {
       this.curWord = this.words[index];
       this.checkDisable();
     }
-    this.speak();
-    
+    this.speak(); 
   }
-
-  
 
   previous() {
     let index: number;
@@ -105,26 +101,6 @@ export class LearningComponent implements OnInit {
       this.checkDisable();
     }
     this.speak();
-  }
-
-  openDialog(item) {
-    let config: MdDialogConfig = {
-      disableClose: false,
-      width: '50%',
-      height: '',
-      position: {
-        top: '',
-        bottom: '',
-        left: '',
-        right: ''
-      }
-    };
-
-    let dialogRef = this.dialog.open(WordDialogComponent, config );
-    let instance = dialogRef.componentInstance;
-   	instance.word = item;
-    
-    dialogRef.afterClosed().subscribe(result => {});
   }
 
   changeWord(item) {

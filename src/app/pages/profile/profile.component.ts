@@ -70,12 +70,14 @@ export class ProfileComponent implements OnInit {
         });
 
         this.socketService.listenEvent(this.socket, 'invalid-request').subscribe( res => {
-          console.log(res['type']);
           if(res['type'] == 'friend') {
             this.openSnackBar('Người này đã có trong danh sách bạn bè.');
           }
           if(res['type'] == 'request') {
             this.openSnackBar('Bạn đã gửi yêu cầu tới người này rồi.')
+          }
+          if(res['type'] == 'repeat') {
+            this.openSnackBar('Người này đã gửi yêu cầu kết bạn cho bạn.')
           }
         });
       }
