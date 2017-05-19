@@ -75,5 +75,9 @@ export class MyAnswerComponent implements OnInit {
     this.goBack.emit(true);
   }
 
+  ngOnDestroy() {
+    this.turnGame = null;
+  }
+
 }
 

@@ -18,4 +18,9 @@ export class GamePlayerComponent implements OnInit {
   ngOnInit() {
   }
 
+  ngOnDestroy() {
+    this.from = null;
+    this.to = null;
+  }
+
 }

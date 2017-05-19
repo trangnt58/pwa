@@ -1,22 +1,25 @@
-<app-warning-offline *ngIf="hasErr"></app-warning-offline>
-<div *ngIf="!hasErr">
-  <img src="{{curTopic['cover']}}" style="width:120px; height: auto; border-radius: 2px;" 
-  class="inline-item">
-  <div class="inline-item">
-    <h3 class="primary title">  {{curTopic['name']}} </h3>
-    <p class="caption" *ngIf="sections.length!=0"> 
-    	<md-icon>book</md-icon> {{sections.length}} section
-    </p>
-  </div>
-</div>
-<div class="list-section">
-	<md-card  *ngFor="let item of sections; let i='index'" (click)="goWord(item['id'])" class="section">
-	  <md-card-header>
-	    <div md-card-avatar>
-	      <img src="assets/images/number/number-0{{i+1}}.png" style="max-height: 50px;">
-	    </div>
-	    <md-card-title class="title"><h4>Section {{i+1}}</h4></md-card-title>
-	    <md-card-subtitle></md-card-subtitle>
-	  </md-card-header>
-	</md-card>
+<app-loading *ngIf="isLoading"></app-loading>
+<div *ngIf="!isLoading">
+	<app-warning-offline *ngIf="hasErr"></app-warning-offline>
+	<div *ngIf="!hasErr">
+	  <img src="{{curTopic['cover']}}" style="width:120px; height: auto; border-radius: 2px;" 
+	  class="inline-item">
+	  <div class="inline-item">
+	    <h3 class="primary title">  {{curTopic['name']}} </h3>
+	    <p class="caption" *ngIf="sections.length!=0"> 
+	    	<md-icon>book</md-icon> {{sections.length}} section
+	    </p>
+	  </div>
+	</div>
+	<div class="list-section">
+		<md-card  *ngFor="let item of sections; let i='index'" (click)="goWord(item['id'])" class="section">
+		  <md-card-header>
+		    <div md-card-avatar>
+		      <img src="assets/images/number/number-0{{i+1}}.png" style="max-height: 50px;">
+		    </div>
+		    <md-card-title class="title"><h4>Section {{i+1}}</h4></md-card-title>
+		    <md-card-subtitle></md-card-subtitle>
+		  </md-card-header>
+		</md-card>
+	</div>
 </div>

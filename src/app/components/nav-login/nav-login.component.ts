@@ -10,7 +10,7 @@ import { PushNotificationsService } from 'angular2-notifications';
 import { CoolLocalStorage } from 'angular2-cool-storage';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import {MdSnackBar} from '@angular/material';
+import { MdSnackBar } from '@angular/material';
 
 import 'rxjs/Rx';
 
@@ -56,6 +56,10 @@ export class NavLoginComponent implements OnInit {
     this.isConnected.subscribe(res => {
       if(res == false) {
         this.informOffline();
+      } else {
+        if ("Notification" in window) {
+          this._push.requestPermission();
+        }
       }
     })
     // Check nếu đã đăng nhập
@@ -161,8 +165,8 @@ export class NavLoginComponent implements OnInit {
         body: body, 
         icon: 'assets/images/default-avatar.png'
       }).subscribe(
-            res => {},
-            err => {}
+        res => {},
+        err => {}
       );
     }
   }

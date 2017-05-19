@@ -39,6 +39,7 @@ import { UserItemComponent } from './components/user-item/user-item.component';
 import { TopicComponent } from './components/topic/topic.component';
 import { SectionComponent } from './components/section/section.component';
 import { WarningOfflineComponent } from './components/warning-offline/warning-offline.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -85,7 +86,8 @@ const appRoutes: Routes = [
     UserItemComponent,
     TopicComponent,
     SectionComponent,
-    WarningOfflineComponent
+    WarningOfflineComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,

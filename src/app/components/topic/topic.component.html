@@ -1,17 +1,20 @@
+<app-loading *ngIf="isLoading"></app-loading>
+<div *ngIf="!isLoading">
 <app-warning-offline *ngIf="hasErr"></app-warning-offline>
-<div class="flex-container game-box" 
-     fxLayout="row" fxLayout.xs="column" fxLayout.sm="row"
-     fxLayoutAlign="space-around center" *ngIf="!hasErr"
-    >
-  <div class="flex-item topic" fxFlex="25%" *ngFor="let item of topics" (click)="goLearn(item)">
-    <md-card [ngClass]="{'lock': item['status']=='inactive'}">
-      <img md-card-image src="{{item['cover']}}">
-      <md-card-content>
-        <h3 class="primary title"> {{item['name']}}
-          <md-icon *ngIf="item['status']=='inactive'">lock</md-icon>
-        </h3>
-      </md-card-content>
-    </md-card>
-  </div>
-  <div class="flex-item" fxFlex></div>
-</div> 
+  <div class="flex-container game-box" 
+       fxLayout="row" fxLayout.xs="column" fxLayout.sm="row"
+       fxLayoutAlign="space-around center" *ngIf="!hasErr"
+      >
+    <div class="flex-item topic" fxFlex="25%" *ngFor="let item of topics" (click)="goLearn(item)">
+      <md-card [ngClass]="{'lock': item['status']=='inactive'}">
+        <img md-card-image src="{{item['cover']}}">
+        <md-card-content>
+          <h3 class="primary title"> {{item['name']}}
+            <md-icon *ngIf="item['status']=='inactive'">lock</md-icon>
+          </h3>
+        </md-card-content>
+      </md-card>
+    </div>
+    <div class="flex-item" fxFlex></div>
+  </div> 
+</div>

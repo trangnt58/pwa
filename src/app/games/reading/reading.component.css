@@ -5,4 +5,17 @@
   box-sizing: border-box;
   padding: 10px;
   margin: 20px;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.answer {
+	margin-top: 30px;
+}
+
+@media screen and (max-width: 800px) {
+	.answer-unit {
+		margin: 5px;
+		margin-top: 10px;
+	}
 }

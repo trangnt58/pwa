@@ -1,5 +1,5 @@
-<h3 class="primary"><md-icon>people_outline</md-icon> My friends</h3>
-<div *ngIf="friends.length == 0" class="caption">Bạn chưa có bạn.</div>
+<h3 class="primary"><md-icon>people_outline</md-icon> My friends </h3>
+<div *ngIf="friends.length == 0" class="caption">You don't have any friends.</div>
 <div *ngIf="friends.length > 0" class="friends-list">
 	<div class="item-friend" *ngFor="let item of friends" (click)="chooseFriend(item)">
     <div class="avatar">

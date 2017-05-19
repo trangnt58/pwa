@@ -11,13 +11,16 @@ import { WordService } from './../../services/word.service';
 export class TopicComponent implements OnInit {
 	topics: Object[] = [];
   hasErr: boolean = false;
+  isLoading: boolean = true;
   constructor(private router: Router, 
   	private wordService: WordService ) { }
 
   ngOnInit() {
   	this.wordService.getAllTopic().then(res => {
   		this.topics = res;
+      this.isLoading = false;
   	}).catch((err) => {
+      this.isLoading = false;
       this.hasErr = true;
       console.log("Error fetching topics");
     });

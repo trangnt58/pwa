@@ -112,7 +112,8 @@ export class PlayWordComponent implements OnInit {
             this.onlineGame = true;
             this.contentGame = res['content'];
             this.max = this.contentGame.length;
-            this.answers = [];  
+            this.answers = [];
+            this.score = 0;  
             this.closeAllDialog();
             this.isPlaying = true;
             this.ready();
@@ -203,7 +204,6 @@ export class PlayWordComponent implements OnInit {
     this.dialogRef.afterClosed().subscribe(result => {
       this.isPlaying = false;
     });
-
   }
   
 

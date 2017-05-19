@@ -14,6 +14,7 @@ export class SectionComponent implements OnInit {
   topicId: String
 	sections: Object[] = [];
   hasErr: boolean = false;
+  isLoading: boolean = true;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -23,9 +24,12 @@ export class SectionComponent implements OnInit {
      this.sub = this.route.params.subscribe(params => {
       this.topicId = params['topicId'];
       this.wordService.getSection(this.topicId).then( res => {
-       this.sections = res;
+        this.sections = res;
+        this.isLoading = false;
+
       }).catch((err) => {
         this.hasErr = true;
+        this.isLoading = false;
         console.log('Error fetching data');
       });
       this.wordService.getInfoTopic(this.topicId).then( res => {

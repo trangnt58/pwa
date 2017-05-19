@@ -1,7 +1,4 @@
-<div *ngIf="isLoading" class="spinner">
-  <md-spinner></md-spinner>
-  <p> Đang tải dữ liệu...</p>
-</div>
+<app-loading *ngIf="isLoading"></app-loading>
 <div *ngIf="!isLoading">
   <app-warning-offline *ngIf="hasErr"></app-warning-offline>
   <div *ngIf="!hasErr">
